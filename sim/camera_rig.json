@@ -1,0 +1,30 @@
+{
+  "calibration_status": "URDF mounting poses; uncalibrated simulation pinhole intrinsics",
+  "note": "Device models confirmed by user. Real K/distortion, depth noise and RGB-depth baseline are not calibrated.",
+  "cameras": {
+    "head_d435": {
+      "device_model": "D435",
+      "location": "head, behind front visor",
+      "fovy_deg": 60,
+      "optical_roll_deg": -90
+    },
+    "body_d435": {
+      "device_model": "D435",
+      "location": "waist/body",
+      "fovy_deg": 60,
+      "optical_roll_deg": -90
+    },
+    "left_wrist_d405": {
+      "device_model": "D405",
+      "location": "left wrist",
+      "fovy_deg": 60,
+      "optical_roll_deg": -90
+    },
+    "right_wrist_d405": {
+      "device_model": "D405",
+      "location": "right wrist",
+      "fovy_deg": 60,
+      "optical_roll_deg": -90
+    }
+  }
+}

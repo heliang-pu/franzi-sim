@@ -1,0 +1,6 @@
+# Physical RK3588 controller (vendor defaults in core/client/_base.py and
+# module_communication/client.py). Not exercised by this repository's tests.
+label: real RK3588 controller
+host: 192.168.23.30
+arm_port: 8000
+sensor_port: 8100

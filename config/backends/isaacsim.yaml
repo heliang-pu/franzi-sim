@@ -1,0 +1,30 @@
+# Isaac Sim 4.5 / 5.x adapter -- DRAFT, never executed (Isaac Sim cannot run on this
+# macOS arm64 machine). Scene: assets/derived/pybullet (MuJoCo-identical colliders).
+backend: isaacsim
+# NOT RUN. The user deferred Isaac Sim verification on 2026-10-24. Written for an
+# Isaac Sim 5.1.0 pip install on the GPU workstation (uv venv, Python 3.11, numpy
+# 1.26, PyYAML, Pillow); ISAAC_PYTHON names its interpreter. A headless start
+# needs the NVIDIA Omniverse EULA accepted (OMNI_KIT_ACCEPT_EULA=YES): that is the
+# user's decision, never set it silently. Start through run_isaacsim_4090.sh;
+# ffmpeg must be on PATH there.
+python: ${ISAAC_PYTHON}
+robot: config/robot/franzi_sdk.yaml
+connection: config/connections/sim_isaacsim.yaml
+runtime:
+  loop: framework            # framework: the bridge calls step(); simulator: Isaac's world.step() + PRE_PHYSICS_STEP callback drive the hooks
+  realtime_factor: 1.0       # 0 = as fast as possible
+  idle_timeout_s: 60
+  command_timeout_s: 2.0
+  display_camera: overview
+  record_inset_size: [320, 240]
+  record_every_samples: 1    # 1 = every 25 Hz trace sample
+options:
+  headless: true
+  renderer: RayTracedLighting
+  display_size: [960, 720]       # overview render product; insets are downscaled from 640x480
+  render_updates: 1              # world.render() calls per fresh frame; raise if frames lag the state
+  hull_vertex_limit: 255         # PhysX maximum; the default 64 would simplify 74 of the 102 hulls
+  solver_position_iterations: 64 # articulation and the two parts (TGS)
+  solver_velocity_iterations: 4
+  touch_tolerance_m: 0.0005      # a PhysX contact point counts as touching at separation <= this
+  sensor_link_mass_kg: 0.001     # MuJoCo drops the sensor-link URDF masses; null keeps them

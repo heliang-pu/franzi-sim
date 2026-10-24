@@ -1,0 +1,13 @@
+# Same MuJoCo scene, but the adapter owns the stepping loop (simulator-owned mode).
+backend: mujoco
+python: /Users/puheliang/miniforge3/envs/inovance-fineart/bin/python
+robot: config/robot/franzi_sdk.yaml
+connection: config/connections/sim_mujoco.yaml
+runtime:
+  loop: simulator            # MuJoCo adapter owns the loop and calls the bridge hooks
+  realtime_factor: 1.0       # 0 = as fast as possible
+  idle_timeout_s: 60
+  command_timeout_s: 2.0
+  display_camera: overview
+  record_inset_size: [320, 240]
+  record_every_samples: 1    # 1 = every 25 Hz trace sample

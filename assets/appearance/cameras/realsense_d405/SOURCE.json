@@ -1,0 +1,7 @@
+{
+  "source": "IntelRealSense/realsense-ros realsense2_description/meshes/d405.stl (Apache-2.0), downloaded by the SDK session to assets/sensors/realsense/ros_meshes/",
+  "sha256_source": "a248f41149d12b28311829feecbe7a80cf1481fd05e0f5df2c4c7ecd556edd48",
+  "units": "metres (source millimetres x 0.001)",
+  "frame": "42 x 42 x 23 mm, front at z=0 facing +z, centred in x/y; no lens geometry in the source mesh",
+  "faces": 3892
+}

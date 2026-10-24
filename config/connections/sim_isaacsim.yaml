@@ -1,0 +1,5 @@
+# Isaac Sim server (draft backend, never run on this machine).
+label: Isaac Sim simulation (unverified)
+host: 127.0.0.1
+arm_port: 18400
+sensor_port: 18500

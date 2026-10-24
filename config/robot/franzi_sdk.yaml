@@ -1,0 +1,206 @@
+# Inovance/Franzi wheeled dual-arm robot as seen through the V1R1C9 SDK.
+#
+# SDK joint values (rad) follow q_sdk = sign * q_sim + offset, where q_sim is
+# the source URDF joint angle that every simulator backend uses. The arm and
+# waist mappings come from check_sdk_kinematics.py
+# (config/robot/kinematic_crosscheck.json): the archive MDH tables reproduce the
+# URDF chains exactly, and the archive joint ranges select one member of the
+# exact-solution family. None of it was read back from a live controller.
+schema: 1
+name: inovance_franzi_dual_arm
+
+sdk:
+  version: V1R1C9
+  # Archive topology whole_body_hard_with_tio: 14 arm + 4 waist + 2 head motors,
+  # grippers excluded (sdk_review/controller_image_probe_v2/findings.json).
+  axis_count: 20
+
+sim_model:
+  urdf: assets/franzi_source/wheel_robot_4.0.urdf
+
+joint_convention:
+  # controller_mdh: SDK numbers mean what the archive controller MDH means.
+  # urdf_passthrough: SDK numbers are raw URDF radians (debugging only; the
+  # bridge's behaviour before 2026-10-24).
+  active: controller_mdh
+  options: [controller_mdh, urdf_passthrough]
+  evidence: config/robot/kinematic_crosscheck.json
+  hardware_verified: false
+
+# Status codes used below:
+#   fk_sign        sign fixed by the FK fit together with the archive ranges
+#   range_offset   zero offset not identifiable by FK (absorbed by the base or
+#                  flange frame); 0 is the only value consistent with the ranges
+#   fk_offset      zero offset fixed by the FK fit together with the ranges
+#   uncalibrated   no MDH in the archive; URDF convention passed through
+units:
+  left:
+    side: 0
+    writable: true
+    sim_joints: &left_arm
+      - left_shoulder_pitch_joint
+      - left_shoulder_roll_joint
+      - left_shoulder_yaw_joint
+      - left_elbow_pitch_joint
+      - left_wrist_yaw_joint
+      - left_wrist_pitch_joint
+      - left_wrist_roll_joint
+    # inocfg/inbc_for_humanoid/sysctrl_params.json mechunit_limit[0] (deg).
+    controller_limits_deg:
+      [[-140, 200], [-30, 180], [-170, 170], [-15, 148], [-170, 170], [-60, 60], [-90, 90]]
+    mapping:
+      controller_mdh: &arm_mapping
+        sign: [-1, 1, -1, -1, -1, -1, 1]
+        offset_rad: [0, 0, 0, 0, 0, 0, 0]
+        status:
+          - "j1 shoulder_pitch: fk_sign, range_offset"
+          - "j2 shoulder_roll: fk_sign, fk_offset"
+          - "j3 shoulder_yaw: fk_sign, fk_offset"
+          - "j4 elbow_pitch: fk_sign, fk_offset (URDF -150..7.45 deg -> SDK -7.45..150)"
+          - "j5 wrist_yaw: fk_sign, fk_offset"
+          - "j6 wrist_pitch: fk_sign, fk_offset"
+          - "j7 wrist_roll: fk_sign, range_offset"
+      urdf_passthrough: &identity7
+        sign: [1, 1, 1, 1, 1, 1, 1]
+        offset_rad: [0, 0, 0, 0, 0, 0, 0]
+        status: ["URDF radians, not controller coordinates"]
+  right:
+    side: 10
+    writable: true
+    sim_joints:
+      - right_shoulder_pitch_joint
+      - right_shoulder_roll_joint
+      - right_shoulder_yaw_joint
+      - right_elbow_pitch_joint
+      - right_wrist_yaw_joint
+      - right_wrist_pitch_joint
+      - right_wrist_roll_joint
+    # sysctrl_params.json mechunit_limit[1] (deg).
+    controller_limits_deg:
+      [[-140, 200], [-180, 30], [-170, 170], [-15, 148], [-170, 170], [-60, 60], [-90, 90]]
+    mapping:
+      controller_mdh: *arm_mapping
+      urdf_passthrough: *identity7
+  waist:
+    side: 20
+    writable: false
+    sim_joints: [calf_pitch_joint, thigh_pitch_joint, waist_pitch_joint, waist_yaw_joint]
+    # inocfg/inbc_for_humanoid/waist_config.json (deg).
+    controller_limits_deg: [[-72, 30], [-10, 147], [-75, 30], [-180, 180]]
+    mapping:
+      controller_mdh:
+        sign: [1, 1, 1, 1]
+        offset_rad: [0, 0, 0, 0]
+        status:
+          - "FK exact (waist_config.json MDH); best archive-range match of 4 exact solutions"
+          - "calf/thigh/yaw ranges agree (<= 10 deg); waist_pitch does not: URDF +-30 deg vs archive -75..30 deg"
+          - "read-only: the simulated waist holds the upright stance"
+      urdf_passthrough:
+        sign: [1, 1, 1, 1]
+        offset_rad: [0, 0, 0, 0]
+        status: ["URDF radians"]
+  head:
+    side: 30
+    writable: false
+    sim_joints: [head_yaw_joint, head_pitch_joint]
+    controller_limits_deg: [[-180, 180], [-30, 30]]
+    mapping:
+      controller_mdh:
+        sign: [1, 1]
+        offset_rad: [0, 0]
+        status: ["uncalibrated: head_config.json has no MDH; URDF convention passed through"]
+      urdf_passthrough:
+        sign: [1, 1]
+        offset_rad: [0, 0]
+        status: ["URDF radians"]
+
+limits:
+  # intersection: accept a target only if the simulated joint can reach it and
+  # the archive controller range allows it. simulation_model: sim range only.
+  position_policy: intersection
+  position_margin_rad: 0.001
+  # Conservative planning-only rates (rad/s, rad/s^2), not hardware values.
+  # The archive sysctrl values (deg/s) are kept below for reference only.
+  rates_source: config/robot_constraints/joint_limits.yaml
+  controller_archive_rates_deg:
+    velocity: [180, 180, 144, 144, 180, 180, 180]
+    acceleration: [400, 400, 720, 720, 900, 900, 900]
+    default_velocity_ratio_percent: 30
+
+grippers:
+  left:
+    sim_joints: [leftfinger1_joint, leftfinger2_joint]
+    finger_links: [leftfinger1_Link, leftfinger2_Link]
+    directions: [1, -1]
+    finger_stroke_m: 0.0475
+    # One closure unit per second = 0.0475 m/s per finger (planning YAML: 0.05).
+    max_closure_rate_per_s: 1.0
+    arrival_tolerance: 25
+  right:
+    sim_joints: [rightfinger1_joint, rightfinger2_joint]
+    finger_links: [rightfinger1_Link, rightfinger2_Link]
+    directions: [1, -1]
+    finger_stroke_m: 0.0475
+    max_closure_rate_per_s: 1.0
+    arrival_tolerance: 25
+
+gripper_semantics: >-
+  Vendor AG gripper: position 0 = closed, 1000 = fully open. Simulated as a
+  linear map onto the finger stroke (closure = 1 - position/1000); the real
+  stroke, speed and force are not calibrated. SetForce/ReadForce unsupported.
+
+cameras:
+  image: {width: 640, height: 480, format: RGBA8}
+  rig: sim/camera_rig.json
+  streams:
+    head: {sim: head_d435, device: D435, parent_link: head_pitch_Link}
+    waist: {sim: body_d435, device: D435, parent_link: torso_Link}
+    wrist_left: {sim: left_wrist_d405, device: D405, parent_link: left_wrist_roll_Link}
+    wrist_right: {sim: right_wrist_d405, device: D405, parent_link: right_wrist_roll_Link}
+  status: URDF sensor mounts; simulated pinhole intrinsics, not calibrated
+
+frames:
+  world: fixed base; base_link origin 0.0872648 m above the floor (source MuJoCo model)
+  arm_base: >-
+    Controller MDH frame 0 of each arm, located at the shoulder centre; pose in
+    torso_Link is recorded in kinematic_crosscheck.json (selected/frames), valid
+    only under the range-selected j1 zero offset.
+  flange: controller MDH frame 7 (wrist centre, z along wrist roll); see crosscheck
+  tcp:
+    sim_site: "{side}_grasp"
+    position_in_wrist_roll_link_m: {left: [-0.03045, -0.00175, -0.245], right: [-0.03045, 0.00175, -0.245]}
+    status: simulation grasp centre between the fingers; controller flan2tool unknown
+
+kinematics:
+  # The SDK's Fk/FkTool/IK and FKb/FKbTool/IKb/IKbTool answer from the shared host
+  # kinematics, robot_kinematics.py (user decision 2026-10-24: one FK/IK, real
+  # follows sim), converted to SDK conventions by simbridge/sdk_kinematics.py.
+  # Frames: A0 and the flange from kinematic_crosscheck.json; B = URDF base_link,
+  # the true pose of the simulated robot. The vendor manual's hard-coded FKb
+  # constants (controller WbcTmpKinematics) sit (0, -/+0.0725, -0.26355) m from it
+  # at the upright stance, so the real controller's FKb would differ by 0.273 m.
+  inferred:
+    - "flan2tool: no tool frame in the controller image; identity at start-up, SetFlan2tool lasts for the session"
+    - "IK: robot_kinematics.ik (the expert's solver) seeded with the measured joints; the controller's own IK and branch selection are not used"
+    - "IK failure returns -6 UNREACHABLE (the vendor's code for an unreachable Cartesian target)"
+    - "GetCurCartesianPose: FkTool of the measured joints, in A0"
+
+safety:
+  max_penetration_m: 0.001
+  max_joint_limit_overshoot_rad: 0.002
+  on_fault: freeze physics, latch the fault, reject motion with UNIT_FAULT (-9)
+
+control:
+  # Setpoints advance every physics step; the backend holds them in between.
+  trace_hz: 25
+  teleop_queue_capacity: 500
+  # Teleop playback follows the client's push pacing (wall-clock gaps between
+  # pushes, replayed in simulated time); a gap longer than teleop_max_gap_s, or
+  # the first point, uses the default period. The tracker gain only removes
+  # residual error; joint velocity/acceleration limits always apply.
+  teleop_default_period_s: 0.04
+  teleop_max_gap_s: 0.2
+  teleop_track_gain_per_s: 20.0
+  arrival_tolerance_rad: 0.008
+  still_velocity_rad_s: 0.02
+  stall_timeout_s: 10.0

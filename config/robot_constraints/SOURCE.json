@@ -1,0 +1,27 @@
+{
+  "source_host": "GPU workstation (RTX 4090)",
+  "source_directory": "robot_simulation/Rviz/src/franzi_moveit_config/config",
+  "copied_on": "2026-10-24",
+  "sha256": {
+    "joint_limits.yaml": "881dc4adcc6da9ad093488cf468bc4fa37e220e6dd5479d4e00b1740c33d2859",
+    "wheel_robot_4.0.srdf": "dd518d4ea9229b18fb2e05dede7e787b10fc1610d743a8165f21c9dbf4fc7889"
+  },
+  "verified_joint_limits": 24,
+  "srdf_groups": [
+    "body",
+    "head",
+    "body_head",
+    "left_arm",
+    "right_arm",
+    "both_arms",
+    "left_gripper",
+    "right_gripper"
+  ],
+  "disabled_collision_pairs": 37,
+  "extra_moveit_frame": [
+    "moveit_root"
+  ],
+  "verification": "SHA256 matches remote files; YAML/XML parsed; joint and link names checked against local source URDF",
+  "hardware_validation": "not verified: source YAML explicitly marks limits as conservative planning-only",
+  "runtime_application": "reference files only; MuJoCo controller and contact masks unchanged"
+}

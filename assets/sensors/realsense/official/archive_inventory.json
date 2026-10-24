@@ -1,0 +1,80 @@
+{
+  "source_url": "https://dev.realsenseai.com/download/41950",
+  "archive_bytes": 15041868,
+  "archive_stored_locally": false,
+  "extraction": "Only D405 and D435 extracted using HTTP byte ranges; CRC32 verified against ZIP central directory",
+  "entries": [
+    {
+      "name": "D405_Solid.SLDPRT",
+      "compressed_size": 385592,
+      "size": 394098,
+      "crc32": 2807636752,
+      "method": 8,
+      "local_offset": 0
+    },
+    {
+      "name": "D415_Solid.SLDPRT",
+      "compressed_size": 2014525,
+      "size": 2030998,
+      "crc32": 2686116166,
+      "method": 8,
+      "local_offset": 385639
+    },
+    {
+      "name": "D435_Solid.SLDPRT",
+      "compressed_size": 1756880,
+      "size": 1771857,
+      "crc32": 570324454,
+      "method": 8,
+      "local_offset": 2400211
+    },
+    {
+      "name": "D435f_Solid.SLDPRT",
+      "compressed_size": 1753970,
+      "size": 1768147,
+      "crc32": 91985419,
+      "method": 8,
+      "local_offset": 4157138
+    },
+    {
+      "name": "D435i_Solid.SLDPRT",
+      "compressed_size": 1697956,
+      "size": 1712243,
+      "crc32": 2816830039,
+      "method": 8,
+      "local_offset": 5911156
+    },
+    {
+      "name": "D455_Solid.SLDPRT",
+      "compressed_size": 1903353,
+      "size": 1908169,
+      "crc32": 864433098,
+      "method": 8,
+      "local_offset": 7609160
+    },
+    {
+      "name": "D455f_Solid.SLDPRT",
+      "compressed_size": 1856084,
+      "size": 1861571,
+      "crc32": 3823325398,
+      "method": 8,
+      "local_offset": 9512560
+    },
+    {
+      "name": "D456_Solid.SLDPRT",
+      "compressed_size": 2187229,
+      "size": 2193989,
+      "crc32": 2123888413,
+      "method": 8,
+      "local_offset": 11368692
+    },
+    {
+      "name": "D457_Solid.SLDPRT",
+      "compressed_size": 1485261,
+      "size": 1491343,
+      "crc32": 258693219,
+      "method": 8,
+      "local_offset": 13555968
+    }
+  ]
+}

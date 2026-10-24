@@ -1,0 +1,2090 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="wheel_robot_4.0">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="-0.039196 0.0031755 0.036044"
+        rpy="0 0 0" />
+      <mass
+        value="61.5" />
+      <inertia
+        ixx="1.8193"
+        ixy="0.042006"
+        ixz="0.16837"
+        iyy="1.3486"
+        iyz="0.024339"
+        izz="2.6901" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="calf_Link">
+    <inertial>
+      <origin
+        xyz="-1.093E-05 0.0012888 0.15089"
+        rpy="0 0 0" />
+      <mass
+        value="16" />
+      <inertia
+        ixx="0.28197"
+        ixy="-1.89E-06"
+        ixz="0.00024604"
+        iyy="0.29762"
+        iyz="-7.346E-05"
+        izz="0.084165" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/calf_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/calf_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="calf_pitch_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0.24785"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="calf_Link" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-1.2566"
+      upper="0.52"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="thigh_Link">
+    <inertial>
+      <origin
+        xyz="-0.0089016 0.0018681 0.18956"
+        rpy="0 0 0" />
+      <mass
+        value="11" />
+      <inertia
+        ixx="0.24124"
+        ixy="0.00021549"
+        ixz="0.007479"
+        iyy="0.18696"
+        iyz="0.0029216"
+        izz="0.11623" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/thigh_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/thigh_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="thigh_pitch_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0.3"
+      rpy="0 0 0" />
+    <parent
+      link="calf_Link" />
+    <child
+      link="thigh_Link" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="0"
+      upper="2.56"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="waist_Link">
+    <inertial>
+      <origin
+        xyz="2.979E-05 -0.0027717 -0.0098953"
+        rpy="0 0 0" />
+      <mass
+        value="5" />
+      <inertia
+        ixx="0.0180695"
+        ixy="4.7E-07"
+        ixz="8.65E-06"
+        iyy="0.02313139"
+        iyz="-0.00013516"
+        izz="0.02125308" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/waist_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/waist_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="waist_pitch_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0.35"
+      rpy="0 0 0" />
+    <parent
+      link="thigh_Link" />
+    <child
+      link="waist_Link" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-0.5235"
+      upper="0.5235"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="torso_Link">
+    <inertial>
+      <origin
+        xyz="0.01102 -2.3828E-05 0.25382"
+        rpy="0 0 0" />
+      <mass
+        value="18.35" />
+      <inertia
+        ixx="0.70815"
+        ixy="-9.08E-06"
+        ixz="-0.030137"
+        iyy="0.56957"
+        iyz="4.405E-05"
+        izz="0.34257" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/torso_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/torso_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="waist_yaw_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0.0807"
+      rpy="0 0 0" />
+    <parent
+      link="waist_Link" />
+    <child
+      link="torso_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="head_yaw_Link">
+    <inertial>
+      <origin
+        xyz="0.00036239 -0.0041487 0.043435"
+        rpy="0 0 0" />
+      <mass
+        value="0.35" />
+      <inertia
+        ixx="0.00046072"
+        ixy="3.5E-07"
+        ixz="-6.1E-06"
+        iyy="0.00030358"
+        iyz="4.84E-06"
+        izz="0.00044763" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/head_yaw_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/head_yaw_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="head_yaw_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0.461"
+      rpy="0 0 0" />
+    <parent
+      link="torso_Link" />
+    <child
+      link="head_yaw_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="head_pitch_Link">
+    <inertial>
+      <origin
+        xyz="0.019983 -0.00029553 0.11286"
+        rpy="0 0 0" />
+      <mass
+        value="1.3" />
+      <inertia
+        ixx="0.0093684"
+        ixy="8.59E-06"
+        ixz="-0.00087158"
+        iyy="0.010546"
+        iyz="4.178E-05"
+        izz="0.0074017" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/head_pitch_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/head_pitch_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="head_pitch_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0.063"
+      rpy="0 0 0" />
+    <parent
+      link="head_yaw_Link" />
+    <child
+      link="head_pitch_Link" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-0.5235"
+      upper="0.5235"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="head_d435_Link">
+    <inertial>
+      <origin
+        xyz="0.058585 -0.016645 -0.022112"
+        rpy="0 0 0" />
+      <mass
+        value="0.1" />
+      <inertia
+        ixx="0.00012349"
+        ixy="-2.17E-06"
+        ixz="-7.363E-05"
+        iyy="0.00043436"
+        iyz="4.6E-07"
+        izz="0.00041989" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/head_d435_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/head_d435_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="head_d435_joint"
+    type="fixed">
+    <origin
+      xyz="0.092208 0.0175 0.15141"
+      rpy="-3.1416 1.2217 3.1416" />
+    <parent
+      link="head_pitch_Link" />
+    <child
+      link="head_d435_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="left_shoulder_pitch_Link">
+    <inertial>
+      <origin
+        xyz="0.0012801 0.062463 1.5281E-06"
+        rpy="0 0 0" />
+      <mass
+        value="1.56" />
+      <inertia
+        ixx="0.0019971"
+        ixy="2.095E-05"
+        ixz="0"
+        iyy="0.0015122"
+        iyz="-3E-08"
+        izz="0.0020202" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/left_shoulder_pitch_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/left_shoulder_pitch_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_shoulder_pitch_joint"
+    type="revolute">
+    <origin
+      xyz="0 0.166 0.374"
+      rpy="0 0 0" />
+    <parent
+      link="torso_Link" />
+    <child
+      link="left_shoulder_pitch_Link" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-3.489"
+      upper="2.617"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="left_shoulder_roll_Link">
+    <inertial>
+      <origin
+        xyz="0.0066589 0.00556 -0.0599"
+        rpy="0 0 0" />
+      <mass
+        value="1.6" />
+      <inertia
+        ixx="0.0037226"
+        ixy="-5.28E-05"
+        ixz="0.0007199"
+        iyy="0.0051554"
+        iyz="-0.00012249"
+        izz="0.0028701" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/left_shoulder_roll_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/left_shoulder_roll_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_shoulder_roll_joint"
+    type="revolute">
+    <origin
+      xyz="0 0.0725 0"
+      rpy="0 0 0" />
+    <parent
+      link="left_shoulder_pitch_Link" />
+    <child
+      link="left_shoulder_roll_Link" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      lower="-0.52"
+      upper="3.14"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="left_shoulder_yaw_Link">
+    <inertial>
+      <origin
+        xyz="0.0052548 2.5172E-06 -0.086479"
+        rpy="0 0 0" />
+      <mass
+        value="1.43" />
+      <inertia
+        ixx="0.0048123"
+        ixy="-7E-08"
+        ixz="-0.00057088"
+        iyy="0.004981"
+        iyz="-8.4E-07"
+        izz="0.0013655" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/left_shoulder_yaw_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/left_shoulder_yaw_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_shoulder_yaw_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 -0.118"
+      rpy="0 0 0" />
+    <parent
+      link="left_shoulder_roll_Link" />
+    <child
+      link="left_shoulder_yaw_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-2.97"
+      upper="2.97"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="left_elbow_pitch_Link">
+    <inertial>
+      <origin
+        xyz="-0.01882 0.0031393 -0.06158"
+        rpy="0 0 0" />
+      <mass
+        value="1.54" />
+      <inertia
+        ixx="0.0029625"
+        ixy="9.505E-05"
+        ixz="8.653E-05"
+        iyy="0.0026547"
+        iyz="0.00029065"
+        izz="0.0017735" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/left_elbow_pitch_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/left_elbow_pitch_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_elbow_pitch_joint"
+    type="revolute">
+    <origin
+      xyz="0.017 0 -0.145"
+      rpy="0 0 0" />
+    <parent
+      link="left_shoulder_yaw_Link" />
+    <child
+      link="left_elbow_pitch_Link" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-2.62"
+      upper="0.13"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="left_wrist_yaw_Link">
+    <inertial>
+      <origin
+        xyz="-2.128E-06 -3.3632E-05 -0.056468"
+        rpy="0 0 0" />
+      <mass
+        value="1" />
+      <inertia
+        ixx="0.0025948"
+        ixy="-6E-08"
+        ixz="-9.2E-07"
+        iyy="0.002418"
+        iyz="-9.49E-06"
+        izz="0.00097841" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/left_wrist_yaw_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/left_wrist_yaw_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_wrist_yaw_joint"
+    type="revolute">
+    <origin
+      xyz="-0.017 0 -0.1262"
+      rpy="0 0 0" />
+    <parent
+      link="left_elbow_pitch_Link" />
+    <child
+      link="left_wrist_yaw_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-2.97"
+      upper="2.97"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="left_wrist_pitch_Link">
+    <inertial>
+      <origin
+        xyz="-0.0010026 -0.0011829 0.011382"
+        rpy="0 0 0" />
+      <mass
+        value="0.76" />
+      <inertia
+        ixx="0.00067253"
+        ixy="-1E-07"
+        ixz="8.3E-06"
+        iyy="0.00068203"
+        iyz="-2.45E-06"
+        izz="0.00046634" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/left_wrist_pitch_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/left_wrist_pitch_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_wrist_pitch_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 -0.1658"
+      rpy="0 0 0" />
+    <parent
+      link="left_wrist_yaw_Link" />
+    <child
+      link="left_wrist_pitch_Link" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-1.05"
+      upper="1.05"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="left_wrist_roll_Link">
+    <inertial>
+      <origin
+        xyz="-0.021687 0.0031118 -0.1166"
+        rpy="0 0 0" />
+      <mass
+        value="1.5" />
+      <inertia
+        ixx="0.0080361"
+        ixy="-3.988E-05"
+        ixz="0.00119"
+        iyy="0.0097606"
+        iyz="0.00010473"
+        izz="0.0028412" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/left_wrist_roll_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/left_wrist_roll_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_wrist_roll_joint"
+    type="revolute">
+    <origin
+      xyz="0.0303 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="left_wrist_pitch_Link" />
+    <child
+      link="left_wrist_roll_Link" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      lower="-1.57"
+      upper="1.57"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="leftfinger1_Link">
+    <inertial>
+      <origin
+        xyz="-0.0047305 0.00325 -0.011991"
+        rpy="0 0 0" />
+      <mass
+        value="0.1" />
+      <inertia
+        ixx="1.104E-05"
+        ixy="0"
+        ixz="-5E-08"
+        iyy="8.66E-06"
+        iyz="0"
+        izz="4.22E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/leftfinger1_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/leftfinger1_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="leftfinger1_joint"
+    type="prismatic">
+    <origin
+      xyz="-0.07795 -0.005 -0.22904"
+      rpy="0 0 0" />
+    <parent
+      link="left_wrist_roll_Link" />
+    <child
+      link="leftfinger1_Link" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      lower="0"
+      upper="0.0475"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="leftfinger2_Link">
+    <inertial>
+      <origin
+        xyz="0.0047305 0.00325 -0.011991"
+        rpy="0 0 0" />
+      <mass
+        value="0.1" />
+      <inertia
+        ixx="1.104E-05"
+        ixy="0"
+        ixz="5E-08"
+        iyy="8.66E-06"
+        iyz="0"
+        izz="4.22E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/leftfinger2_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/leftfinger2_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="leftfinger2_joint"
+    type="prismatic">
+    <origin
+      xyz="0.01705 -0.005 -0.22904"
+      rpy="0 0 0" />
+    <parent
+      link="left_wrist_roll_Link" />
+    <child
+      link="leftfinger2_Link" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      lower="-0.0475"
+      upper="0"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="left_wrist_d405_Link">
+    <inertial>
+      <origin
+        xyz="0 0 -0.011485"
+        rpy="0 0 0" />
+      <mass
+        value="0.3" />
+      <inertia
+        ixx="5.649E-05"
+        ixy="0"
+        ixz="0"
+        iyy="5.643E-05"
+        iyz="0"
+        izz="8.648E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/left_wrist_d405_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79608 0.82353 0.93725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/left_wrist_d405_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_wrist_d405_joint"
+    type="fixed">
+    <origin
+      xyz="-0.0301 0.057975 -0.13418"
+      rpy="3.1416 0 0" />
+    <parent
+      link="left_wrist_roll_Link" />
+    <child
+      link="left_wrist_d405_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="right_shoulder_pitch_Link">
+    <inertial>
+      <origin
+        xyz="0.0012796 -0.062462 1.35E-06"
+        rpy="0 0 0" />
+      <mass
+        value="1.56" />
+      <inertia
+        ixx="0.0019972"
+        ixy="-2.098E-05"
+        ixz="2E-08"
+        iyy="0.0015122"
+        iyz="0"
+        izz="0.0020202" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/right_shoulder_pitch_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/right_shoulder_pitch_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_shoulder_pitch_joint"
+    type="revolute">
+    <origin
+      xyz="0 -0.166 0.374"
+      rpy="0 0 0" />
+    <parent
+      link="torso_Link" />
+    <child
+      link="right_shoulder_pitch_Link" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-3.489"
+      upper="2.617"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="right_shoulder_roll_Link">
+    <inertial>
+      <origin
+        xyz="0.0066625 -0.0055601 -0.059897"
+        rpy="0 0 0" />
+      <mass
+        value="1.6" />
+      <inertia
+        ixx="0.00372242"
+        ixy="5.255E-05"
+        ixz="0.00072008"
+        iyy="0.00515511"
+        iyz="0.00012259"
+        izz="0.00287017" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/right_shoulder_roll_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/right_shoulder_roll_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_shoulder_roll_joint"
+    type="revolute">
+    <origin
+      xyz="0 -0.0725 0"
+      rpy="0 0 0" />
+    <parent
+      link="right_shoulder_pitch_Link" />
+    <child
+      link="right_shoulder_roll_Link" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      lower="-3.14"
+      upper="0.52"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="right_shoulder_yaw_Link">
+    <inertial>
+      <origin
+        xyz="0.0052547 -2.5343E-06 -0.086479"
+        rpy="0 0 0" />
+      <mass
+        value="1.43" />
+      <inertia
+        ixx="0.00481227"
+        ixy="5E-08"
+        ixz="-0.00057088"
+        iyy="0.00498095"
+        iyz="8.2E-07"
+        izz="0.00136551" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/right_shoulder_yaw_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/right_shoulder_yaw_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_shoulder_yaw_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 -0.118"
+      rpy="0 0 0" />
+    <parent
+      link="right_shoulder_roll_Link" />
+    <child
+      link="right_shoulder_yaw_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-2.97"
+      upper="2.97"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="right_elbow_pitch_Link">
+    <inertial>
+      <origin
+        xyz="-0.018819 -0.0031387 -0.061581"
+        rpy="0 0 0" />
+      <mass
+        value="1.54" />
+      <inertia
+        ixx="0.0029626"
+        ixy="-9.505E-05"
+        ixz="8.652E-05"
+        iyy="0.0026547"
+        iyz="-0.00029061"
+        izz="0.0017735" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/right_elbow_pitch_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/right_elbow_pitch_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_elbow_pitch_joint"
+    type="revolute">
+    <origin
+      xyz="0.017 0 -0.145"
+      rpy="0 0 0" />
+    <parent
+      link="right_shoulder_yaw_Link" />
+    <child
+      link="right_elbow_pitch_Link" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-2.62"
+      upper="0.13"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="right_wrist_yaw_Link">
+    <inertial>
+      <origin
+        xyz="-2.77E-06 3.303E-05 -0.056465"
+        rpy="0 0 0" />
+      <mass
+        value="1" />
+      <inertia
+        ixx="0.0025947"
+        ixy="5E-08"
+        ixz="-9.3E-07"
+        iyy="0.002418"
+        iyz="9.48E-06"
+        izz="0.00097842" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/right_wrist_yaw_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/right_wrist_yaw_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_wrist_yaw_joint"
+    type="revolute">
+    <origin
+      xyz="-0.017 0 -0.1262"
+      rpy="0 0 0" />
+    <parent
+      link="right_elbow_pitch_Link" />
+    <child
+      link="right_wrist_yaw_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-2.97"
+      upper="2.97"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="right_wrist_pitch_Link">
+    <inertial>
+      <origin
+        xyz="-0.0010025 0.0011828 0.011382"
+        rpy="0 0 0" />
+      <mass
+        value="0.76" />
+      <inertia
+        ixx="0.00067253"
+        ixy="1E-07"
+        ixz="8.3E-06"
+        iyy="0.00068203"
+        iyz="2.44E-06"
+        izz="0.00046634" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/right_wrist_pitch_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/right_wrist_pitch_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_wrist_pitch_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 -0.1658"
+      rpy="0 0 0" />
+    <parent
+      link="right_wrist_yaw_Link" />
+    <child
+      link="right_wrist_pitch_Link" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-1.05"
+      upper="1.05"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="right_wrist_roll_Link">
+    <inertial>
+      <origin
+        xyz="-0.023095 -0.012295 -0.11762"
+        rpy="0 0 0" />
+      <mass
+        value="1.5" />
+      <inertia
+        ixx="0.0011746"
+        ixy="2.066E-05"
+        ixz="0.00015951"
+        iyy="0.0013054"
+        iyz="-2.74E-06"
+        izz="0.00049085" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/right_wrist_roll_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/right_wrist_roll_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_wrist_roll_joint"
+    type="revolute">
+    <origin
+      xyz="0.0303 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="right_wrist_pitch_Link" />
+    <child
+      link="right_wrist_roll_Link" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      lower="-1.57"
+      upper="1.57"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="rightfinger1_Link">
+    <inertial>
+      <origin
+        xyz="-0.0047305 -0.00325 -0.011991"
+        rpy="0 0 0" />
+      <mass
+        value="0.1" />
+      <inertia
+        ixx="1.104E-05"
+        ixy="0"
+        ixz="-5E-08"
+        iyy="8.66E-06"
+        iyz="0"
+        izz="4.22E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/rightfinger1_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/rightfinger1_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="rightfinger1_joint"
+    type="prismatic">
+    <origin
+      xyz="-0.07795 0.005 -0.22904"
+      rpy="0 0 0" />
+    <parent
+      link="right_wrist_roll_Link" />
+    <child
+      link="rightfinger1_Link" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      lower="0"
+      upper="0.0475"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="rightfinger2_Link">
+    <inertial>
+      <origin
+        xyz="0.0047305 -0.00325 -0.011991"
+        rpy="0 0 0" />
+      <mass
+        value="0.1" />
+      <inertia
+        ixx="1.104E-05"
+        ixy="0"
+        ixz="5E-08"
+        iyy="8.66E-06"
+        iyz="0"
+        izz="4.22E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/rightfinger2_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/rightfinger2_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="rightfinger2_joint"
+    type="prismatic">
+    <origin
+      xyz="0.01705 0.005 -0.22904"
+      rpy="0 0 0" />
+    <parent
+      link="right_wrist_roll_Link" />
+    <child
+      link="rightfinger2_Link" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      lower="-0.0475"
+      upper="0"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="right_wrist_d405_Link">
+    <inertial>
+      <origin
+        xyz="0 0 -0.011485"
+        rpy="0 0 0" />
+      <mass
+        value="0.3" />
+      <inertia
+        ixx="5.649E-05"
+        ixy="0"
+        ixz="0"
+        iyy="5.643E-05"
+        iyz="0"
+        izz="8.648E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/right_wrist_d405_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79608 0.82353 0.93725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/right_wrist_d405_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_wrist_d405_joint"
+    type="fixed">
+    <origin
+      xyz="-0.0301 -0.057975 -0.13418"
+      rpy="3.1416 0 0" />
+    <parent
+      link="right_wrist_roll_Link" />
+    <child
+      link="right_wrist_d405_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="body_d435_Link">
+    <inertial>
+      <origin
+        xyz="-4.5863E-06 -0.016445 -0.0079779"
+        rpy="0 0 0" />
+      <mass
+        value="0.1" />
+      <inertia
+        ixx="6.254E-05"
+        ixy="0"
+        ixz="0"
+        iyy="9.89E-06"
+        iyz="-8.3E-07"
+        izz="6.243E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/body_d435_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/body_d435_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="body_d435_joint"
+    type="fixed">
+    <origin
+      xyz="0.10174 0.0175 0.23507"
+      rpy="3.1416 0.87128 3.1416" />
+    <parent
+      link="torso_Link" />
+    <child
+      link="body_d435_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="left_front_steering_Link">
+    <inertial>
+      <origin
+        xyz="0 0.024717 -0.037742"
+        rpy="0 0 0" />
+      <mass
+        value="1.32" />
+      <inertia
+        ixx="0.003547"
+        ixy="0"
+        ixz="0"
+        iyy="0.0031556"
+        iyz="-0.0010889"
+        izz="0.0022099" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/left_front_steering_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79608 0.82353 0.93725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/left_front_steering_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_front_steering_joint"
+    type="revolute">
+    <origin
+      xyz="0.13 0.213 0.1114"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="left_front_steering_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="left_front_wheel_Link">
+    <inertial>
+      <origin
+        xyz="4.7E-06 -0.0012211 1.11E-06"
+        rpy="0 0 0" />
+      <mass
+        value="4.85" />
+      <inertia
+        ixx="0.011629"
+        ixy="8.8E-07"
+        ixz="-3E-08"
+        iyy="0.017191"
+        iyz="2.1E-07"
+        izz="0.011629" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/left_front_wheel_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/left_front_wheel_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_front_wheel_joint"
+    type="continuous">
+    <origin
+      xyz="0 0 -0.116"
+      rpy="0 0 0" />
+    <parent
+      link="left_front_steering_Link" />
+    <child
+      link="left_front_wheel_Link" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  <link
+    name="right_front_steering_Link">
+    <inertial>
+      <origin
+        xyz="0 -0.024718 -0.037742"
+        rpy="0 0 0" />
+      <mass
+        value="1.32" />
+      <inertia
+        ixx="0.003547"
+        ixy="0"
+        ixz="0"
+        iyy="0.0031556"
+        iyz="0.0010889"
+        izz="0.0022099" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/right_front_steering_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79608 0.82353 0.93725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/right_front_steering_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_front_steering_joint"
+    type="revolute">
+    <origin
+      xyz="0.13 -0.213 0.1114"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="right_front_steering_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="right_front_wheel_Link">
+    <inertial>
+      <origin
+        xyz="0 0.0012211 4.8271E-06"
+        rpy="0 0 0" />
+      <mass
+        value="4.85" />
+      <inertia
+        ixx="0.011629"
+        ixy="-2E-08"
+        ixz="-3E-08"
+        iyy="0.017191"
+        iyz="-9.1E-07"
+        izz="0.011629" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/right_front_wheel_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/right_front_wheel_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_front_wheel_joint"
+    type="continuous">
+    <origin
+      xyz="0 0 -0.116"
+      rpy="0 0 0" />
+    <parent
+      link="right_front_steering_Link" />
+    <child
+      link="right_front_wheel_Link" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  <link
+    name="rear_steering_Link">
+    <inertial>
+      <origin
+        xyz="6.6536E-09 0.024108 -0.035583"
+        rpy="0 0 0" />
+      <mass
+        value="1.32" />
+      <inertia
+        ixx="0.0033137"
+        ixy="0"
+        ixz="0"
+        iyy="0.0029204"
+        iyz="-0.0010295"
+        izz="0.0022176" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/rear_steering_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79608 0.82353 0.93725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/rear_steering_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="rear_steering_joint"
+    type="revolute">
+    <origin
+      xyz="-0.255 0 0.1054"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="rear_steering_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="rear_wheel_Link">
+    <inertial>
+      <origin
+        xyz="4.83E-06 -0.0012211 0"
+        rpy="0 0 0" />
+      <mass
+        value="4.85" />
+      <inertia
+        ixx="0.011629"
+        ixy="9.1E-07"
+        ixz="-3E-08"
+        iyy="0.017191"
+        iyz="0"
+        izz="0.011629" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/rear_wheel_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/rear_wheel_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="rear_wheel_joint"
+    type="continuous">
+    <origin
+      xyz="0 0 -0.11"
+      rpy="0 0 0" />
+    <parent
+      link="rear_steering_Link" />
+    <child
+      link="rear_wheel_Link" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  <link
+    name="MID360_Link">
+    <inertial>
+      <origin
+        xyz="-0.00013968 -0.00014905 -0.012336"
+        rpy="0 0 0" />
+      <mass
+        value="0.5" />
+      <inertia
+        ixx="0.00024772"
+        ixy="9.37E-06"
+        ixz="-8E-08"
+        iyy="0.00024768"
+        iyz="1E-08"
+        izz="0.00025527" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/MID360_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/MID360_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="MID360_joint"
+    type="fixed">
+    <origin
+      xyz="0.0765 0.1954 0.24623"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="MID360_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="2Dlidar_Link">
+    <inertial>
+      <origin
+        xyz="-0.00052689 0.00052689 -0.012273"
+        rpy="0 0 0" />
+      <mass
+        value="0.5" />
+      <inertia
+        ixx="0.00024004"
+        ixy="-3.02E-06"
+        ixz="4.01E-06"
+        iyy="0.00024004"
+        iyz="-4.01E-06"
+        izz="0.00045907" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/2Dlidar_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://franzi_description/meshes/2Dlidar_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="2Dlidar_joint"
+    type="fixed">
+    <origin
+      xyz="-0.22 -0.19 0.2474"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="2Dlidar_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+</robot>

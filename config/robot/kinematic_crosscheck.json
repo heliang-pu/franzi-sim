@@ -1,0 +1,1397 @@
+{
+  "inputs": {
+    "urdf": {
+      "path": "assets/franzi_source/wheel_robot_4.0.urdf",
+      "sha256": "12787a2aaa067a294a23c60ce0c70a1efcb48b3a6a15920f8e96c73e87643656"
+    },
+    "machine_params": {
+      "path": "sdk_review/controller_image_probe_v2/files/image/inocfg/inbc_for_humanoid/machine_params.json",
+      "sha256": "c894ef155c3e6e7b2150c026a6e3e87f039a593d22f28782da1ce5cac4f2cd90"
+    },
+    "sysctrl_params": {
+      "path": "sdk_review/controller_image_probe_v2/files/image/inocfg/inbc_for_humanoid/sysctrl_params.json",
+      "sha256": "caaedf0d9208969657929df90523f41ef799d7bedfbd6180b25f391b7c136761"
+    },
+    "waist_config": {
+      "path": "sdk_review/controller_image_probe_v2/files/image/inocfg/inbc_for_humanoid/waist_config.json",
+      "sha256": "e50321c6a7d3373baa85e5c4f35209ae9b5810bbaa9d8f5458e147e103808f5d"
+    }
+  },
+  "scope": "archive files versus source URDF; no live controller readback",
+  "arms": {
+    "left": {
+      "chain": [
+        "left_shoulder_pitch_joint",
+        "left_shoulder_roll_joint",
+        "left_shoulder_yaw_joint",
+        "left_elbow_pitch_joint",
+        "left_wrist_yaw_joint",
+        "left_wrist_pitch_joint",
+        "left_wrist_roll_joint"
+      ],
+      "mdh_convention_tested": "Craig modified DH, theta_i = q_i + theta_offset_i",
+      "sign_assignments_searched": 128,
+      "exact_fk_solutions": 14,
+      "exact_solutions": [
+        {
+          "signs": [
+            -1,
+            1,
+            -1,
+            -1,
+            -1,
+            -1,
+            1
+          ],
+          "offsets_deg": [
+            0.0,
+            0.0,
+            -0.0,
+            0.0,
+            -0.0,
+            -0.0,
+            0.0
+          ],
+          "rms_m": 1.7172352561054568e-15,
+          "range_consistent": true,
+          "worst_range_endpoint_difference_deg": 9.943
+        },
+        {
+          "signs": [
+            -1,
+            1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1
+          ],
+          "offsets_deg": [
+            0.0,
+            0.0,
+            -0.0,
+            0.0,
+            0.0,
+            180.0,
+            0.0
+          ],
+          "rms_m": 8.444268208957348e-17,
+          "range_consistent": false,
+          "worst_range_endpoint_difference_deg": 180.161
+        },
+        {
+          "signs": [
+            1,
+            -1,
+            -1,
+            -1,
+            -1,
+            1,
+            1
+          ],
+          "offsets_deg": [
+            0.0,
+            -0.0,
+            180.0,
+            0.0,
+            180.0,
+            180.0,
+            0.0
+          ],
+          "rms_m": 2.3396806059797855e-09,
+          "range_consistent": false,
+          "worst_range_endpoint_difference_deg": 180.168
+        },
+        {
+          "signs": [
+            1,
+            -1,
+            -1,
+            -1,
+            -1,
+            1,
+            -1
+          ],
+          "offsets_deg": [
+            0.0,
+            0.0,
+            180.0,
+            -0.0,
+            180.0,
+            0.0,
+            0.0
+          ],
+          "rms_m": 1.1350927056502081e-11,
+          "range_consistent": false,
+          "worst_range_endpoint_difference_deg": 180.168
+        },
+        {
+          "signs": [
+            1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1
+          ],
+          "offsets_deg": [
+            0.0,
+            0.0,
+            180.0,
+            0.0,
+            0.0,
+            180.0,
+            0.0
+          ],
+          "rms_m": 9.580998340387223e-17,
+          "range_consistent": false,
+          "worst_range_endpoint_difference_deg": 180.168
+        },
+        {
+          "signs": [
+            -1,
+            1,
+            -1,
+            -1,
+            -1,
+            1,
+            -1
+          ],
+          "offsets_deg": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            180.0,
+            0.0,
+            0.0
+          ],
+          "rms_m": 5.321163179431613e-17,
+          "range_consistent": false,
+          "worst_range_endpoint_difference_deg": 180.168
+        },
+        {
+          "signs": [
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            1,
+            1
+          ],
+          "offsets_deg": [
+            0.0,
+            180.0,
+            180.0,
+            0.0,
+            180.0,
+            180.0,
+            0.0
+          ],
+          "rms_m": 1.3454003328141912e-09,
+          "range_consistent": false,
+          "worst_range_endpoint_difference_deg": 180.168
+        },
+        {
+          "signs": [
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            1,
+            -1
+          ],
+          "offsets_deg": [
+            0.0,
+            180.0,
+            180.0,
+            -0.0,
+            180.0,
+            -0.0,
+            0.0
+          ],
+          "rms_m": 3.906519481602371e-12,
+          "range_consistent": false,
+          "worst_range_endpoint_difference_deg": 180.168
+        },
+        {
+          "signs": [
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            1
+          ],
+          "offsets_deg": [
+            0.0,
+            180.0,
+            180.0,
+            0.0,
+            0.0,
+            -0.0,
+            0.0
+          ],
+          "rms_m": 2.821291357483213e-16,
+          "range_consistent": false,
+          "worst_range_endpoint_difference_deg": 180.168
+        },
+        {
+          "signs": [
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1
+          ],
+          "offsets_deg": [
+            0.0,
+            180.0,
+            180.0,
+            0.0,
+            0.0,
+            180.0,
+            0.0
+          ],
+          "rms_m": 1.6687022191929385e-16,
+          "range_consistent": false,
+          "worst_range_endpoint_difference_deg": 180.168
+        },
+        {
+          "signs": [
+            1,
+            1,
+            -1,
+            -1,
+            -1,
+            1,
+            1
+          ],
+          "offsets_deg": [
+            0.0,
+            180.0,
+            -0.0,
+            0.0,
+            180.0,
+            180.0,
+            0.0
+          ],
+          "rms_m": 3.967033389755295e-11,
+          "range_consistent": false,
+          "worst_range_endpoint_difference_deg": 180.206
+        },
+        {
+          "signs": [
+            1,
+            1,
+            -1,
+            -1,
+            -1,
+            1,
+            -1
+          ],
+          "offsets_deg": [
+            0.0,
+            180.0,
+            0.0,
+            -0.0,
+            180.0,
+            -0.0,
+            0.0
+          ],
+          "rms_m": 8.926532804118243e-12,
+          "range_consistent": false,
+          "worst_range_endpoint_difference_deg": 180.206
+        },
+        {
+          "signs": [
+            1,
+            1,
+            -1,
+            -1,
+            -1,
+            -1,
+            1
+          ],
+          "offsets_deg": [
+            0.0,
+            180.0,
+            0.0,
+            0.0,
+            -0.0,
+            -0.0,
+            0.0
+          ],
+          "rms_m": 1.1312276512009759e-16,
+          "range_consistent": false,
+          "worst_range_endpoint_difference_deg": 180.206
+        },
+        {
+          "signs": [
+            1,
+            1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1
+          ],
+          "offsets_deg": [
+            0.0,
+            180.0,
+            -0.0,
+            -0.0,
+            0.0,
+            180.0,
+            0.0
+          ],
+          "rms_m": 1.893997884615871e-11,
+          "range_consistent": false,
+          "worst_range_endpoint_difference_deg": 180.206
+        }
+      ],
+      "standard_dh_best_rms_m": 0.07235924972883752,
+      "seconds": 222.6,
+      "status": "unique: FK exact up to a discrete family; archive ranges select one",
+      "selected": {
+        "signs": [
+          -1,
+          1,
+          -1,
+          -1,
+          -1,
+          -1,
+          1
+        ],
+        "offsets_rad": [
+          0.0,
+          0.0,
+          -0.0,
+          0.0,
+          -0.0,
+          -0.0,
+          0.0
+        ],
+        "validation": {
+          "samples": 500,
+          "max_position_error_m": 1.2863534048538412e-14,
+          "max_rotation_error_rad": 2.1172269791858184e-14
+        },
+        "ranges": [
+          {
+            "sim_range_mapped_to_sdk_deg": [
+              -149.943,
+              199.905
+            ],
+            "controller_range_deg": [
+              -140.0,
+              200.0
+            ],
+            "endpoint_difference_deg": [
+              9.943,
+              0.095
+            ],
+            "consistent": true
+          },
+          {
+            "sim_range_mapped_to_sdk_deg": [
+              -29.794,
+              179.909
+            ],
+            "controller_range_deg": [
+              -30.0,
+              180.0
+            ],
+            "endpoint_difference_deg": [
+              0.206,
+              0.091
+            ],
+            "consistent": true
+          },
+          {
+            "sim_range_mapped_to_sdk_deg": [
+              -170.168,
+              170.168
+            ],
+            "controller_range_deg": [
+              -170.0,
+              170.0
+            ],
+            "endpoint_difference_deg": [
+              0.168,
+              0.168
+            ],
+            "consistent": true
+          },
+          {
+            "sim_range_mapped_to_sdk_deg": [
+              -7.448,
+              150.115
+            ],
+            "controller_range_deg": [
+              -15.0,
+              148.0
+            ],
+            "endpoint_difference_deg": [
+              7.552,
+              2.115
+            ],
+            "consistent": true
+          },
+          {
+            "sim_range_mapped_to_sdk_deg": [
+              -170.168,
+              170.168
+            ],
+            "controller_range_deg": [
+              -170.0,
+              170.0
+            ],
+            "endpoint_difference_deg": [
+              0.168,
+              0.168
+            ],
+            "consistent": true
+          },
+          {
+            "sim_range_mapped_to_sdk_deg": [
+              -60.161,
+              60.161
+            ],
+            "controller_range_deg": [
+              -60.0,
+              60.0
+            ],
+            "endpoint_difference_deg": [
+              0.161,
+              0.161
+            ],
+            "consistent": true
+          },
+          {
+            "sim_range_mapped_to_sdk_deg": [
+              -89.954,
+              89.954
+            ],
+            "controller_range_deg": [
+              -90.0,
+              90.0
+            ],
+            "endpoint_difference_deg": [
+              0.046,
+              0.046
+            ],
+            "consistent": true
+          }
+        ],
+        "range_conflicts": [],
+        "runner_up_worst_endpoint_difference_deg": 180.161,
+        "frames": {
+          "mdh_base_in_parent": {
+            "R": [
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                -0.0,
+                0.0,
+                -1.0
+              ],
+              [
+                -1.0,
+                0.0,
+                0.0
+              ]
+            ],
+            "p_m": [
+              -0.0,
+              0.2385,
+              0.374
+            ]
+          },
+          "mdh_flange_in_child_link": {
+            "R": [
+              [
+                -0.0,
+                -0.0,
+                1.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                -1.0,
+                0.0,
+                -0.0
+              ]
+            ],
+            "p_m": [
+              -0.0303,
+              0.0,
+              -0.0
+            ]
+          }
+        },
+        "not_identifiable_by_fk": [
+          "left_shoulder_pitch_joint zero offset (absorbed by the base frame)",
+          "left_wrist_roll_joint zero offset (absorbed by the flange frame)"
+        ]
+      },
+      "persistent_mdh_equals_app_config_mdh": true
+    },
+    "right": {
+      "chain": [
+        "right_shoulder_pitch_joint",
+        "right_shoulder_roll_joint",
+        "right_shoulder_yaw_joint",
+        "right_elbow_pitch_joint",
+        "right_wrist_yaw_joint",
+        "right_wrist_pitch_joint",
+        "right_wrist_roll_joint"
+      ],
+      "mdh_convention_tested": "Craig modified DH, theta_i = q_i + theta_offset_i",
+      "sign_assignments_searched": 128,
+      "exact_fk_solutions": 14,
+      "exact_solutions": [
+        {
+          "signs": [
+            -1,
+            1,
+            -1,
+            -1,
+            -1,
+            -1,
+            1
+          ],
+          "offsets_deg": [
+            0.0,
+            -0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rms_m": 2.588051032771662e-16,
+          "range_consistent": true,
+          "worst_range_endpoint_difference_deg": 9.943
+        },
+        {
+          "signs": [
+            1,
+            1,
+            -1,
+            -1,
+            -1,
+            -1,
+            1
+          ],
+          "offsets_deg": [
+            0.0,
+            180.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rms_m": 6.599376398006963e-17,
+          "range_consistent": false,
+          "worst_range_endpoint_difference_deg": 180.091
+        },
+        {
+          "signs": [
+            1,
+            1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1
+          ],
+          "offsets_deg": [
+            0.0,
+            180.0,
+            -0.0,
+            -0.0,
+            0.0,
+            180.0,
+            0.0
+          ],
+          "rms_m": 1.8806618350976673e-11,
+          "range_consistent": false,
+          "worst_range_endpoint_difference_deg": 180.161
+        },
+        {
+          "signs": [
+            -1,
+            1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1
+          ],
+          "offsets_deg": [
+            0.0,
+            0.0,
+            0.0,
+            -0.0,
+            0.0,
+            180.0,
+            0.0
+          ],
+          "rms_m": 8.367045875486726e-17,
+          "range_consistent": false,
+          "worst_range_endpoint_difference_deg": 180.161
+        },
+        {
+          "signs": [
+            1,
+            1,
+            -1,
+            -1,
+            -1,
+            1,
+            1
+          ],
+          "offsets_deg": [
+            0.0,
+            180.0,
+            0.0,
+            0.0,
+            180.0,
+            180.0,
+            0.0
+          ],
+          "rms_m": 3.7162582940044e-09,
+          "range_consistent": false,
+          "worst_range_endpoint_difference_deg": 180.168
+        },
+        {
+          "signs": [
+            1,
+            1,
+            -1,
+            -1,
+            -1,
+            1,
+            -1
+          ],
+          "offsets_deg": [
+            0.0,
+            180.0,
+            0.0,
+            -0.0,
+            180.0,
+            -0.0,
+            0.0
+          ],
+          "rms_m": 1.8940663335748384e-11,
+          "range_consistent": false,
+          "worst_range_endpoint_difference_deg": 180.168
+        },
+        {
+          "signs": [
+            1,
+            -1,
+            -1,
+            -1,
+            -1,
+            1,
+            1
+          ],
+          "offsets_deg": [
+            0.0,
+            -0.0,
+            180.0,
+            0.0,
+            180.0,
+            180.0,
+            0.0
+          ],
+          "rms_m": 3.5025926057989526e-09,
+          "range_consistent": false,
+          "worst_range_endpoint_difference_deg": 180.168
+        },
+        {
+          "signs": [
+            1,
+            -1,
+            -1,
+            -1,
+            -1,
+            1,
+            -1
+          ],
+          "offsets_deg": [
+            0.0,
+            -0.0,
+            180.0,
+            0.0,
+            180.0,
+            0.0,
+            0.0
+          ],
+          "rms_m": 8.333811229738139e-17,
+          "range_consistent": false,
+          "worst_range_endpoint_difference_deg": 180.168
+        },
+        {
+          "signs": [
+            1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1
+          ],
+          "offsets_deg": [
+            0.0,
+            0.0,
+            180.0,
+            -0.0,
+            0.0,
+            180.0,
+            0.0
+          ],
+          "rms_m": 1.1127676804503975e-16,
+          "range_consistent": false,
+          "worst_range_endpoint_difference_deg": 180.168
+        },
+        {
+          "signs": [
+            -1,
+            1,
+            -1,
+            -1,
+            -1,
+            1,
+            -1
+          ],
+          "offsets_deg": [
+            0.0,
+            0.0,
+            0.0,
+            -0.0,
+            180.0,
+            0.0,
+            0.0
+          ],
+          "rms_m": 1.577531044490798e-14,
+          "range_consistent": false,
+          "worst_range_endpoint_difference_deg": 180.168
+        },
+        {
+          "signs": [
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            1,
+            1
+          ],
+          "offsets_deg": [
+            0.0,
+            180.0,
+            180.0,
+            0.0,
+            180.0,
+            180.0,
+            0.0
+          ],
+          "rms_m": 3.0734809293648843e-09,
+          "range_consistent": false,
+          "worst_range_endpoint_difference_deg": 330.206
+        },
+        {
+          "signs": [
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            1,
+            -1
+          ],
+          "offsets_deg": [
+            0.0,
+            180.0,
+            180.0,
+            -0.0,
+            180.0,
+            -0.0,
+            0.0
+          ],
+          "rms_m": 3.904488955654482e-12,
+          "range_consistent": false,
+          "worst_range_endpoint_difference_deg": 330.206
+        },
+        {
+          "signs": [
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            1
+          ],
+          "offsets_deg": [
+            0.0,
+            180.0,
+            180.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rms_m": 2.3813170410285273e-16,
+          "range_consistent": false,
+          "worst_range_endpoint_difference_deg": 330.206
+        },
+        {
+          "signs": [
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1
+          ],
+          "offsets_deg": [
+            0.0,
+            180.0,
+            180.0,
+            0.0,
+            -0.0,
+            180.0,
+            0.0
+          ],
+          "rms_m": 4.127884120275488e-16,
+          "range_consistent": false,
+          "worst_range_endpoint_difference_deg": 330.206
+        }
+      ],
+      "standard_dh_best_rms_m": 0.07235924975214347,
+      "seconds": 222.5,
+      "status": "unique: FK exact up to a discrete family; archive ranges select one",
+      "selected": {
+        "signs": [
+          -1,
+          1,
+          -1,
+          -1,
+          -1,
+          -1,
+          1
+        ],
+        "offsets_rad": [
+          0.0,
+          -0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "validation": {
+          "samples": 500,
+          "max_position_error_m": 1.7713624884240054e-15,
+          "max_rotation_error_rad": 3.2325896941245687e-15
+        },
+        "ranges": [
+          {
+            "sim_range_mapped_to_sdk_deg": [
+              -149.943,
+              199.905
+            ],
+            "controller_range_deg": [
+              -140.0,
+              200.0
+            ],
+            "endpoint_difference_deg": [
+              9.943,
+              0.095
+            ],
+            "consistent": true
+          },
+          {
+            "sim_range_mapped_to_sdk_deg": [
+              -179.909,
+              29.794
+            ],
+            "controller_range_deg": [
+              -180.0,
+              30.0
+            ],
+            "endpoint_difference_deg": [
+              0.091,
+              0.206
+            ],
+            "consistent": true
+          },
+          {
+            "sim_range_mapped_to_sdk_deg": [
+              -170.168,
+              170.168
+            ],
+            "controller_range_deg": [
+              -170.0,
+              170.0
+            ],
+            "endpoint_difference_deg": [
+              0.168,
+              0.168
+            ],
+            "consistent": true
+          },
+          {
+            "sim_range_mapped_to_sdk_deg": [
+              -7.448,
+              150.115
+            ],
+            "controller_range_deg": [
+              -15.0,
+              148.0
+            ],
+            "endpoint_difference_deg": [
+              7.552,
+              2.115
+            ],
+            "consistent": true
+          },
+          {
+            "sim_range_mapped_to_sdk_deg": [
+              -170.168,
+              170.168
+            ],
+            "controller_range_deg": [
+              -170.0,
+              170.0
+            ],
+            "endpoint_difference_deg": [
+              0.168,
+              0.168
+            ],
+            "consistent": true
+          },
+          {
+            "sim_range_mapped_to_sdk_deg": [
+              -60.161,
+              60.161
+            ],
+            "controller_range_deg": [
+              -60.0,
+              60.0
+            ],
+            "endpoint_difference_deg": [
+              0.161,
+              0.161
+            ],
+            "consistent": true
+          },
+          {
+            "sim_range_mapped_to_sdk_deg": [
+              -89.954,
+              89.954
+            ],
+            "controller_range_deg": [
+              -90.0,
+              90.0
+            ],
+            "endpoint_difference_deg": [
+              0.046,
+              0.046
+            ],
+            "consistent": true
+          }
+        ],
+        "range_conflicts": [],
+        "runner_up_worst_endpoint_difference_deg": 180.091,
+        "frames": {
+          "mdh_base_in_parent": {
+            "R": [
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                -1.0
+              ],
+              [
+                -1.0,
+                0.0,
+                -0.0
+              ]
+            ],
+            "p_m": [
+              -0.0,
+              -0.2385,
+              0.374
+            ]
+          },
+          "mdh_flange_in_child_link": {
+            "R": [
+              [
+                0.0,
+                0.0,
+                1.0
+              ],
+              [
+                0.0,
+                1.0,
+                -0.0
+              ],
+              [
+                -1.0,
+                0.0,
+                0.0
+              ]
+            ],
+            "p_m": [
+              -0.0303,
+              0.0,
+              -0.0
+            ]
+          }
+        },
+        "not_identifiable_by_fk": [
+          "right_shoulder_pitch_joint zero offset (absorbed by the base frame)",
+          "right_wrist_roll_joint zero offset (absorbed by the flange frame)"
+        ]
+      },
+      "persistent_mdh_equals_app_config_mdh": true
+    }
+  },
+  "waist": {
+    "chain": [
+      "calf_pitch_joint",
+      "thigh_pitch_joint",
+      "waist_pitch_joint",
+      "waist_yaw_joint"
+    ],
+    "mdh_convention_tested": "Craig modified DH, theta_i = q_i + theta_offset_i",
+    "sign_assignments_searched": 16,
+    "exact_fk_solutions": 4,
+    "exact_solutions": [
+      {
+        "signs": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "offsets_deg": [
+          0.0,
+          -0.0,
+          0.0,
+          0.0
+        ],
+        "rms_m": 4.921791284310467e-16,
+        "range_consistent": false,
+        "worst_range_endpoint_difference_deg": 45.006
+      },
+      {
+        "signs": [
+          -1,
+          -1,
+          -1,
+          1
+        ],
+        "offsets_deg": [
+          0.0,
+          0.0,
+          -0.0,
+          0.0
+        ],
+        "rms_m": 1.3128639607124931e-16,
+        "range_consistent": false,
+        "worst_range_endpoint_difference_deg": 147.0
+      },
+      {
+        "signs": [
+          1,
+          1,
+          1,
+          -1
+        ],
+        "offsets_deg": [
+          0.0,
+          0.0,
+          180.0,
+          0.0
+        ],
+        "rms_m": 9.091013070044678e-17,
+        "range_consistent": false,
+        "worst_range_endpoint_difference_deg": 225.006
+      },
+      {
+        "signs": [
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "offsets_deg": [
+          0.0,
+          0.0,
+          180.0,
+          0.0
+        ],
+        "rms_m": 3.858824733163896e-16,
+        "range_consistent": false,
+        "worst_range_endpoint_difference_deg": 225.006
+      }
+    ],
+    "standard_dh_best_rms_m": 0.08180511479669247,
+    "seconds": 11.2,
+    "status": "best range match (no exact solution fits every archive range; see selected.range_conflicts)",
+    "selected": {
+      "signs": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "offsets_rad": [
+        0.0,
+        -0.0,
+        0.0,
+        0.0
+      ],
+      "validation": {
+        "samples": 500,
+        "max_position_error_m": 1.813071795247537e-15,
+        "max_rotation_error_rad": 7.120928264881106e-16
+      },
+      "ranges": [
+        {
+          "sim_range_mapped_to_sdk_deg": [
+            -71.998,
+            29.794
+          ],
+          "controller_range_deg": [
+            -72.0,
+            30.0
+          ],
+          "endpoint_difference_deg": [
+            0.002,
+            0.206
+          ],
+          "consistent": true
+        },
+        {
+          "sim_range_mapped_to_sdk_deg": [
+            -0.0,
+            146.677
+          ],
+          "controller_range_deg": [
+            -10.0,
+            147.0
+          ],
+          "endpoint_difference_deg": [
+            10.0,
+            0.323
+          ],
+          "consistent": true
+        },
+        {
+          "sim_range_mapped_to_sdk_deg": [
+            -29.994,
+            29.994
+          ],
+          "controller_range_deg": [
+            -75.0,
+            30.0
+          ],
+          "endpoint_difference_deg": [
+            45.006,
+            0.006
+          ],
+          "consistent": false
+        },
+        {
+          "sim_range_mapped_to_sdk_deg": [
+            -179.909,
+            179.909
+          ],
+          "controller_range_deg": [
+            -180.0,
+            180.0
+          ],
+          "endpoint_difference_deg": [
+            0.091,
+            0.091
+          ],
+          "consistent": true
+        }
+      ],
+      "range_conflicts": [
+        "waist_pitch_joint"
+      ],
+      "runner_up_worst_endpoint_difference_deg": 147.0,
+      "frames": {
+        "mdh_base_in_parent": {
+          "R": [
+            [
+              -0.0,
+              1.0,
+              -0.0
+            ],
+            [
+              -0.0,
+              0.0,
+              1.0
+            ],
+            [
+              1.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "p_m": [
+            0.0,
+            0.0,
+            0.24785
+          ]
+        },
+        "mdh_flange_in_child_link": {
+          "R": [
+            [
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "p_m": [
+            0.0,
+            0.0,
+            -0.0157
+          ]
+        }
+      },
+      "not_identifiable_by_fk": [
+        "calf_pitch_joint zero offset (absorbed by the base frame)",
+        "waist_yaw_joint zero offset (absorbed by the flange frame)"
+      ]
+    }
+  },
+  "head": {
+    "status": "uncalibrated: the archive head_config.json has limits but no MDH",
+    "controller_range_deg": [
+      [
+        -180,
+        180
+      ],
+      [
+        -30,
+        30
+      ]
+    ]
+  },
+  "fixtures": {
+    "samples": [
+      {
+        "file": "mdh_repeat_exact.json",
+        "sample": "start/left",
+        "fk_flange_distance_m": {
+          "deg": 0.5550082347980624,
+          "rad": 0.5554192344972116
+        },
+        "file_cartesian_distance_m": 0.43723366397042207
+      },
+      {
+        "file": "mdh_repeat_exact.json",
+        "sample": "start/right",
+        "fk_flange_distance_m": {
+          "deg": 0.5550151228434039,
+          "rad": 0.5556885021634306
+        },
+        "file_cartesian_distance_m": 0.3650095018064598
+      },
+      {
+        "file": "mdh_repeat_exact.json",
+        "sample": "end/left",
+        "fk_flange_distance_m": {
+          "deg": 0.555008133427487,
+          "rad": 0.5554147157284158
+        },
+        "file_cartesian_distance_m": 0.455160032317206
+      },
+      {
+        "file": "mdh_repeat_exact.json",
+        "sample": "end/right",
+        "fk_flange_distance_m": {
+          "deg": 0.5550153251891324,
+          "rad": 0.5556952823069756
+        },
+        "file_cartesian_distance_m": 0.40132169505647214
+      },
+      {
+        "file": "mdh_repeat_exact1.json",
+        "sample": "start/left",
+        "fk_flange_distance_m": {
+          "deg": 0.5550082347980624,
+          "rad": 0.5554192344972116
+        },
+        "file_cartesian_distance_m": 0.43723366397042207
+      },
+      {
+        "file": "mdh_repeat_exact1.json",
+        "sample": "start/right",
+        "fk_flange_distance_m": {
+          "deg": 0.5550151228434039,
+          "rad": 0.5556885021634306
+        },
+        "file_cartesian_distance_m": 0.39589308709423054
+      },
+      {
+        "file": "mdh_repeat_exact1.json",
+        "sample": "end/left",
+        "fk_flange_distance_m": {
+          "deg": 0.555008133427487,
+          "rad": 0.5554147157284158
+        },
+        "file_cartesian_distance_m": 0.455160032317206
+      },
+      {
+        "file": "mdh_repeat_exact1.json",
+        "sample": "end/right",
+        "fk_flange_distance_m": {
+          "deg": 0.5550153251891324,
+          "rad": 0.5556952823069756
+        },
+        "file_cartesian_distance_m": 0.40132169505647214
+      }
+    ],
+    "usable_as_fk_ground_truth": false,
+    "note": "Start and end joint values are almost equal while the Cartesian values differ by decimetres; the files look like edited fixtures."
+  }
+}

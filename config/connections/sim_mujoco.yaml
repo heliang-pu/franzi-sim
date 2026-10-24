@@ -1,0 +1,5 @@
+# Local MuJoCo simulation server (python -m simbridge.server --backend config/backends/mujoco.yaml).
+label: MuJoCo simulation
+host: 127.0.0.1
+arm_port: 18000
+sensor_port: 18100

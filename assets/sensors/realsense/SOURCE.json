@@ -1,0 +1,137 @@
+{
+  "download_date": "2026-10-24",
+  "official_cad_page": "https://dev.realsenseai.com/docs/cad-files/",
+  "official_ros_repository": "https://github.com/realsenseai/realsense-ros",
+  "ros_source_ref": "f48ba88c8fc512711247c46af58d3f1f1d12745a",
+  "files": [
+    {
+      "path": "official/D405_Solid.SLDPRT",
+      "bytes": 394098,
+      "sha256": "745aaeaf2d2396726631c57a9cccb4a67f29d5b77f2e15bd47dde23117389d76",
+      "model": "D405",
+      "role": "official SolidWorks CAD original",
+      "source_url": "https://dev.realsenseai.com/download/41950",
+      "zip_crc32_verified": true,
+      "geometry_opened": false
+    },
+    {
+      "path": "official/D435_Solid.SLDPRT",
+      "bytes": 1771857,
+      "sha256": "4c8ad6aa34e203f3fd687b6534d4dbec580f8d7ddf75329f728d572cbc92d164",
+      "model": "D435",
+      "role": "official SolidWorks CAD original",
+      "source_url": "https://dev.realsenseai.com/download/41950",
+      "zip_crc32_verified": true,
+      "geometry_opened": false
+    },
+    {
+      "path": "ros_meshes/d405.stl",
+      "bytes": 194684,
+      "sha256": "a248f41149d12b28311829feecbe7a80cf1481fd05e0f5df2c4c7ecd556edd48",
+      "role": "unchanged official ROS repository file",
+      "source_url": "https://github.com/realsenseai/realsense-ros/blob/f48ba88c8fc512711247c46af58d3f1f1d12745a/realsense2_description/meshes/d405.stl",
+      "git_blob_sha1": "413d260f6d2294e19401298bf698be7e4cfa502f",
+      "git_blob_verified": true
+    },
+    {
+      "path": "ros_meshes/d435.dae",
+      "bytes": 15782439,
+      "sha256": "42f3b66f47a1f8f425a2e4dc07c1d9c283183167d8441f520a15623d98f9bf78",
+      "role": "unchanged official ROS repository file",
+      "source_url": "https://github.com/realsenseai/realsense-ros/blob/f48ba88c8fc512711247c46af58d3f1f1d12745a/realsense2_description/meshes/d435.dae",
+      "git_blob_sha1": "0ed32368fc5ba6912be530395a72553de9f21d9e",
+      "git_blob_verified": true
+    },
+    {
+      "path": "ros_meshes/_d405.urdf.xacro",
+      "bytes": 7282,
+      "sha256": "81118e87388c06e4cf1b3dc8b114096de21c1b235bd283dafad84d2bd97aebb1",
+      "role": "unchanged official ROS repository file",
+      "source_url": "https://github.com/realsenseai/realsense-ros/blob/f48ba88c8fc512711247c46af58d3f1f1d12745a/realsense2_description/urdf/_d405.urdf.xacro",
+      "git_blob_sha1": "8bfb3f0a10e8945bc73dfe78a6946d4b3e9468a5",
+      "git_blob_verified": true
+    },
+    {
+      "path": "ros_meshes/_d435.urdf.xacro",
+      "bytes": 7527,
+      "sha256": "ae3f57e8d38b3a6d5cc9de059e4afe545e4b895717d638b75d2ad0642cfb7f1b",
+      "role": "unchanged official ROS repository file",
+      "source_url": "https://github.com/realsenseai/realsense-ros/blob/f48ba88c8fc512711247c46af58d3f1f1d12745a/realsense2_description/urdf/_d435.urdf.xacro",
+      "git_blob_sha1": "f1cd0488802d8e5163a5023dafc6d24ac04b5f1a",
+      "git_blob_verified": true
+    },
+    {
+      "path": "simulation_meters/d405_m.stl",
+      "bytes": 194684,
+      "sha256": "531100b65d9e716198dfdc4d3d3f065ab2fe61bf8b0f68662175c5b48235914e",
+      "role": "locally derived visual simulation mesh",
+      "units": "meters",
+      "source": "ros_meshes/d405.stl",
+      "conversion": "scale by 0.001; retain origin and axes",
+      "triangles": 3892,
+      "bounds_m": [
+        [
+          -0.021090000867843628,
+          -0.020999999716877937,
+          -0.023000000044703484
+        ],
+        [
+          0.020999999716877937,
+          0.020999999716877937,
+          0.0
+        ]
+      ],
+      "extents_mm": [
+        42.090000584721565,
+        41.999999433755875,
+        23.000000044703484
+      ],
+      "geometry_reloaded": true,
+      "watertight": true,
+      "winding_consistent": true
+    },
+    {
+      "path": "simulation_meters/d435_m.stl",
+      "bytes": 11559384,
+      "sha256": "e60bc148fc55243e8cb0646ad1a4cf17ebeb764554107e9de2b6b473865e37ea",
+      "role": "locally derived visual simulation mesh",
+      "units": "meters",
+      "source": "ros_meshes/d435.dae",
+      "conversion": "apply DAE scene-node transforms and concatenate geometry; retain meter units; no recentering or rotation; materials lost in STL",
+      "triangles": 231186,
+      "bounds_m": [
+        [
+          -0.04491420090198517,
+          -0.012500000186264515,
+          -0.025054700672626495
+        ],
+        [
+          0.0450000986456871,
+          0.012500000186264515,
+          0.0
+        ]
+      ],
+      "extents_mm": [
+        89.91429954767227,
+        25.00000037252903,
+        25.054700672626495
+      ],
+      "geometry_reloaded": true,
+      "watertight": false,
+      "winding_consistent": false
+    }
+  ],
+  "conversion_tools": {
+    "trimesh": "5.1.0",
+    "pycollada": "0.9.3; wheel used from temporary folder, no project environment installation"
+  },
+  "integration_notes": [
+    "simulation_meters/*.stl use meters and scale=1. Raw ROS d405.stl uses mm and scale=0.001. Raw d435.dae declares meters.",
+    "These are visual camera assets, not calibrated optical models or validated collision meshes. D435 retains a multi-part non-watertight visual surface; use a separate simplified collider.",
+    "Mesh origins are not optical or mounting frames. Consult the copied xacro reference files before replacing a robot mesh.",
+    "Copied xacro files are references, not a complete ROS package; includes are not all copied.",
+    "Only new camera assets were added; existing robot models, controls, camera calibration and collisions were not changed.",
+    "SolidWorks originals were archive-CRC checked but not opened in a CAD application; simulation mesh dimensions and reloads were checked.",
+    "ROS repository license is Apache-2.0; consult upstream notices. This does not assign that license to the separate CAD archive."
+  ]
+}

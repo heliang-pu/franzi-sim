@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+<robot name="wheel_robot_4.0">
+  <!-- Fixed-base configuration for RViz and manipulation planning. -->
+  <!-- The chassis is a driven three-wheel omnidirectional platform, so the
+       robot root floats in the plane. Its pose has to be supplied as an
+       odom -> moveit_root TF by whatever owns the base (a base driver in
+       simulation, wheel odometry on hardware).
+
+       The parent is `odom`, not `map`, on purpose. Navigation belongs in
+       `map`, but SLAM moves that frame under the robot at every loop closure,
+       which would invalidate a trajectory MoveIt is midway through executing.
+       `odom` drifts but never jumps, and a manipulation lasts seconds.
+
+       Note for hardware: `moveit_root` is a massless root the xacro adds
+       because KDL cannot carry inertia on the root link. It is rigidly
+       identical to `base_link`, so the odometry source must publish
+       `odom -> moveit_root`; publishing `odom -> base_link` instead gives
+       base_link two parents and breaks the TF tree. -->
+  <virtual_joint name="world_joint" type="planar" parent_frame="odom" child_link="moveit_root"/>
+
+  <group name="body">
+    <chain base_link="base_link" tip_link="torso_Link"/>
+  </group>
+  <group name="head">
+    <chain base_link="torso_Link" tip_link="head_pitch_Link"/>
+  </group>
+  <group name="body_head">
+    <group name="body"/>
+    <group name="head"/>
+  </group>
+
+  <group name="left_arm">
+    <chain base_link="torso_Link" tip_link="left_wrist_roll_Link"/>
+  </group>
+  <group name="right_arm">
+    <chain base_link="torso_Link" tip_link="right_wrist_roll_Link"/>
+  </group>
+  <group name="both_arms">
+    <group name="left_arm"/>
+    <group name="right_arm"/>
+  </group>
+
+  <group name="left_gripper">
+    <joint name="leftfinger1_joint"/>
+    <joint name="leftfinger2_joint"/>
+  </group>
+  <group name="right_gripper">
+    <joint name="rightfinger1_joint"/>
+    <joint name="rightfinger2_joint"/>
+  </group>
+
+  <!-- Work posture: -28, 56, -28, 0 degrees. -->
+  <group_state name="work" group="body">
+    <joint name="calf_pitch_joint" value="-0.488692191"/>
+    <joint name="thigh_pitch_joint" value="0.977384381"/>
+    <joint name="waist_pitch_joint" value="-0.488692191"/>
+    <joint name="waist_yaw_joint" value="0"/>
+  </group_state>
+  <group_state name="off_body" group="body">
+    <joint name="calf_pitch_joint" value="0"/>
+    <joint name="thigh_pitch_joint" value="0"/>
+    <joint name="waist_pitch_joint" value="0"/>
+    <joint name="waist_yaw_joint" value="0"/>
+  </group_state>
+  <group_state name="home" group="head">
+    <joint name="head_yaw_joint" value="0"/>
+    <joint name="head_pitch_joint" value="0"/>
+  </group_state>
+  <!-- Head down far enough for the head D435 to see a bench top in front of
+       the robot; the pitch joint bottoms out at 0.5235. -->
+  <group_state name="look_down" group="head">
+    <joint name="head_yaw_joint" value="0"/>
+    <joint name="head_pitch_joint" value="0.5235"/>
+  </group_state>
+  <group_state name="off_arms" group="both_arms">
+    <joint name="left_shoulder_pitch_joint" value="0"/>
+    <joint name="left_shoulder_roll_joint" value="0"/>
+    <joint name="left_shoulder_yaw_joint" value="0"/>
+    <joint name="left_elbow_pitch_joint" value="0"/>
+    <joint name="left_wrist_yaw_joint" value="0"/>
+    <joint name="left_wrist_pitch_joint" value="0"/>
+    <joint name="left_wrist_roll_joint" value="0"/>
+    <joint name="right_shoulder_pitch_joint" value="0"/>
+    <joint name="right_shoulder_roll_joint" value="0"/>
+    <joint name="right_shoulder_yaw_joint" value="0"/>
+    <joint name="right_elbow_pitch_joint" value="0"/>
+    <joint name="right_wrist_yaw_joint" value="0"/>
+    <joint name="right_wrist_pitch_joint" value="0"/>
+    <joint name="right_wrist_roll_joint" value="0"/>
+  </group_state>
+  <!-- The finger joint origins are 95 mm apart in x and both fingers travel
+       towards that midpoint, so joint zero is fully open and the travel limits
+       are fully closed:  gap = 0.095 - (finger1 - finger2). -->
+  <group_state name="open" group="left_gripper">
+    <joint name="leftfinger1_joint" value="0"/>
+    <joint name="leftfinger2_joint" value="0"/>
+  </group_state>
+  <group_state name="closed" group="left_gripper">
+    <joint name="leftfinger1_joint" value="0.0475"/>
+    <joint name="leftfinger2_joint" value="-0.0475"/>
+  </group_state>
+  <group_state name="open" group="right_gripper">
+    <joint name="rightfinger1_joint" value="0"/>
+    <joint name="rightfinger2_joint" value="0"/>
+  </group_state>
+  <group_state name="closed" group="right_gripper">
+    <joint name="rightfinger1_joint" value="0.0475"/>
+    <joint name="rightfinger2_joint" value="-0.0475"/>
+  </group_state>
+
+  <end_effector name="left_gripper" parent_link="left_wrist_roll_Link"
+                group="left_gripper" parent_group="left_arm"/>
+  <end_effector name="right_gripper" parent_link="right_wrist_roll_Link"
+                group="right_gripper" parent_group="right_arm"/>
+
+  <!-- Only adjacent link pairs are disabled. This is conservative and avoids
+       trusting a low-density "never collides" sampling result. -->
+  <disable_collisions link1="base_link" link2="calf_Link" reason="Adjacent"/>
+  <disable_collisions link1="moveit_root" link2="base_link" reason="Adjacent"/>
+  <disable_collisions link1="calf_Link" link2="thigh_Link" reason="Adjacent"/>
+  <disable_collisions link1="thigh_Link" link2="waist_Link" reason="Adjacent"/>
+  <disable_collisions link1="waist_Link" link2="torso_Link" reason="Adjacent"/>
+  <disable_collisions link1="torso_Link" link2="head_yaw_Link" reason="Adjacent"/>
+  <disable_collisions link1="head_yaw_Link" link2="head_pitch_Link" reason="Adjacent"/>
+  <disable_collisions link1="head_pitch_Link" link2="head_d435_Link" reason="Adjacent"/>
+
+  <disable_collisions link1="torso_Link" link2="left_shoulder_pitch_Link" reason="Adjacent"/>
+  <disable_collisions link1="left_shoulder_pitch_Link" link2="left_shoulder_roll_Link" reason="Adjacent"/>
+  <disable_collisions link1="left_shoulder_roll_Link" link2="left_shoulder_yaw_Link" reason="Adjacent"/>
+  <disable_collisions link1="left_shoulder_yaw_Link" link2="left_elbow_pitch_Link" reason="Adjacent"/>
+  <disable_collisions link1="left_elbow_pitch_Link" link2="left_wrist_yaw_Link" reason="Adjacent"/>
+  <disable_collisions link1="left_wrist_yaw_Link" link2="left_wrist_pitch_Link" reason="Adjacent"/>
+  <disable_collisions link1="left_wrist_pitch_Link" link2="left_wrist_roll_Link" reason="Adjacent"/>
+  <disable_collisions link1="left_wrist_roll_Link" link2="leftfinger1_Link" reason="Adjacent"/>
+  <disable_collisions link1="left_wrist_roll_Link" link2="leftfinger2_Link" reason="Adjacent"/>
+  <disable_collisions link1="left_wrist_roll_Link" link2="left_wrist_d405_Link" reason="Adjacent"/>
+
+  <disable_collisions link1="torso_Link" link2="right_shoulder_pitch_Link" reason="Adjacent"/>
+  <disable_collisions link1="right_shoulder_pitch_Link" link2="right_shoulder_roll_Link" reason="Adjacent"/>
+  <disable_collisions link1="right_shoulder_roll_Link" link2="right_shoulder_yaw_Link" reason="Adjacent"/>
+  <disable_collisions link1="right_shoulder_yaw_Link" link2="right_elbow_pitch_Link" reason="Adjacent"/>
+  <disable_collisions link1="right_elbow_pitch_Link" link2="right_wrist_yaw_Link" reason="Adjacent"/>
+  <disable_collisions link1="right_wrist_yaw_Link" link2="right_wrist_pitch_Link" reason="Adjacent"/>
+  <disable_collisions link1="right_wrist_pitch_Link" link2="right_wrist_roll_Link" reason="Adjacent"/>
+  <disable_collisions link1="right_wrist_roll_Link" link2="rightfinger1_Link" reason="Adjacent"/>
+  <disable_collisions link1="right_wrist_roll_Link" link2="rightfinger2_Link" reason="Adjacent"/>
+  <disable_collisions link1="right_wrist_roll_Link" link2="right_wrist_d405_Link" reason="Adjacent"/>
+
+  <disable_collisions link1="torso_Link" link2="body_d435_Link" reason="Adjacent"/>
+  <disable_collisions link1="base_link" link2="left_front_steering_Link" reason="Adjacent"/>
+  <disable_collisions link1="left_front_steering_Link" link2="left_front_wheel_Link" reason="Adjacent"/>
+  <disable_collisions link1="base_link" link2="right_front_steering_Link" reason="Adjacent"/>
+  <disable_collisions link1="right_front_steering_Link" link2="right_front_wheel_Link" reason="Adjacent"/>
+  <disable_collisions link1="base_link" link2="rear_steering_Link" reason="Adjacent"/>
+  <disable_collisions link1="rear_steering_Link" link2="rear_wheel_Link" reason="Adjacent"/>
+  <disable_collisions link1="base_link" link2="MID360_Link" reason="Adjacent"/>
+  <disable_collisions link1="base_link" link2="2Dlidar_Link" reason="Adjacent"/>
+</robot>
