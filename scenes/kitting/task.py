@@ -18,6 +18,7 @@ import numpy as np
 from robot_kinematics import Kinematics
 from sim.build_task import PART_RGBA, ROOT, TABLE_Z, fmt
 from sim.build_task import build as build_base
+from sim.gripper_linkage import contact_drop
 
 SIDES = ("left", "right")
 # Two rows of three slots per side (y on the left; the right mirrors). At the
@@ -161,15 +162,19 @@ def hex_vertices():
 
 
 def key_poses(part, cell, xy=None, psi=None):
-    """Grasp-point targets (world, m) for moving part into cell, with the hand
+    """Grasp-site targets (world, m) for moving part into cell, with the hand
     rotation. xy and psi default to the sampled pose; the expert passes the
     measured ones."""
     xy = part["xy"] if xy is None else xy
     psi = part["psi"] if psi is None else psi
     rotation = grasp_rotation(part["side"], psi)
     back = PRE * (rotation @ [0, 0, 1])  # opposite the approach direction
-    grasp = np.array([*xy, SUPPLY_TOP + GRASP_Z])
-    place = np.array([*cell["xy"], KIT_TOP + GRASP_Z])
+    # The pads drop along the fingers as the jaws close (gripper_linkage), so
+    # the hand stops that much short, back along the approach: the pads then
+    # close at the grasp point.
+    short = contact_drop(TYPES[part["shape"]]["width"]) * (rotation @ [0, 0, 1])
+    grasp = np.array([*xy, SUPPLY_TOP + GRASP_Z]) + short
+    place = np.array([*cell["xy"], KIT_TOP + GRASP_Z]) + short
     up = np.array([0, 0, LIFT])
     return {
         "rotation": rotation,
@@ -180,6 +185,15 @@ def key_poses(part, cell, xy=None, psi=None):
         "place": place,
         "retreat": place + back,
     }
+
+
+def ready_pose(kin, side):
+    """Arm pose at the ready point as the expert reaches it: the two-part
+    expert's ready (fingers down), then the hand turned in place. Swung straight
+    from the hanging start into the kitting grasp, the fingertips brushed the
+    table, which the gripper linkage turns into a jaw driven shut."""
+    down = kin.ik(side, READY[side], np.zeros(7))
+    return kin.ik(side, READY[side], down, rotation=grasp_rotation(side))
 
 
 def plan_part(kin, part, cell, start):
@@ -256,9 +270,7 @@ def sample_episode(seed, kin=None, attempts=100):
     plans from the ready pose, round by round as the expert moves, and back."""
     kin = kin or kinematics(SAMPLE_MARGIN)
     rng = np.random.default_rng(seed)
-    start = {
-        s: kin.ik(s, READY[s], np.zeros(7), rotation=grasp_rotation(s)) for s in SIDES
-    }
+    start = {s: ready_pose(kin, s) for s in SIDES}
     for attempt in range(1, attempts + 1):
         parts, cells, instruction = draw(rng)
         assignment, rounds = assign(parts, cells)
@@ -288,10 +300,10 @@ def sample_episode(seed, kin=None, attempts=100):
 
 
 def build(spec):
-    """Derived scene for spec: build_task's robot, table and lights without its
-    two parts, plus the kit trays with their coloured cells, the supply mats and
-    the parts at their sampled poses."""
-    root, report = build_base(task_objects=False)
+    """Derived scene for spec: build_task's robot, table and lights plus the kit
+    trays with their coloured cells, the supply mats and the parts at their
+    sampled poses."""
+    root, report = build_base()
     root.set("model", "franzi_dual_arm_sort_and_kit")
     ET.SubElement(
         root.find("asset"), "mesh", name="kit_hex", vertex=fmt(hex_vertices())

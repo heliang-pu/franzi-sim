@@ -19,7 +19,9 @@ from scipy.sparse import coo_matrix
 from scipy.sparse.csgraph import connected_components
 from scipy.spatial.transform import Rotation
 
+from sim import wrist_mount
 from sim.fittings import attach_fittings, build_fittings
+from sim.gripper_linkage import body_name, group_of, offset_in_wrist
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "assets/appearance/painted"
@@ -27,7 +29,7 @@ WORDMARK_DIR = ROOT / "assets/appearance/wordmark"
 FITTINGS_DIR = ROOT / "assets/appearance/fittings"
 CAMERA_DIR = ROOT / "assets/appearance/cameras"
 # Bump when a face rule changes; the cache key only sees the source meshes.
-PAINT_VERSION = 8
+PAINT_VERSION = 10
 
 # Finishes matched to the lab and factory videos of the real robot.
 PALETTE = {
@@ -219,6 +221,16 @@ def part_size(size, tol=0.0015):
     return lambda part: np.abs(np.ptp(part.bounds, axis=0) - size).max() < tol
 
 
+def linkage_group(part, side):
+    # Gripper links and jaw blocks ride in their own bodies (gripper_linkage).
+    return group_of(part.bounds)
+
+
+def old_wrist_block(part, side):
+    # The original D405 block and its screws, replaced by the tilted block.
+    return wrist_mount.is_old_block(part.bounds, side)
+
+
 def d435_housing(part, side):
     # The head D435 box is merged with its bracket; the box matches body_d435 and
     # is dropped for the official D435 mesh, leaving the bracket.
@@ -264,6 +276,8 @@ RECIPE = {
     "{side}_wrist_pitch_Link": {"rest": "fa_black"},
     # Linkage gripper: black body, flange, links and camera bracket; aluminium
     # jaw blocks and pins, red screws on the jaw blocks, aluminium finger pads.
+    # "detach" moves the links and jaw blocks into the bodies that move them;
+    # "drop" leaves out the original D405 block (attach_wrist_blocks).
     "{side}_wrist_roll_Link": {
         "rest": "fa_black",
         "parts": [
@@ -271,6 +285,8 @@ RECIPE = {
             (part_size([0.0075, 0.029, 0.0075]), "fa_silver"),
             (part_size([0.008, 0.0055, 0.0055]), "fa_estop_red"),
         ],
+        "detach": linkage_group,
+        "drop": old_wrist_block,
     },
     "{side}finger1_Link": {"rest": "fa_silver"},
     "{side}finger2_Link": {"rest": "fa_silver"},
@@ -294,6 +310,7 @@ def expanded_recipe():
 
 
 def paint_groups(path, recipe, side):
+    """Painted meshes keyed by (detached group or None, material)."""
     mesh = trimesh.load(path, process=True, force="mesh")
     parts = sorted(
         mesh.split(only_watertight=False), key=lambda p: len(p.faces), reverse=True
@@ -305,14 +322,20 @@ def paint_groups(path, recipe, side):
             if match(part):
                 material = override
         assert material, f"{path.name}: component {k} has no paint; CAD changed?"
+        if recipe.get("drop") and recipe["drop"](part, side):
+            continue
+        detach = recipe.get("detach")
+        group = detach(part, side) if detach else None
         paint = np.full(len(part.faces), material, dtype=object)
         for index, rule, override in recipe.get("faces", []):
             if index == k:
                 paint[rule(part, side)] = override
         for name in set(paint) - {None}:
             faces = np.nonzero(paint == name)[0]
-            groups.setdefault(name, []).append(part.submesh([faces], append=True))
-    return {name: trimesh.util.concatenate(g) for name, g in groups.items()}
+            groups.setdefault((group, name), []).append(
+                part.submesh([faces], append=True)
+            )
+    return {key: trimesh.util.concatenate(g) for key, g in groups.items()}
 
 
 def prepare_paint(source):
@@ -332,12 +355,14 @@ def prepare_paint(source):
     for name, (recipe, side) in recipes.items():
         groups = paint_groups(source / "meshes" / f"{name}.STL", recipe, side)
         manifest["meshes"][name] = []
-        for material, group in sorted(groups.items()):
-            filename = f"{name}__{material}.stl"
+        for (part, material), group in sorted(
+            groups.items(), key=lambda item: (item[0][0] or "", item[0][1])
+        ):
+            stem = name if part is None else f"{name}__{part}"
+            filename = f"{stem}__{material}.stl"
             group.export(OUTPUT / filename)
-            manifest["meshes"][name].append(
-                {"file": filename, "material": material, "faces": len(group.faces)}
-            )
+            entry = {"file": filename, "material": material, "faces": len(group.faces)}
+            manifest["meshes"][name].append(entry | ({"part": part} if part else {}))
     manifest_path.write_text(json.dumps(manifest, indent=2))
     return manifest
 
@@ -801,6 +826,10 @@ def attach_real_cameras(root):
                 parts = [(CAMERA_DIR / "realsense_d435i" / f, m) for f, m in D435_PARTS]
                 pos, frame = pos + rotate(frame, offset), frame * turn
             else:
+                # On the tilted wrist block, as its camera (camera_rig.py).
+                side = mesh.split("_")[0]
+                pos, turned = wrist_mount.sensor_pose(side, pos, frame.as_matrix())
+                frame = Rotation.from_matrix(turned)
                 parts = [(path, m) for m, path in d405.items()]
             qx, qy, qz, qw = frame.as_quat()
             for i, (path, material) in enumerate(parts):
@@ -820,6 +849,36 @@ def attach_real_cameras(root):
                     mass="0",
                     **{"class": "visual"},
                 )
+
+
+def attach_wrist_blocks(root):
+    """The tilted D405 block (hardware/wrist_d405_mount) on each clevis pin, in
+    place of the original block that the recipe drops."""
+    assets = root.find("asset")
+    ET.SubElement(
+        assets,
+        "mesh",
+        name="wrist_d405_block",
+        file=str(wrist_mount.STL),
+        scale="0.001 0.001 0.001",
+        inertia="shell",
+    )
+    for side in ("left", "right"):
+        body = root.find(f".//body[@name='{side}_wrist_roll_Link']")
+        R, t = wrist_mount.part_to_wrist(side)
+        x, y, z, w = Rotation.from_matrix(R).as_quat()
+        ET.SubElement(
+            body,
+            "geom",
+            name=f"{side}_wrist_d405_block",
+            type="mesh",
+            mesh="wrist_d405_block",
+            material="fa_black",
+            pos=vec(t / 1000),
+            quat=vec([w, x, y, z]),
+            mass="0",
+            **{"class": "visual"},
+        )
 
 
 def stadium(width, height, segments):
@@ -897,6 +956,7 @@ def apply_appearance(root, source):
             emission=emission,
         )
     attach_real_cameras(root)
+    attach_wrist_blocks(root)
     attach_chest_slot(root)
     manifest = prepare_paint(source)
     painted = 0
@@ -909,6 +969,17 @@ def apply_appearance(root, source):
             frame = {k: geom.get(k) for k in ("pos", "quat") if geom.get(k)}
             for entry in manifest["meshes"][mesh]:
                 name = f"paint_{mesh}_{entry['material']}"
+                parent, where = body, frame
+                if "part" in entry:
+                    # A gripper link or jaw block: same place at closure 0, in
+                    # the body that moves it (no rotation below the wrist).
+                    assert "quat" not in frame, mesh
+                    side = mesh.split("_")[0]
+                    name = f"paint_{mesh}_{entry['part']}_{entry['material']}"
+                    target = body_name(side, entry["part"])
+                    parent = root.find(f".//body[@name='{target}']")
+                    pos = np.array(frame.get("pos", "0 0 0").split(), float)
+                    where = {"pos": vec(pos - offset_in_wrist(root, side, target))}
                 ET.SubElement(
                     assets,
                     "mesh",
@@ -917,14 +988,14 @@ def apply_appearance(root, source):
                     inertia="shell",
                 )
                 ET.SubElement(
-                    body,
+                    parent,
                     "geom",
                     name=name,
                     type="mesh",
                     mesh=name,
                     material=entry["material"],
                     mass="0",
-                    **frame,
+                    **where,
                     **{"class": "visual"},
                 )
                 painted += 1

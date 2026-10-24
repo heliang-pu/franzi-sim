@@ -21,8 +21,8 @@ from pathlib import Path
 import mujoco
 import numpy as np
 
+from scenes.pick_place.run import PickPlaceScene
 from sim.build_task import ROOT, TABLE_Z
-from sim.run_expert import Scene
 from simbridge.robot import load_robot
 
 
@@ -132,7 +132,7 @@ def main():
     parser.add_argument(
         "--expert-run",
         type=Path,
-        default=ROOT / "outputs/expert_rate_limited",
+        default=ROOT / "outputs/expert_wrist_block",
     )
     parser.add_argument(
         "--output", type=Path, default=ROOT / "config/sdk_acceptance/program.json"
@@ -165,7 +165,7 @@ def main():
     single[2] += 0.30  # left shoulder yaw
     scratch = ROOT / "outputs" / ".sdk_program_scene"
     scratch.mkdir(parents=True, exist_ok=True)
-    scene = Scene(scratch, record=False)
+    scene = PickPlaceScene(scratch, record=False)
     above = scene.ik("left", [0.28, 0.45, TABLE_Z + 0.12])
     # A straight descent as IK waypoints 2 cm apart, ending 5 cm below the
     # surface, so the first contact is the fingertips on the free table spot.

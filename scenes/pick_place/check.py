@@ -1,4 +1,5 @@
-"""Validate a retained local expert run and its recorded camera streams."""
+"""Validate a retained pick-and-place run (scenes.pick_place.run --record) and
+its recorded camera streams."""
 
 import argparse
 import json
@@ -8,7 +9,8 @@ from pathlib import Path
 import av
 import numpy as np
 
-from sim.build_task import GOALS, TABLE_Z
+from scenes.pick_place.task import GOALS
+from sim.build_task import TABLE_Z
 
 
 def verify(folder):
@@ -38,7 +40,14 @@ def verify(folder):
     for side in ("left", "right"):
         wrist = root.find(f".//body[@name='{side}_wrist_roll_Link']")
         assert wrist.find(f"geom[@name='{side}_wrist_roll_Link']") is None
-        assert sum(g.get("type") == "mesh" for g in wrist.findall("geom")) >= 40
+        # CAD hulls of the gripper, wherever they ride (links and jaw blocks
+        # move in their own bodies since the gripper linkage model).
+        hulls = [
+            g
+            for g in wrist.iter("geom")
+            if g.get("name", "").startswith(f"{side}_wrist_part_")
+        ]
+        assert len(hulls) >= 40 and all(g.get("type") == "mesh" for g in hulls)
         for finger in (1, 2):
             g = root.find(f".//geom[@name='{side}finger{finger}_Link']")
             assert g.get("type") == "mesh" and int(g.get("contype")) != 0

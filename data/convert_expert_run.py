@@ -1,5 +1,5 @@
-"""Convert recorded expert runs (sim.run_expert or sim.run_kitting, with --record)
-into raw VLA episodes.
+"""Convert recorded expert runs (scenes.pick_place.run or scenes.kitting.run,
+with --record) into raw VLA episodes.
 
     python -m data.convert_expert_run outputs/expert_pinocchio --output outputs/<new_episode>
     python -m data.convert_expert_run outputs/<runs>/seed_* --output outputs/<new_folder>
@@ -22,7 +22,7 @@ commands the robot through the stock SDK unchanged:
   same physics step as the state, so camera_seq = k + 1; there is no wall clock,
   so the UTC fields are -1;
 - the episode instruction is the run's own (summary.json "instruction", one per
-  sim.run_kitting seed), else KITTING_TASK; --task overrides both. Subtask texts
+  scenes.kitting.run seed), else KITTING_TASK; --task overrides both. Subtask texts
   come from trace.json. The camera videos are copied unchanged. Ground-truth
   object state (trace.json "objects", summary.json placements) is not carried over.
 """

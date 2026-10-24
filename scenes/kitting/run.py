@@ -1,9 +1,9 @@
 """Dual-arm sort-and-kit episode: the kitting scene and a scripted IK expert.
 
-KitScene is run_expert.Scene with kitting_task's objects: the same model
+KitScene is sim.episode.Scene with task.py's objects: the same model
 overrides, gravity feedforward, head gaze, per-step penetration and joint-limit
 audits and recordings, plus per-part tracking, the colour-matched success test
-and episode.json beside scene.xml. The expert follows kitting_task's key poses
+and episode.json beside scene.xml. The expert follows task.py's key poses
 round by round and reads part poses from the simulator (privileged): no welds,
 no object pose writes, no contact-mask changes, no robot qpos/qvel writes.
 """
@@ -19,10 +19,10 @@ from pathlib import Path
 import mujoco
 import numpy as np
 
-from sim import kitting_task as kt
+from scenes.kitting import task as kt
 from sim.build_task import ROOT
 from sim.camera_rig import POLICY_CAMERAS
-from sim.run_expert import Scene
+from sim.episode import Scene
 
 
 class KitScene(Scene):
@@ -154,13 +154,23 @@ def measured(s, name):
     return xy, float((yaw + period / 2) % period - period / 2)
 
 
+def go_ready(s, spec, grips):
+    """To the ready point as task.ready_pose plans it: fingers down, as
+    the two-part expert, then the hands turned in place. Swung straight into
+    the kitting grasp from the hanging start, the fingertips brushed the table,
+    which the gripper linkage turns into a jaw driven shut."""
+    upright = {side: kt.grasp_rotation(side) for side in kt.SIDES}
+    s.move(spec["ready"], grips=grips, seconds=3.0, speed=kt.SPEED)
+    s.move(spec["ready"], grips=grips, seconds=1.5, rotations=upright, speed=kt.SPEED)
+
+
 def expert(s):
     spec = s.spec
     count = len(spec["rounds"])
     upright = {side: kt.grasp_rotation(side) for side in kt.SIDES}
     opened = {side: kt.grip_open(0.04) for side in kt.SIDES}
     s.stage("ready", "Raise both open grippers behind the kit trays.")
-    s.move(spec["ready"], grips=opened, seconds=3.0, rotations=upright, speed=kt.SPEED)
+    go_ready(s, spec, opened)
     for r, pair in enumerate(spec["rounds"], 1):
         s.round = r
         part = {side: s.parts[pair[side]] for side in kt.SIDES}
@@ -318,8 +328,8 @@ def run(output, seed, record=False, kin=None):
             state=[x["state"] for x in scene.trace],
             action=[x["action"] for x in scene.trace],
             timestamp=[x["t"] for x in scene.trace],
-            # subtask holds the phase names, as run_expert writes it, so
-            # data.convert_expert_run reads kitting runs too.
+            # subtask holds the phase names, as scenes.pick_place.run writes
+            # it, so data.convert_expert_run reads kitting runs too.
             subtask=[x["phase"] for x in scene.trace],
             instruction=[x["subtask"] for x in scene.trace],
             round=[x["round"] for x in scene.trace],

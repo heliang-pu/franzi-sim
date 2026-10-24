@@ -18,13 +18,19 @@
       "device_model": "D405",
       "location": "left wrist",
       "fovy_deg": 60,
-      "optical_roll_deg": -90
+      "optical_roll_deg": 0,
+      "optical_roll_source": "CAD: the D405's rear M3 pair, parallel to its stereo baseline, runs along the jaw axis; image right along the jaw axis, image up outboard. The user confirmed the fingers appear left and right on the real robot (2026-10-24).",
+      "mount": "wrist_block",
+      "mount_source": "On the tilted wrist block (hardware/wrist_d405_mount, user decision 2026-10-24): the URDF sensor site carried onto the block by sim/wrist_mount.py, 20 degrees toward the jaws."
     },
     "right_wrist_d405": {
       "device_model": "D405",
       "location": "right wrist",
       "fovy_deg": 60,
-      "optical_roll_deg": -90
+      "optical_roll_deg": 180,
+      "optical_roll_source": "Mirror of the left wrist: image right along the jaw axis, image up outboard (see left_wrist_d405).",
+      "mount": "wrist_block",
+      "mount_source": "On the tilted wrist block (hardware/wrist_d405_mount, user decision 2026-10-24): the URDF sensor site carried onto the block by sim/wrist_mount.py, 20 degrees toward the jaws."
     }
   }
 }

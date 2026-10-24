@@ -1,4 +1,6 @@
-"""Derive a fixed-base dual-arm scene without modifying the source model."""
+"""Derive the fixed-base dual-arm robot scene (the robot, its table and the
+lights) without modifying the source model. Each scene in scenes/ adds its own
+objects to it."""
 
 import json
 import xml.etree.ElementTree as ET
@@ -8,18 +10,19 @@ import numpy as np
 import trimesh
 from scipy.sparse import coo_matrix
 from scipy.sparse.csgraph import connected_components
+from scipy.spatial.transform import Rotation
 
 from robot_kinematics import ARM_JOINTS, controller_ranges
 from sim.appearance import apply_appearance
+from sim.gripper_linkage import add_linkage, body_name, group_of, offset_in_wrist
+from sim.wrist_mount import P as MOUNT
+from sim.wrist_mount import block_pieces, is_old_block, part_to_wrist, sensor_pose
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "assets/franzi_source"
 __all__ = ["ARM_JOINTS"]  # re-exported: one definition, in robot_kinematics
 TABLE_Z = 0.80
-# Far enough out for the head and body cameras to see the parts and pads.
-SOURCES = {"left": [0.38, 0.34], "right": [0.38, -0.34]}
-GOALS = {"left": [0.40, 0.15], "right": [0.40, -0.15]}
-# The two part colours, shared with kitting_task.py.
+# Part colours shared by the scenes (scenes/pick_place, scenes/kitting).
 PART_RGBA = {"blue": "0.12 0.48 0.88 1", "orange": "0.95 0.48 0.12 1"}
 
 
@@ -40,11 +43,64 @@ def align_joint_limits(root):
     return ranges
 
 
-def build(task_objects=True):
-    """Derived scene tree and report. task_objects=False leaves out the two parts
-    and their pads, for a task module that brings its own (kitting_task.py)."""
+def restore_sensor_masses(root):
+    """Add the URDF masses that franzi.xml drops (user decision 2026-10-24): each
+    fixed sensor link (the four cameras and two lidars, 1.8 kg in all) becomes a
+    massive child body of its parent at the URDF joint origin, with the URDF
+    inertia. The wrist D405 masses stay at the URDF camera pose rather than on
+    the tilted wrist block. Returns {link: kg}."""
+    urdf = ET.parse(SOURCE / "wheel_robot_4.0.urdf").getroot()
+    links = {link.get("name"): link for link in urdf.iter("link")}
+    bodies = {body.get("name"): body for body in root.iter("body")}
+
+    def rotation(origin):
+        rpy = "0 0 0" if origin is None else origin.get("rpy", "0 0 0")
+        return Rotation.from_euler("xyz", np.fromstring(rpy, sep=" "))
+
+    added = {}
+    for joint in urdf.iter("joint"):
+        child = joint.find("child").get("link")
+        inertial = links[child].find("inertial")
+        if joint.get("type") != "fixed" or child in bodies or inertial is None:
+            continue
+        origin = joint.find("origin")
+        q = rotation(origin).as_quat()
+        body = ET.SubElement(
+            bodies[joint.find("parent").get("link")],
+            "body",
+            name=child,
+            pos="0 0 0" if origin is None else origin.get("xyz", "0 0 0"),
+            quat=fmt(np.r_[q[3], q[:3]]),
+        )
+        # MuJoCo takes fullinertia only without a quat, so the URDF inertial
+        # frame's rotation goes into the tensor.
+        i = {k: float(v) for k, v in inertial.find("inertia").attrib.items()}
+        tensor = np.array(
+            [
+                [i["ixx"], i["ixy"], i["ixz"]],
+                [i["ixy"], i["iyy"], i["iyz"]],
+                [i["ixz"], i["iyz"], i["izz"]],
+            ]
+        )
+        center = inertial.find("origin")
+        r = rotation(center).as_matrix()
+        t = r @ tensor @ r.T
+        mass = float(inertial.find("mass").get("value"))
+        ET.SubElement(
+            body,
+            "inertial",
+            pos="0 0 0" if center is None else center.get("xyz", "0 0 0"),
+            mass=fmt(mass),
+            fullinertia=fmt([t[0, 0], t[1, 1], t[2, 2], t[0, 1], t[0, 2], t[1, 2]]),
+        )
+        added[child] = mass
+    return added
+
+
+def build():
+    """Derived scene tree and report: the robot, the table and the lights. A
+    scene's task.py adds its objects (scenes/<name>/task.py)."""
     root = ET.parse(SOURCE / "franzi.xml").getroot()
-    root.set("model", "franzi_dual_arm_kitting")
     compiler = root.find("compiler")
     compiler.set("meshdir", str(SOURCE / "meshes"))
     compiler.set("texturedir", str(SOURCE / "assets"))
@@ -75,6 +131,10 @@ def build(task_objects=True):
         "finger_collision": {},
     }
     report["joint_limits"] = align_joint_limits(root)
+    report["sensor_masses"] = restore_sensor_masses(root)
+    # Before the appearance and the colliders, which put the links and jaw
+    # blocks into the bodies this adds.
+    report["gripper_linkage"] = add_linkage(root, fmt)
     report["appearance"] = apply_appearance(root, SOURCE)
     for side in ["left", "right"]:
         # A single wrist AABB fills the real gripper opening. Each disconnected
@@ -91,9 +151,20 @@ def build(task_objects=True):
             shape=(len(mesh.vertices),) * 2,
         )
         count, labels = connected_components(graph, directed=False)
-        parts = 0
+        # The original D405 block and its two screws, picked as face-connected
+        # parts: by shared vertices the block is one component with the L
+        # bracket, whose hull it would otherwise swell.
+        old = np.zeros(len(mesh.vertices), bool)
+        replaced = 0
+        for faces in trimesh.graph.connected_components(mesh.face_adjacency):
+            corners = mesh.faces[faces].ravel()
+            v = mesh.vertices[corners]
+            if is_old_block([v.min(0), v.max(0)], side):
+                old[corners] = True
+                replaced += 1
+        parts = moving = 0
         for c in range(count):
-            vertices = mesh.vertices[labels == c]
+            vertices = mesh.vertices[(labels == c) & ~old]
             if (
                 len(vertices) < 4
                 or np.linalg.matrix_rank(vertices - vertices.mean(0)) < 3
@@ -103,15 +174,23 @@ def build(task_objects=True):
             if hull.volume < 1e-12:
                 continue
             part = f"{side}_wrist_part_{parts:03d}"
+            # Links and jaw blocks collide where they move (gripper_linkage).
+            owner, shift = body, np.zeros(3)
+            group = group_of(hull.bounds)
+            if group:
+                target = body_name(side, group)
+                owner = root.find(f".//body[@name='{target}']")
+                shift = offset_in_wrist(root, side, target)
+                moving += 1
             ET.SubElement(
                 asset,
                 "mesh",
                 name=part,
-                vertex=fmt(hull.vertices),
+                vertex=fmt(hull.vertices - shift),
                 face=fmt(hull.faces),
             )
             ET.SubElement(
-                body,
+                owner,
                 "geom",
                 name=part,
                 type="mesh",
@@ -119,9 +198,54 @@ def build(task_objects=True):
                 **{"class": "collision"},
             )
             parts += 1
+        # The tilted D405 block (sim/wrist_mount.py) replaces the original block
+        # and its two screws: three convex pieces, and a box for the D405 it
+        # holds, where the camera and the D405 mesh are (camera_rig, appearance).
+        R, t = part_to_wrist(side)
+        for k, piece in enumerate(block_pieces()):
+            hull = trimesh.convex.convex_hull((piece @ R.T + t) / 1000)
+            block = f"{side}_wrist_d405_block_{k}"
+            ET.SubElement(
+                asset,
+                "mesh",
+                name=block,
+                vertex=fmt(hull.vertices),
+                face=fmt(hull.faces),
+            )
+            ET.SubElement(
+                body,
+                "geom",
+                name=block,
+                type="mesh",
+                mesh=block,
+                **{"class": "collision"},
+            )
+        site = body.find(f"site[@name='{side}_wrist_d405']")
+        w, x, y, z = map(float, site.get("quat").split())
+        at, turned = sensor_pose(
+            side,
+            np.array(site.get("pos").split(), float),
+            Rotation.from_quat([x, y, z, w]).as_matrix(),
+        )
+        half = np.array(MOUNT["d405"]["housing_mm"]) / 2000
+        x, y, z, w = Rotation.from_matrix(turned).as_quat()
+        ET.SubElement(
+            body,
+            "geom",
+            name=f"{side}_wrist_d405_housing",
+            type="box",
+            size=fmt(half),
+            pos=fmt(at - turned @ [0, 0, half[2]]),  # behind the glass
+            quat=fmt([w, x, y, z]),
+            **{"class": "collision"},
+        )
         report["wrist_collision"][side] = {
             "cad_components": int(count),
             "convex_colliders": parts,
+            "on_moving_links_and_jaws": moving,
+            "original_d405_block_parts_removed": replaced,
+            "d405_block_pieces": len(block_pieces()),
+            "d405_housing_box": True,
         }
         for finger in [1, 2]:
             name = f"{side}finger{finger}_Link"
@@ -149,7 +273,8 @@ def build(task_objects=True):
                     mesh.convex_hull.volume / abs(mesh.volume)
                 ),
             }
-        # Grasp center is midway between the two prismatic finger origins.
+        # Grasp center is midway between the two prismatic finger origins, at
+        # the open pads' height: the pads drop as they close (gripper_linkage).
         body = root.find(f".//body[@name='{side}_wrist_roll_Link']")
         ET.SubElement(
             body,
@@ -234,42 +359,6 @@ def build(task_objects=True):
                 size=f".025 .025 {TABLE_Z / 2 - 0.025}",
                 rgba=".16 .19 .23 1",
             )
-    parts = [("left", PART_RGBA["blue"]), ("right", PART_RGBA["orange"])]
-    for side, color in parts if task_objects else []:
-        x, y = SOURCES[side]
-        body = ET.SubElement(
-            world,
-            "body",
-            name=side + "_part",
-            pos=f"{x} {y} {TABLE_Z + 0.0275 + 0.001}",
-        )
-        ET.SubElement(body, "freejoint", name=side + "_part_joint")
-        ET.SubElement(
-            body,
-            "geom",
-            name=side + "_part",
-            type="box",
-            size=".0225 .0225 .0275",
-            mass="0.07",
-            rgba=color,
-            friction="1.2 .01 .0001",
-            condim="4",
-            solref=".004 1",
-            solimp=".95 .99 .001",
-        )
-        # Wide, separated destination pads rather than a tight insertion task.
-        x, y = GOALS[side]
-        ET.SubElement(
-            world,
-            "geom",
-            name=side + "_target",
-            type="box",
-            pos=f"{x} {y} {TABLE_Z + 0.003}",
-            size=".065 .055 .003",
-            rgba=color,
-            solref=".004 1",
-            solimp=".95 .99 .001",
-        )
     visual = ET.SubElement(root, "visual")
     ET.SubElement(visual, "global", offwidth="1920", offheight="1080")
     # 0.35 mm shadow texels over a box (1.44 m half-size) around the robot, the
@@ -291,6 +380,6 @@ def build(task_objects=True):
 if __name__ == "__main__":
     root, report = build()
     (ROOT / "outputs").mkdir(exist_ok=True)
-    ET.ElementTree(root).write(ROOT / "outputs/task.xml", encoding="unicode")
+    ET.ElementTree(root).write(ROOT / "outputs/robot_scene.xml", encoding="unicode")
     (ROOT / "outputs/collision_setup.json").write_text(json.dumps(report, indent=2))
     print(json.dumps(report, indent=2))

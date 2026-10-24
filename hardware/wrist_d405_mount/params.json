@@ -1,0 +1,71 @@
+{
+  "note": "Design parameters of the tilted wrist D405 block (mm, degrees). Read by build_mount.py and check_mount.py.",
+  "camera_tilt_deg": 20.0,
+  "standoff_mm": 34.0,
+  "outward_mm": 27.0,
+  "tongue_thickness_mm": 5.0,
+  "tongue_radius_mm": 7.0,
+  "pin_hole_mm": 4.3,
+  "web_width_mm": 12.0,
+  "web_widens_beyond_mm": 15.0,
+  "plate_mm": [
+    30.0,
+    26.0,
+    4.5
+  ],
+  "screw_hole_mm": 3.4,
+  "screw_spacing_mm": 20.0,
+  "interface_from_cad": {
+    "source": "assets/franzi_source/meshes/left_wrist_roll_Link.STL: component 31 (L bracket), 32 (original camera block), 318/319 (M3 screws)",
+    "clevis_pin_axis_in_left_wrist_roll_link_mm": [
+      -30.1,
+      57.75,
+      -94.25
+    ],
+    "clevis_pin_axis_direction": "x (the jaw closing axis)",
+    "clevis_pin_hole_mm": 4.0,
+    "clevis_gap_x_mm": [
+      -33.0,
+      -27.6
+    ],
+    "clevis_prongs_x_mm": [
+      [
+        -38.3,
+        -33.0
+      ],
+      [
+        -27.6,
+        -22.3
+      ]
+    ],
+    "original_tongue_x_mm": [
+      -32.6,
+      -27.6
+    ],
+    "original_camera_back_face_z_mm": -111.2,
+    "d405_screws_x_mm": [
+      -40.1,
+      -20.1
+    ]
+  },
+  "d405": {
+    "source": "RealSense D400 series datasheet 337029-017: table 3-49 (p. 71), figure 10-13 (p. 155); realsenseai.com D405 product page",
+    "housing_mm": [
+      42,
+      42,
+      23
+    ],
+    "back_mounting": "2x M3x0.5, 20.0 mm apart along the baseline, max thread engagement 4.0 mm",
+    "color_fov_deg": {
+      "h": 84,
+      "v": 58,
+      "d": 92
+    },
+    "ideal_range_cm": [
+      7,
+      50
+    ],
+    "min_z_cm_at_480p": 7
+  },
+  "reference": "Reference mount from the user's STEP (挑战杯比赛模型, D435 wrist cameras): optical axis tilted 20.2 deg toward the jaws about the jaw axis, lens 64.7 mm beside the jaw plane and 101 mm behind the fingertips, centred on the jaws along the jaw axis (user request 2026-10-24)."
+}

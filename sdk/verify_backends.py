@@ -29,8 +29,9 @@ import numpy as np
 import yaml
 
 from robot_kinematics import Kinematics
+from scenes.pick_place.task import GOALS
 from sdk.stock_sdk import SDK
-from sim.build_task import GOALS, TABLE_Z
+from sim.build_task import TABLE_Z
 from simbridge import ROOT
 from simbridge.robot import load_robot
 
@@ -168,7 +169,7 @@ def score_task(trace, events):
         result["parts"][side] = part
     result["success"] = bool(ok)
     result["criteria"] = (
-        "same thresholds as run_expert.Scene.complete, plus >= 0.4 s airborne "
+        "same thresholds as PickPlaceScene.complete, plus >= 0.4 s airborne "
         "with both jaws in contact; evaluated at the end of the task replay"
     )
     return result

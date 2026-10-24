@@ -1,0 +1,207 @@
+{
+  "params": {
+    "camera_tilt_deg": 20.0,
+    "standoff_mm": 34.0,
+    "outward_mm": 27.0
+  },
+  "part_volume_cm3": 8.66,
+  "part_watertight": true,
+  "left": {
+    "clearance_mm": {
+      "block_to_gripper": 19.07,
+      "wide_web_to_bracket": 5.46,
+      "d405_to_gripper": 18.26,
+      "d405_to_bracket": 26.25,
+      "d405_to_fingers_closure_0.0": 86.69,
+      "block_to_fingers_closure_0.0": 111.22,
+      "d405_to_fingers_closure_0.55": 96.02,
+      "block_to_fingers_closure_0.55": 119.67,
+      "d405_to_fingers_closure_1.0": 96.85,
+      "block_to_fingers_closure_1.0": 120.26
+    },
+    "aim": {
+      "jaw_centre_off_axis_deg": 17.91,
+      "glass_to_jaw_centre_mm": 106.4,
+      "grip_centre_40mm_off_axis_deg": 13.43,
+      "glass_to_grip_centre_40mm_mm": 118.7
+    },
+    "image_uv": {
+      "open_pads": [
+        [
+          -0.59,
+          -0.58
+        ],
+        [
+          0.58,
+          -0.58
+        ]
+      ],
+      "closed_on_55mm_part": [
+        [
+          -0.27,
+          -0.45
+        ],
+        [
+          0.27,
+          -0.45
+        ]
+      ],
+      "grip_centre_55mm": [
+        [
+          -0.0,
+          -0.45
+        ]
+      ],
+      "closed_on_40mm_part": [
+        [
+          -0.2,
+          -0.43
+        ],
+        [
+          0.19,
+          -0.43
+        ]
+      ],
+      "grip_centre_40mm": [
+        [
+          -0.0,
+          -0.43
+        ]
+      ],
+      "jaw_centre": [
+        [
+          -0.0,
+          -0.58
+        ]
+      ]
+    },
+    "sim_camera_pose": {
+      "frame": "left_wrist_roll_Link",
+      "camera_pos_m": [
+        -0.0301,
+        0.063627,
+        -0.157047
+      ],
+      "camera_quat_wxyz": [
+        0.984808,
+        -0.173648,
+        -0.0,
+        0.0
+      ],
+      "optical_axis": [
+        0.0,
+        -0.34202,
+        -0.939693
+      ],
+      "image_right": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "image_up": [
+        0.0,
+        0.939693,
+        -0.34202
+      ]
+    }
+  },
+  "right": {
+    "clearance_mm": {
+      "block_to_gripper": 19.07,
+      "wide_web_to_bracket": 5.46,
+      "d405_to_gripper": 18.49,
+      "d405_to_bracket": 26.25,
+      "d405_to_fingers_closure_0.0": 86.69,
+      "block_to_fingers_closure_0.0": 111.22,
+      "d405_to_fingers_closure_0.55": 96.02,
+      "block_to_fingers_closure_0.55": 119.67,
+      "d405_to_fingers_closure_1.0": 96.85,
+      "block_to_fingers_closure_1.0": 120.26
+    },
+    "aim": {
+      "jaw_centre_off_axis_deg": 17.91,
+      "glass_to_jaw_centre_mm": 106.4,
+      "grip_centre_40mm_off_axis_deg": 13.43,
+      "glass_to_grip_centre_40mm_mm": 118.7
+    },
+    "image_uv": {
+      "open_pads": [
+        [
+          0.59,
+          -0.58
+        ],
+        [
+          -0.58,
+          -0.58
+        ]
+      ],
+      "closed_on_55mm_part": [
+        [
+          0.27,
+          -0.45
+        ],
+        [
+          -0.27,
+          -0.45
+        ]
+      ],
+      "grip_centre_55mm": [
+        [
+          0.0,
+          -0.45
+        ]
+      ],
+      "closed_on_40mm_part": [
+        [
+          0.2,
+          -0.43
+        ],
+        [
+          -0.19,
+          -0.43
+        ]
+      ],
+      "grip_centre_40mm": [
+        [
+          0.0,
+          -0.43
+        ]
+      ],
+      "jaw_centre": [
+        [
+          0.0,
+          -0.58
+        ]
+      ]
+    },
+    "sim_camera_pose": {
+      "frame": "right_wrist_roll_Link",
+      "camera_pos_m": [
+        -0.0301,
+        -0.063627,
+        -0.157047
+      ],
+      "camera_quat_wxyz": [
+        0.0,
+        -0.0,
+        -0.173648,
+        0.984808
+      ],
+      "optical_axis": [
+        0.0,
+        0.34202,
+        -0.939693
+      ],
+      "image_right": [
+        -1.0,
+        0.0,
+        -0.0
+      ],
+      "image_up": [
+        0.0,
+        -0.939693,
+        -0.34202
+      ]
+    }
+  }
+}

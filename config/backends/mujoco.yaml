@@ -1,4 +1,4 @@
-# MuJoCo 3.x through run_expert.Scene (derived scene, per-step audits).
+# MuJoCo 3.x through scenes.pick_place.run.PickPlaceScene (derived scene, per-step audits).
 backend: mujoco
 python: /Users/puheliang/miniforge3/envs/inovance-fineart/bin/python
 robot: config/robot/franzi_sdk.yaml

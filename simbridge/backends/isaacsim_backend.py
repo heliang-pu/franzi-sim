@@ -512,7 +512,7 @@ class IsaacSimBackend(SimBackend):
             self.targets[self.dof[joint]] = value
 
     def _before_physics(self):
-        # Head gaze ramp as in run_expert.Scene: the joint moves, never the camera.
+        # Head gaze ramp as in sim.episode.Scene: the joint moves, never the camera.
         x = min(self._step * self._dt / 1.5, 1.0)
         self.targets[self.head_pitch] = 0.50 * x * x * (3 - 2 * x)
         v = self.view

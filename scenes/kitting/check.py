@@ -1,12 +1,12 @@
 """Acceptance checks for the sort-and-kit scene across seeds.
 
-For each seed it runs the expert headless (run_kitting.run) and keeps the run.
+For each seed it runs the expert headless (run.run) and keeps the run.
 For the first seeds it also counts, from segmentation renders, the unoccluded
 pixels of every part and of every cell frame in the head and body cameras: once
 the head gaze has settled with the arms still hanging, and again at the ready
 pose. The first seeds also get preview sheets (overview plus the four policy
 cameras at the ready pose). Writes report.json; the per-run files are as
-run_kitting writes them.
+run.py writes them.
 """
 
 import argparse
@@ -17,9 +17,9 @@ import mujoco
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
-from sim import kitting_task as kt
+from scenes.kitting import task as kt
+from scenes.kitting.run import KitScene, go_ready, run
 from sim.camera_rig import POLICY_CAMERAS
-from sim.run_kitting import KitScene, run
 
 VIEW_CAMERAS = ("head_d435", "body_d435")
 FRAME_BARS = ("near", "far", "inner", "outer")
@@ -87,13 +87,7 @@ def views(output, seed, kin, preview):
             "settled": pixel_counts(scene, renderer),
         }
         scene.stage("ready", "Raise both open grippers behind the kit trays.")
-        scene.move(
-            spec["ready"],
-            grips={s: kt.grip_open(0.04) for s in kt.SIDES},
-            seconds=3.0,
-            rotations={s: kt.grasp_rotation(s) for s in kt.SIDES},
-            speed=kt.SPEED,
-        )
+        go_ready(scene, spec, {s: kt.grip_open(0.04) for s in kt.SIDES})
         scene.move(seconds=0.5)
         result["ready"] = pixel_counts(scene, renderer)
         if preview:

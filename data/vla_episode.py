@@ -94,7 +94,7 @@ LEROBOT_FEATURES = {
 
 class Video:
     """H.264 writer on its own thread, so encoding never stalls a control tick.
-    Same settings as sim/run_expert.py's policy-camera videos."""
+    Same settings as sim/episode.py's policy-camera videos."""
 
     def __init__(self, path, fps=FPS, depth=50):
         self.container = av.open(str(path), "w", options={"movflags": "+faststart"})

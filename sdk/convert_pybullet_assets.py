@@ -6,9 +6,10 @@ The Isaac Sim draft (simbridge/backends/isaacsim_backend.py) loads this scene.
 It was first made for the PyBullet backend, which was retired on 2026-10-24
 (user decision: simbridge runs on MuJoCo only), hence the file and folder names.
 
-The input is run_expert.Scene, i.e. build_task.build() plus the cameras and the
-actuator overrides that every MuJoCo session uses, together with the source URDF
-(never edited). Everything is written to assets/derived/pybullet/:
+The input is scenes.pick_place.run.PickPlaceScene, i.e. build_task.build() and
+the pick-and-place parts and pads, plus the cameras and the actuator overrides
+that every MuJoCo session uses (sim.episode.Scene), together with the source
+URDF (never edited). Everything is written to assets/derived/pybullet/:
 
 - ``franzi_pybullet.urdf``: the source URDF's links, joints, limits and
   inertials. Visuals are the source STLs by absolute path, coloured with the
@@ -39,8 +40,8 @@ import numpy as np
 from scipy.spatial import ConvexHull
 from scipy.spatial.transform import Rotation
 
+from scenes.pick_place.run import PickPlaceScene
 from sim.build_task import ROOT, SOURCE
-from sim.run_expert import Scene
 
 OUT = ROOT / "assets/derived/pybullet"
 URDF_SOURCE = SOURCE / "wheel_robot_4.0.urdf"
@@ -54,11 +55,13 @@ STRICT_INPUTS = [
     "assets/franzi_source/wheel_robot_4.0.urdf",
     "assets/franzi_source/franzi.xml",
     "sim/build_task.py",
+    "scenes/pick_place/task.py",
     "sim/camera_rig.py",
 ]
 # Recorded for provenance only.
 TRACKED_INPUTS = [
-    "sim/run_expert.py",
+    "sim/episode.py",
+    "scenes/pick_place/run.py",
     "sim/camera_rig.json",
     "sdk/convert_pybullet_assets.py",
 ]
@@ -292,7 +295,7 @@ def main(argv=None):
     rng = np.random.default_rng(args.seed)
 
     with tempfile.TemporaryDirectory() as tmp:
-        scene = Scene(Path(tmp), record=False)
+        scene = PickPlaceScene(Path(tmp), record=False)
         scene_xml_sha = sha256(Path(tmp) / "scene.xml")
     m, d = scene.m, scene.d
     assert m.nexclude == 0 and m.npair == 0, (

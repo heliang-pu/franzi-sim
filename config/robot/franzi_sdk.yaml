@@ -157,7 +157,9 @@ cameras:
     waist: {sim: body_d435, device: D435, parent_link: torso_Link}
     wrist_left: {sim: left_wrist_d405, device: D405, parent_link: left_wrist_roll_Link}
     wrist_right: {sim: right_wrist_d405, device: D405, parent_link: right_wrist_roll_Link}
-  status: URDF sensor mounts; simulated pinhole intrinsics, not calibrated
+  status: >-
+    URDF sensor mounts, the wrist D405s carried onto the tilted wrist block
+    (sim/wrist_mount.py); simulated pinhole intrinsics, not calibrated
 
 frames:
   world: fixed base; base_link origin 0.0872648 m above the floor (source MuJoCo model)

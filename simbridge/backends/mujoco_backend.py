@@ -1,4 +1,5 @@
-"""MuJoCo adapter around run_expert.Scene (the derived scene and its audits).
+"""MuJoCo adapter around scenes.pick_place.run.PickPlaceScene, the
+pick-and-place scene on sim.episode.Scene (the derived scene and its audits).
 
 Scene.physics_step keeps every rule of the expert: position-actuator ctrl plus
 gravity feedforward through qfrc_applied, a per-step penetration (> 1 mm) and
@@ -10,8 +11,8 @@ import time
 import mujoco
 import numpy as np
 
+from scenes.pick_place.run import PickPlaceScene
 from sim.build_task import ARM_JOINTS
-from sim.run_expert import Scene
 from simbridge.backends.base import (
     EFFORT_SIMULATED,
     BackendState,
@@ -78,7 +79,7 @@ class MujocoBackend(SimBackend):
             raise ValueError("MuJoCo Scene audits are fixed at 1 mm and 0.002 rad")
         self.robot = robot
         self.options = options
-        self.scene = Scene(output, record=False)
+        self.scene = PickPlaceScene(output, record=False)
         m = self.m = self.scene.m
         self.d = self.scene.d
         for side in ("left", "right"):
