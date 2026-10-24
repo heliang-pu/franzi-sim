@@ -40,6 +40,11 @@ BODY_JOINTS = (
     "waist_pitch_joint",
     "waist_yaw_joint",
 )
+# Default IK planning margin inside the aligned limits (user decision 2026-10-24).
+# The pick-and-place approach otherwise parks both wrist pitches 0.065 deg from
+# the controller's -60 deg limit, where tracking overshoot on the real robot
+# could trip its soft limit.
+PLANNING_MARGIN = float(np.radians(2.0))
 
 
 def controller_ranges():
@@ -77,14 +82,29 @@ def controller_ranges():
     return out
 
 
+def controller_rates():
+    """Arm joint rate limits stored in the controller image, in ARM_JOINTS order:
+    velocity (rad/s) and acceleration (rad/s^2) at a 100% speed ratio, and the
+    controller's default speed ratio (0 to 1). Not verified on hardware."""
+    config = yaml.safe_load(ROBOT_CONFIG.read_text())
+    rates = config["limits"]["controller_archive_rates_deg"]
+    return {
+        "velocity": np.radians(rates["velocity"]),
+        "acceleration": np.radians(rates["acceleration"]),
+        "default_ratio": rates["default_velocity_ratio_percent"] / 100,
+    }
+
+
 class Kinematics:
     """FK and IK of each arm's grasp point in the world frame (fixed base).
 
-    margin (rad) keeps IK solutions that far inside the aligned limits. A plan
-    that rests on a limit can overshoot it by more than the scene's 2 mrad audit
-    while the servo tracks (the kitting task plans with 10 mrad)."""
+    margin (rad) keeps IK solutions that far inside the aligned limits, by
+    default PLANNING_MARGIN. A plan that rests on a limit can overshoot it while
+    the servo tracks. simbridge's endpoints, which emulate the controller's own
+    IK, pass 0.0001; the kitting task passes 10 and 20 mrad, because its inner
+    cells put the shoulder roll on a limit."""
 
-    def __init__(self, margin=0.0001):
+    def __init__(self, margin=PLANNING_MARGIN):
         self.margin = margin
         self.model = pin.buildModelFromUrdf(str(SOURCE / "wheel_robot_4.0.urdf"))
         source = ET.parse(SOURCE / "franzi.xml").getroot()

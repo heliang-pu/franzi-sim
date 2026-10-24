@@ -125,9 +125,11 @@ def rot_y(a):
 
 def grasp_rotation(side, psi=0.0):
     """Hand frame for the kitting grasp: approach 45 degrees forward and down at
-    azimuth psi (rad). The fingers slide along the hand's x axis, so the wrist
-    rolls 90 degrees to close them horizontally; each wrist sits outboard."""
-    roll = np.pi / 2 if side == "left" else -np.pi / 2
+    azimuth psi (rad). The fingers slide along the hand's x axis, so the hand
+    rolls 90 degrees to close them horizontally, in the direction that keeps the
+    wrist D405 on top of the hand. The opposite roll (left +90, right -90
+    degrees) reaches as well but hung the camera underneath, toward the robot."""
+    roll = -np.pi / 2 if side == "left" else np.pi / 2
     return rot_z(psi) @ rot_y(-np.pi / 4) @ rot_z(roll)
 
 

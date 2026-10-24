@@ -42,7 +42,11 @@ cd /Users/puheliang/workspace/inovance-fineart
 
 新面罩开窗版演示：`outputs/expert_visor_window/`（开窗已按用户要求撤掉，仅作历史记录）。
 
-当前最新演示（专用环境 `inovance-fineart`，共享运动学改用 Pinocchio）：`outputs/expert_pinocchio/`，`sim/verify_run.py` 通过。
+当前最新演示（逆解留 2° 规划余量，动作按真机默认 30% 速度比例限速）：`outputs/expert_rate_limited/`，`sim/verify_run.py` 通过。
+- 30.0 秒成功，最大穿透 0.099 mm，关节超限最大 0.0003 rad，稳定 180 拍，六条视频各 749 帧。
+- 两只手腕俯仰离控制器限位 2.06°（原来 0.065°）。手臂指令峰值为 30% 速度比例下上限的 0.90 倍（速度）和 0.48 倍（加速度），原来是 1.81 倍和 1.17 倍。
+
+上一版演示（共享运动学改用 Pinocchio）：`outputs/expert_pinocchio/`，`sim/verify_run.py` 通过。
 - 24.5 秒成功，最大穿透 0.102 mm，关节超限最大 0.0006 rad，稳定 180 拍，物块最终离目标不到 0.2 mm，六条视频各 613 帧。
 - 正解与仿真相差 1.1e-15 m。逆解改用精确解析雅可比，与原有限差分版最多相差 5e-8 rad。
 - 速度：单目标逆解 37 → 5.9 ms，链式路点 8.5 → 1.3 ms，正解 43 → 1.9 µs。
@@ -91,7 +95,7 @@ cd /Users/puheliang/workspace/inovance-fineart
 
 ## 双臂分拣装盘长任务（场景 v1，2026-10-24）
 
-给 VLA 训练用的长程任务。两只手各把本侧供料垫上的 3 个零件（蓝色方块、橙色圆柱、绿色六角柱各一个，每种料一个颜色）放进本侧料盘里同色的格子，共 6 个零件。两臂同步，分 3 个回合完成，一集 53–55 s。
+给 VLA 训练用的长程任务。两只手各把本侧供料垫上的 3 个零件（蓝色方块、橙色圆柱、绿色六角柱各一个，每种料一个颜色）放进本侧料盘里同色的格子，共 6 个零件。两臂同步，分 3 个回合完成，一集 62–93 s（`Scene.move` 按真机默认 30% 速度限速之后）。
 
 | 文件 | 作用 |
 |---|---|
@@ -110,7 +114,7 @@ cd /Users/puheliang/workspace/inovance-fineart
 
 布局与抓取：
 - 每侧两排各 3 个位：料盘在前排 x = 0.38 m，供料垫在后排 x = 0.48 m，三个位在 |y| = 0.10、0.22、0.34 m。
-- 抓取改为前倾 45° 的侧夹，姿态 Rz(ψ)·Ry(−45°)·Rz(±90°)，左手 +90°、右手 −90°，腕部在外侧。手指沿腕部 roll 连杆的局部 x 开合，转 90° 后沿 y 水平夹紧。在零件中心高度，现专家的俯抓只够到 x = 0.40 m，这种侧夹够到 0.44 m（y 0.03–0.45 m）。
+- 抓取改为前倾 45° 的侧夹，姿态 Rz(ψ)·Ry(−45°)·Rz(±90°)，左手 −90°、右手 +90°，这样腕部 D405 在手的上方。反方向转也够得到，但相机会挂在手下面、朝向机器人（用户指出后改正）。手指沿腕部 roll 连杆的局部 x 开合，转 90° 后沿 y 水平夹紧。在零件中心高度，现专家的俯抓只够到 x = 0.40 m，这种侧夹够到 0.44 m（y 0.03–0.45 m）。
 - 间距由夹爪壳体决定：45° 侧夹时壳体在抓取高度沿夹持方向左右各伸出约 85 mm、向后约 65 mm。原定每侧 4 个位、间距 85 mm，第一回合壳体就压进了邻位零件，所以改为每侧 3 个位、间距 120 mm、两排相距 100 mm。
 - 相机（头部俯仰 0.50 rad，零件中心高度，图像边缘留 24 px）：头部 D435 看到 x ≥ 0.38 m 的整个桌宽，躯干 D435 看到 x ≥ 0.30 m、|y| ≤ 约 0.35 m。
 - 每种料一个颜色：蓝色方块（40 × 40 × 50 mm）、橙色圆柱（Ø40 × 50 mm）、绿色六角柱（对边 40 mm、高 50 mm）。每侧三种各一个，料盘三格各对应一种。
@@ -126,13 +130,15 @@ cd /Users/puheliang/workspace/inovance-fineart
 
 数据：输出与现任务相同（scene.xml、summary.json、trace.json、trajectory.npz，`--record` 时的六条视频），另加 `episode.json`（布局、分配、回合和指令）。`trajectory.npz` 的 `subtask` 与 `sim/run_expert.py` 一样存阶段名，另有 `instruction`、`round`、`progress` 和 `task`。录制的运行可以用 `data.convert_expert_run` 转成原始 episode，它自动取 `summary.json` 里的 `instruction` 作为整段指令。
 
-验收（`outputs/kitting_check_v4/`，日志 `outputs/kitting_check_v4.log`）：
+验收（`outputs/kitting_check_v5/`，日志 `outputs/kitting_check_v5.log`）：
 - 20 个种子全部成功，120 个零件全部入格；每个种子第一次采样就可解。
-- 一集 53.2–55.8 s；最大接触穿透 0.10 mm；关节越限最大 0.32 mrad；零件离分配格中心最多 0.21 mm；碰到非本回合零件 0 拍；无界面单独跑每集约 4 s。
+- 一集 61.6–93.0 s；最大接触穿透 0.32 mm（准备时右手指尖擦过桌面）；关节越限最大 0.67 mrad；零件离分配格中心最多 0.47 mm；碰到非本回合零件 0 拍。
+- 指令的关节速度峰值是控制器限值的 0.24 倍，加速度 0.27 倍，即真机默认 30% 速度比例下的 0.80 倍和 0.90 倍。限速来自 `Scene.move` 的时间缩放（专家会话按用户决定加入）；之前的 v4 加速度最高超限 1.92 倍。
+- 最慢的是第一次接近和收尾：从准备点到工作位，手臂要转动 1.3–1.4 rad（肩部翻滚），各要 5–15 s。
 - 静置 3.5 s 后零件漂移不到 0.001 mm。每个零件和格框在两台相机里的可见像素，复位和准备位的最小值是头部 480 px、躯干 1013 px。
-- 预览图：`outputs/kitting_check_v4/views/preview_seed000.png` 到 `002`。
+- 预览图：`outputs/kitting_check_v5/views/preview_seed000.png` 到 `002`。
 - 演示录像 `outputs/kitting_demo_seed0/`：54.3 s，6/6 入格。用 `data.convert_expert_run` 转成原始 episode 得到 1358 帧，再用 `data.export_lerobot` 导出成 LeRobot v3.0 数据集（29 MB），整条链路试通。
-- `outputs/kitting_check_v1/`、`v2/` 是修复前的两轮，分别有 1 个和 2 个种子失败；`v3/` 是改成一种料一个颜色之前的蓝橙两色版（20/20 成功）。都只作记录。
+- `outputs/kitting_check_v1/`、`v2/` 是修复前的两轮，分别有 1 个和 2 个种子失败；`v3/` 是改成一种料一个颜色之前的蓝橙两色版，`v4/` 是手腕转反、腕部相机在手下面的版本（都是 20/20 成功）。都只作记录。
 
 共享代码的改动不影响现任务：专家重跑后 trajectory、trace 和 scene.xml 与改动前逐位一致，`tests/` 的 34 个测试全部通过。
 - `build_task.build(task_objects=False)` 不放两件零件和目标垫；`PART_RGBA` 是两种零件的颜色。
@@ -179,13 +185,14 @@ YAML 原注释明确说明它是**保守的规划限制，尚需对照真机控�
   - 正解和雅可比用 Pinocchio 计算（用户 2026-10-24 确定），依赖 NumPy、SciPy、PyYAML 和 pin，都在 `inovance-fineart` 环境里，不依赖物理引擎。模型取自 URDF：从 `base_link` 经腰腿和手臂关节到抓取点；URDF 与控制器镜像的 MDH 一致，用户此前也验证过它与真机一致。
   - 正解和仿真相差不超过 1.1e-15 m。逆解就是示教原来的算法，搬过来后和原 MuJoCo 逆解最多相差 1.7e-7 rad。
   - 关节限位用对齐后的控制器限位。`to_sdk()` 和 `from_sdk()` 负责 URDF 与 SDK 关节值的换算。
+  - 逆解默认在对齐后的限位内再留 2° 规划余量（`PLANNING_MARGIN`，用户 2026-10-24 确定）。原来抓放任务的接近阶段，两只手腕俯仰离控制器 −60° 限位只有 0.065°，真机跟踪稍有超调就可能触发软限位；留出余量后离限位 2.06°，抓取姿态不变。simbridge 模拟控制器逆解的接口仍用 0.0001 rad，长任务自己用 10 mrad 和 20 mrad。
   - 示教的 `Scene.ik` 和直线运动都改为调用它；原来示教自带的 MuJoCo 逆解已删除。
 - MuJoCo 500 Hz，关节目标 25 Hz 零阶保持，视频 25 FPS。
 - 关节限位按控制器镜像对齐（用户 2026-10-24 要求）。`build_task.align_joint_limits()` 写入的数值来自 `robot_kinematics.controller_ranges()`，它读 `config/robot/franzi_sdk.yaml`：镜像 `sysctrl_params.json` 和头、腰配置中的限位，以及 SDK 与 URDF 的正负号映射。
   - 关节范围取 URDF 与控制器的交集。控制器更紧的一侧再留 SDK 的 0.001 rad 余量，执行器指令范围同步修改。
   - 两臂共收紧 10 个关节：肩俯仰上限 149.9° → 140°，肘下限 −150.1° → −148°，肩和腕偏航 ±170.17° → ±170°，腕俯仰 ±60.16° → ±60°。
   - 控制器比 URDF 宽的地方暂时保持 URDF：肘上限 15° 对 7.45°，大腿下限 −10° 对 0°，腰俯仰下限 −75° 对 −30°。要放宽须先在真机上确认机械范围。
-  - 速度和加速度：示教的手臂指令峰值在控制器上限的 0.55 倍（速度）和 0.35 倍（加速度）以内。控制器默认还有 30% 的速度比例，若它也作用于关节遥操作，肩、肘速度会超出 1.7–1.8 倍，需在真机上确认。
+  - 速度和加速度：`Scene.move` 把每段动作拉长到手臂的 25 Hz 指令不超过控制器默认 30% 速度比例下上限的 0.9 倍（用户 2026-10-24 确定），这样真机按默认比例回放也不会被限速。只有「准备」和「接近」两段被拉长，参考示教从 24.5 秒变成 29.9 秒，峰值为该上限的 0.90 倍（速度）和 0.48 倍（加速度）。这些上限来自离线镜像，没在真机上验证。
   - 头部转向改为 3.3 秒的最小加加速度曲线，峰值 16 °/s、15 °/s²、48 °/s³，满足控制器头部限位（30 °/s、40 °/s²、50 °/s³）。原来的 1.5 秒 smoothstep 曲线加速度达 76 °/s²。
 - 手臂、腰腿（小腿、大腿、腰俯仰和腰偏航）、头部关节都加重力前馈（`qfrc_applied = qfrc_bias`，只是力输入）。
   - 原来腰腿只靠伺服刚度撑，手臂前伸时每个关节下沉最多 7.5 mrad，合计约 1.3°；头部俯仰下沉 3.8 mrad。头部和躯干相机视角跟着偏，经 SDK 回放专家目标时手在 PyBullet 里偏约 9 mm。
@@ -376,7 +383,7 @@ cd /Users/puheliang/workspace/inovance-fineart
 
 ### 验收结果
 
-同一份 `sdk/sdk_acceptance.py`（只调用未修改的原厂 SDK）连接服务端，只换连接配置；结果按类别记录，不合成一个通过率。最新一次记录在 `outputs/sdk_backends_v9/`（`inovance-fineart` 环境，共享运动学接口，PyBullet 已下线；任务来源 `outputs/sdk_task_source_expert_v8/`），汇总为 `report.json`，日志为 `outputs/sdk_backends_v9.log`：
+同一份 `sdk/sdk_acceptance.py`（只调用未修改的原厂 SDK）连接服务端，只换连接配置；结果按类别记录，不合成一个通过率。最新一次记录在 `outputs/sdk_backends_v10/`（`inovance-fineart` 环境，共享运动学接口，PyBullet 已下线；任务来源 `outputs/expert_rate_limited/`），汇总为 `report.json`，日志为 `outputs/sdk_backends_v10.log`：
 
 | 类别 | MuJoCo（框架驱动） | MuJoCo（引擎自有循环） |
 |---|---|---|
@@ -384,17 +391,19 @@ cd /Users/puheliang/workspace/inovance-fineart
 | 控制语义：接收≠完成、-3/-5/-8/-10、单/双臂遥操作、软急停、使能 | 37/37 | 37/37 |
 | 运动学接口：Fk/FkTool/IK/FKb/IKb 自洽，位姿约定，工具坐标，-3/-6 | 23/23 | 23/23 |
 | 运动学映射：全程 SDK 值 = sign·仿真值 + offset | 偏差 0 | 偏差 0 |
-| 共享运动学（SDK 关节角 + 腰角）对 MuJoCo 抓取点 | 8.2e-16 m | 7.8e-16 m |
-| 物理表现：双臂到位、重力力矩、夹爪 750/250/1000、软急停制动、Home、IKb + MoveJ 抬高 3 cm | 10/10（抬高误差 0.025 mm） | 10/10（0.026 mm） |
-| 整段最大接触穿透 | 0.10 mm | 0.10 mm |
+| 共享运动学（SDK 关节角 + 腰角）对 MuJoCo 抓取点 | 1.0e-15 m | 9.0e-16 m |
+| 物理表现：双臂到位、重力力矩、夹爪 750/250/1000、软急停制动、Home、IKb + MoveJ 抬高 3 cm | 10/10（抬高误差 0.16 mm） | 10/10（0.16 mm） |
+| 整段最大接触穿透 | 0.11 mm | 0.11 mm |
 | 故障处理：把左手压进桌面 | 5/5，手指越限审计触发，物理冻结并经 SDK 报告 | 5/5，同左 |
 | 完整任务（经 SDK 重放专家关节目标）：SDK 侧 | 4/4，抬起后夹爪报 2（夹持） | 4/4 |
 | 完整任务：仿真真值（到位、静止、脱离、≥ 0.4 s 双爪悬空） | 成功，误差 0.3 / 0.1 mm | 成功，0.3 / 0.1 mm |
-| 录像时实时率 | 0.30 | 0.29 |
+| 录像时实时率 | 0.28 | 0.28 |
 
-通信类比 v8 多三项：`FkLink`、`GetMdh`、`GetArmEulerAngle` 改为明确不支持。下线前最后一次三后端验收是 `outputs/sdk_backends_v8/`：PyBullet 全部检查通过，任务真值放置误差 0.8 / 1.0 mm。
+v10 与 v9 的检查项相同，变的是任务来源。示教改为逆解留 2° 余量、按真机默认 30% 速度比例限速（`outputs/expert_rate_limited/`），据此重新生成的 `config/sdk_acceptance/program.json` 只有撤回一段放慢 ×1.005；v9 的程序放慢了准备 ×1.52、接近 ×1.77。IKb 抬高误差从 0.025 mm 变成 0.16 mm：两版的逆解残差都是 0，这是 MoveJ 报完成时手臂离目标还差的一点，起点换成了新示教的准备姿态（肩滚和腕俯仰各差约 2°）。v9 同样全部通过，记录在 `outputs/sdk_backends_v9/`。
 
-演示视频：`outputs/sdk_backends_v9/mujoco/server/session.mp4`（1297 帧，25 fps）、`mujoco_owned_loop/server/session.mp4`（1286 帧）。画面为总览相机加四路 SDK 相机小图和状态栏。每个后端目录还有：
+v9 起通信类比 v8 多三项：`FkLink`、`GetMdh`、`GetArmEulerAngle` 改为明确不支持。下线前最后一次三后端验收是 `outputs/sdk_backends_v8/`：PyBullet 全部检查通过，任务真值放置误差 0.8 / 1.0 mm。
+
+演示视频：`outputs/sdk_backends_v10/mujoco/server/session.mp4`（1330 帧，25 fps）、`mujoco_owned_loop/server/session.mp4`（1342 帧）。画面为总览相机加四路 SDK 相机小图和状态栏。每个后端目录还有：
 - `config/`：本次使用的后端、连接、机器人配置快照；
 - `client/sdk_calls.json`：每次 SDK 调用的参数、返回和耗时；
 - `client/verification.json`：检查项；
@@ -407,7 +416,7 @@ cd /Users/puheliang/workspace/inovance-fineart
 
 原厂 SDK 的 3153 个文件与 `sdk.zip` 逐字节一致。
 
-MuJoCo 两种循环给同一个 SDK 目标后，仿真关节角相差不超过 0.94 mrad，手部与相机坐标相差不超过 0.96 mm。差别来自首条指令落在不同的仿真时刻（开场头部转向还没结束），不是循环方式本身：v7 中两者的首条指令只差 2 ms，结果相差 4.7 µm。
+MuJoCo 两种循环给同一个 SDK 目标后，仿真关节角相差不超过 0.96 mrad，手部与相机坐标相差不超过 0.95 mm。差别来自首条指令落在不同的仿真时刻（开场头部转向还没结束），不是循环方式本身：v7 中两者的首条指令只差 2 ms，结果相差 4.7 µm。
 
 **PyBullet 任务重放失败与节拍修复（2026-10-24）。** `outputs/sdk_backends_v7/`（修复前）中 PyBullet 的客户端检查全部通过，但仿真真值失败：放置误差 24.3 / 26.7 mm，超过 25 mm 阈值（v6 时是 3.5 / 3.8 mm）。
 
@@ -421,7 +430,7 @@ MuJoCo 两种循环给同一个 SDK 目标后，仿真关节角相差不超过 0
 
 1. 源模型腿/腰位置伺服 kp 6000 N·m/rad、阻尼只有 5 N·m·s/rad（阻尼比约 0.01），整个上身约 1.5 Hz 前后摆，每次手臂运动都会重新激起。`run_expert.Scene` 现在给小腿、大腿、腰俯仰和偏航加伺服速度反馈（初始姿态下阻尼比 0.7），专家演示和 SDK 仿真同时受益；阻尼比取 1 时专家把腕俯仰停在 URDF 限位上，会触发 0.002 rad 越限审计，所以用 0.7。
 2. 专家 IK 在直线运动的相邻 1 cm 路点之间，7 自由度手臂的冗余自由度（肘部摆角）来回跳，关节加速度达规划限值的 17–32 倍，手在直线上而手臂在抖。`Scene.ik` 现在对串联路点加一个很小的就近正则（权重 0.002），峰值加速度降到限值的 0.9 倍以内。
-3. 旧的遥操作队列让每个关节尽快追到每个点，追上 25 Hz 流后刹停、等下一点、再加速，走走停停；改为上面描述的按节拍回放。专家轨迹本身仍有两段关节空间大动作超过保守限速 1 rad/s，`sdk/make_sdk_program.py` 把这两段整体放慢（准备 ×1.52、接近 ×1.77），路径不变。
+3. 旧的遥操作队列让每个关节尽快追到每个点，追上 25 Hz 流后刹停、等下一点、再加速，走走停停；改为上面描述的按节拍回放。专家轨迹本身仍有两段关节空间大动作超过保守限速 1 rad/s，`sdk/make_sdk_program.py` 把这两段整体放慢（准备 ×1.52、接近 ×1.77），路径不变。示教改为按真机默认速度比例限速（`outputs/expert_rate_limited/`）后，重新生成的程序只有撤回一段放慢 ×1.005。
 
 同一时段另一会话给腿、腰和头部关节加了重力前馈，消除了约 1.3° 的静态下沉；v6 的结果包含这三处修正、该前馈和上面的关节范围裁剪。修复后 MuJoCo 任务重放中手部路径二阶差分的 95 分位从 11.1 mm 降到 0.95 mm，腰俯仰摆动均方根从 1.37 mrad 降到 0.04 mrad，物体放置误差从 4.6/2.5 mm 降到 0.5/0.2 mm（`outputs/sdk_backends_v6/shaking_before_after.png`）。专家无头运行同样通过（`outputs/sdk_task_source_expert_v6/`）；修改前录制的专家视频没有这两处修正。
 
@@ -439,7 +448,7 @@ MuJoCo 两种循环给同一个 SDK 目标后，仿真关节角相差不超过 0
 - 未仿真：`MoveL`、笛卡尔点动与遥操作（按“主机侧求解、只发关节命令”的决定不做）、`FkLink` 与 MDH 查询/写入、力控/阻抗/拖动、夹爪力度、标定、RS485/TIO、移动底盘导航、订阅推送、深度图与真实相机内参/畸变、头/腰运动。
 - 运动学接口：用共享运动学回答，不复现控制器自己的逆解和分支选择；flan2tool 初值和 `GetCurCartesianPose` 的坐标系是推断；真机控制器的 `FKb` 若按手册常量计算，会与仿真差 0.273 m（见上），需要在真机上核对。
 - 轨迹规划、制动和夹爪速度是本仿真的策略（见上），不是原厂控制器算法；新增引擎时动力学结果允许不同，验收只要求接口语义一致。
-- Isaac Sim：2026-10-24 按用户决定暂缓验证。适配器是为 GPU 工作站上的 Isaac Sim 5.1.0 安装写的，解释器由环境变量 `ISAAC_PYTHON` 指定（`config/backends/isaacsim.yaml`、`sdk/run_isaacsim_4090.sh`）；无头启动需要接受 NVIDIA Omniverse EULA（`OMNI_KIT_ACCEPT_EULA=YES`），须由用户决定。继续时把本工程同步到工作站，先做适配器文档列出的上机检查，再把工作站上服务端的 18400、18500 两个端口转发到本机（用你本机 SSH 配置里的主机别名），在本机运行同一份 `sdk/sdk_acceptance.py`，结果放进 `outputs/sdk_backends_v9/isaacsim/` 后用 `sdk/verify_backends.py --backends isaacsim --rescore` 打分。工作站上的 Python 没有 Pinocchio，运动学接口会明确报 UNSUPPORTED。
+- Isaac Sim：2026-10-24 按用户决定暂缓验证。适配器是为 GPU 工作站上的 Isaac Sim 5.1.0 安装写的，解释器由环境变量 `ISAAC_PYTHON` 指定（`config/backends/isaacsim.yaml`、`sdk/run_isaacsim_4090.sh`）；无头启动需要接受 NVIDIA Omniverse EULA（`OMNI_KIT_ACCEPT_EULA=YES`），须由用户决定。继续时把本工程同步到工作站，先做适配器文档列出的上机检查，再把工作站上服务端的 18400、18500 两个端口转发到本机（用你本机 SSH 配置里的主机别名），在本机运行同一份 `sdk/sdk_acceptance.py`，结果放进 `outputs/sdk_backends_v10/isaacsim/` 后用 `sdk/verify_backends.py --backends isaacsim --rescore` 打分。工作站上的 Python 没有 Pinocchio，运动学接口会明确报 UNSUPPORTED。
 - Isaac Lab：可复用同一份派生 URDF、驱动参数、碰撞分组和相机约定，但它的向量化 GPU 主循环需要另写薄适配层，而且 GPU 管线对凸包有 64 顶点上限（74 个碰撞凸包超出），会破坏与 MuJoCo 的碰撞一致性。
 
 ## VLA 训练数据：原厂 SDK 录制与专家数据转换

@@ -132,7 +132,7 @@ def main():
     parser.add_argument(
         "--expert-run",
         type=Path,
-        default=ROOT / "outputs/sdk_task_source_expert_v8",
+        default=ROOT / "outputs/expert_rate_limited",
     )
     parser.add_argument(
         "--output", type=Path, default=ROOT / "config/sdk_acceptance/program.json"
@@ -209,7 +209,7 @@ def main():
             "note": "grasp site 5 cm below the table surface at a free spot",
         },
         "task": {
-            "source_run": str(args.expert_run.relative_to(ROOT)),
+            "source_run": str(args.expert_run.resolve().relative_to(ROOT)),
             "source_success": summary["success"],
             "source_duration_s": summary["duration_s"],
             "rate_hz": 25,

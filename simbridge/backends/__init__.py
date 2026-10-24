@@ -10,7 +10,7 @@ REGISTRY = {
         "implemented",
         (
             "verified on macOS: stock-SDK acceptance, framework and "
-            "simulator-owned loops (outputs/sdk_backends_v9)"
+            "simulator-owned loops (outputs/sdk_backends_v10)"
         ),
     ),
     "isaacsim": (

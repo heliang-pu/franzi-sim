@@ -18,7 +18,7 @@ import mujoco
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
-from robot_kinematics import BODY_JOINTS, Kinematics
+from robot_kinematics import BODY_JOINTS, Kinematics, controller_rates
 from sim.build_task import ARM_JOINTS, GOALS, ROOT, SOURCES, TABLE_Z, build, fmt
 from sim.camera_rig import POLICY_CAMERAS, assert_mounts, install_cameras
 
@@ -29,6 +29,15 @@ TORSO_SERVOS = (
     "waist_yaw_joint",
 )
 HEAD_SERVOS = ("head_yaw_joint", "head_pitch_joint")
+# Share of the controller's arm rate limits, at its default speed ratio, that the
+# 25 Hz arm goals may use, so a replay on the real robot at that ratio is not
+# clipped (user decision 2026-10-24).
+RATE_HEADROOM = 0.9
+
+
+def minimum_jerk(x):
+    """Quintic progress (0 to 1) with zero velocity and acceleration at both ends."""
+    return 10 * x**3 - 15 * x**4 + 6 * x**5
 
 
 def add_camera(parent, name, eye, lookat, fovy=45):
@@ -123,6 +132,10 @@ class Scene:
         # IK and FK come from the shared host-side kinematics, the same code a
         # real-robot host and simbridge use; it matches this model's FK to 1e-15 m.
         self.kin = Kinematics()
+        rates = controller_rates()
+        share = rates["default_ratio"] * RATE_HEADROOM
+        self.max_rate = rates["velocity"] * share
+        self.max_accel = rates["acceleration"] * share
         self.body_qpos = {j: self.m.joint(j).qposadr[0] for j in BODY_JOINTS}
         self.goal = {s: np.zeros(7) for s in self.qids}
         self.grip = {s: 0.0 for s in self.qids}
@@ -349,22 +362,56 @@ class Scene:
             for s, path in paths.items():
                 arcs[s] = np.r_[0, np.cumsum(np.abs(np.diff(path, axis=0)).max(1))]
             seconds = max(seconds, 1.875 * max(a[-1] for a in arcs.values()) / speed)
+        seconds = self.stretch(paths, arcs, seconds)
         gs = self.grip.copy()
         ge = gs | (grips or {})
         n = int(seconds / self.m.opt.timestep)
         for i in range(n):
-            x = (i + 1) / n
-            p = 10 * x**3 - 15 * x**4 + 6 * x**5
+            p = minimum_jerk((i + 1) / n)
             if self.step_number % 20 == 0:
                 for s, path in paths.items():
-                    if arcs and arcs[s][-1] > 0:
-                        u = np.interp(p * arcs[s][-1], arcs[s], np.arange(len(path)))
-                    else:
-                        u = p * (len(path) - 1)
-                    k = min(int(u), len(path) - 2)
-                    self.goal[s] = path[k] + (path[k + 1] - path[k]) * (u - k)
+                    self.goal[s] = self.along(path, arcs.get(s), p)
                     self.grip[s] = gs[s] + (ge[s] - gs[s]) * p
             self.physics_step()
+
+    @staticmethod
+    def along(path, arc, p):
+        """Point at progress p (0 to 1) on a joint path: evenly over its
+        waypoints, or by arc (cumulative joint travel) when given."""
+        if arc is not None and arc[-1] > 0:
+            u = np.interp(p * arc[-1], arc, np.arange(len(path)))
+        else:
+            u = p * (len(path) - 1)
+        k = min(int(u), len(path) - 2)
+        return path[k] + (path[k + 1] - path[k]) * (u - k)
+
+    def stretch(self, paths, arcs, seconds):
+        """The move's duration, lengthened until the arm goals it commands at the
+        25 Hz control ticks stay within max_rate and max_accel. The move starts
+        at rest. Acceleration counts with its square root, as it scales with
+        1/T^2 on smooth paths; the 2% minimum step ends the loop where waypoint
+        corners make it scale with 1/T."""
+        dt = 20 * self.m.opt.timestep
+        while True:
+            n = int(seconds / self.m.opt.timestep)
+            ticks = [i for i in range(n) if (self.step_number + i) % 20 == 0]
+            if not ticks:
+                return seconds
+            worst = 0.0
+            for s, path in paths.items():
+                q = np.array(
+                    [path[0], path[0]]
+                    + [
+                        self.along(path, arcs.get(s), minimum_jerk((i + 1) / n))
+                        for i in ticks
+                    ]
+                )
+                rate = np.abs(np.diff(q, axis=0)) / dt / self.max_rate
+                accel = np.abs(np.diff(q, 2, axis=0)) / dt**2 / self.max_accel
+                worst = max(worst, rate.max(), np.sqrt(accel.max()))
+            if worst <= 1:
+                return seconds
+            seconds *= max(worst, 1.02)
 
     def stage(self, name, instruction):
         self.phase = name
