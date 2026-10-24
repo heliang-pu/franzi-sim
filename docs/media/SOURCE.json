@@ -1,0 +1,39 @@
+{
+  "purpose": "README previews: sped-up, downscaled animated WebP cut from recorded runs. outputs/ is not committed, so regenerate these after the scene or an expert changes.",
+  "method": "PyAV decodes the MP4 and keeps every `step`-th frame; Pillow resizes it (LANCZOS) and writes a lossy animated WebP (quality 70, method 6), 80 ms per frame, the last frame held 1.5 s, looping. Speed = step x 40 ms / 80 ms.",
+  "made_on": "2026-10-24",
+  "files": {
+    "kitting.webp": {
+      "source": "outputs/kitting_demo_seed7/expert.mp4 (overview with both wrist D405 insets)",
+      "recorded_with": "python -m sim.run_kitting --output outputs/kitting_demo_seed7 --seed 7 --record (now scenes.kitting.run)",
+      "episode": "seed 7, 62.8 s, 6/6 parts placed; the shortest seed of outputs/kitting_check_wrist_block",
+      "sha256_source": "4de392018aa24f48fd0b657f27cf583c1fbe5277b707d85e39722022aab051e6",
+      "source_frames": 1571,
+      "step": 10,
+      "speed": "5x",
+      "width": 720,
+      "frames": 158
+    },
+    "cameras.webp": {
+      "source": "outputs/kitting_demo_seed7/cameras.mp4 (2x2 mosaic of the four policy cameras)",
+      "recorded_with": "the same run as kitting.webp",
+      "sha256_source": "6b5eea50a5990bab6ef358939ce4aa868c5c42364e9ae7993949c0e1ec351b0b",
+      "source_frames": 1571,
+      "step": 10,
+      "speed": "5x",
+      "width": 560,
+      "frames": 158
+    },
+    "pick_place.webp": {
+      "source": "outputs/expert_wrist_block/expert.mp4 (overview with both wrist D405 insets)",
+      "recorded_with": "python -m sim.run_expert --output outputs/expert_wrist_block --record (now scenes.pick_place.run)",
+      "episode": "30.0 s, both parts placed; the current pick-and-place reference run",
+      "sha256_source": "5c408b37e2c668838c5c17d3f9c62cc281c828f14cdc1f4b4f2cc8f126d5e15f",
+      "source_frames": 749,
+      "step": 6,
+      "speed": "3x",
+      "width": 720,
+      "frames": 125
+    }
+  }
+}
