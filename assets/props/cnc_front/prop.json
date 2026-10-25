@@ -1,0 +1,1159 @@
+{
+  "id": "cnc_front",
+  "task": "cnc_tending",
+  "units": "m",
+  "origin": "floor_front_face_center",
+  "bbox_mm": [
+    770.0,
+    900.0,
+    1600.0
+  ],
+  "triangles": 37612,
+  "budget_class": "large",
+  "source": "source.blend",
+  "preview": "preview.png",
+  "parts": [
+    {
+      "name": "body",
+      "source_visual_object": "body",
+      "source_collision_objects": [
+        "COL__body__00",
+        "COL__body__01",
+        "COL__body__02",
+        "COL__body__03",
+        "COL__body__04",
+        "COL__body__05",
+        "COL__body__06",
+        "COL__body__07",
+        "COL__body__08",
+        "COL__body__09",
+        "COL__body__10",
+        "COL__body__11"
+      ],
+      "mass_kg": 180,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "parent": null,
+      "joint": null,
+      "texture_px": 1024,
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "collision": [
+        "body_col_00.obj",
+        "body_col_01.obj",
+        "body_col_02.obj",
+        "body_col_03.obj",
+        "body_col_04.obj",
+        "body_col_05.obj",
+        "body_col_06.obj",
+        "body_col_07.obj",
+        "body_col_08.obj",
+        "body_col_09.obj",
+        "body_col_10.obj",
+        "body_col_11.obj"
+      ]
+    },
+    {
+      "name": "door",
+      "source_visual_object": "door",
+      "source_collision_objects": [
+        "COL__door__00",
+        "COL__door__01",
+        "COL__door__02",
+        "COL__door__03",
+        "COL__door__04"
+      ],
+      "mass_kg": 3.316,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "parent": "body",
+      "joint": {
+        "type": "slide",
+        "parent": "body",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          -0.0175,
+          0,
+          1.01
+        ],
+        "range": [
+          0,
+          0.46
+        ],
+        "damping": 8,
+        "frictionloss": 3
+      },
+      "texture_px": 1024,
+      "assembly_mass_kg": 4.0,
+      "visual": "door.obj",
+      "texture": "door_albedo.png",
+      "collision": [
+        "door_col_00.obj",
+        "door_col_01.obj",
+        "door_col_02.obj",
+        "door_col_03.obj",
+        "door_col_04.obj"
+      ]
+    },
+    {
+      "name": "door_window",
+      "source_visual_object": "door_window",
+      "source_collision_objects": [
+        "COL__door_window__00"
+      ],
+      "mass_kg": 0.6839999999999999,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.45,
+        "shininess": 0.75,
+        "reflectance": 0.03
+      },
+      "parent": "door",
+      "joint": null,
+      "texture_px": null,
+      "rgba": [
+        0.85,
+        0.9,
+        0.95,
+        0.25
+      ],
+      "visual": "door_window.obj",
+      "texture": null,
+      "collision": [
+        "door_window_col_00.obj"
+      ]
+    },
+    {
+      "name": "table",
+      "source_visual_object": "T-slot work table",
+      "source_collision_objects": [
+        "COL__table__00"
+      ],
+      "mass_kg": 22,
+      "friction": 0.35,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "body",
+      "joint": null,
+      "texture_px": 1024,
+      "visual": "table.obj",
+      "texture": "table_albedo.png",
+      "collision": [
+        "table_col_00.obj"
+      ]
+    },
+    {
+      "name": "vise_body",
+      "source_visual_object": "vise_body",
+      "source_collision_objects": [
+        "COL__vise_body__00",
+        "COL__vise_body__01",
+        "COL__vise_body__02"
+      ],
+      "mass_kg": 2.8,
+      "friction": 0.3,
+      "mujoco_material": {
+        "specular": 0.5,
+        "shininess": 0.5,
+        "reflectance": 0.02
+      },
+      "parent": "table",
+      "joint": null,
+      "texture_px": 1024,
+      "visual": "vise_body.obj",
+      "texture": "vise_body_albedo.png",
+      "collision": [
+        "vise_body_col_00.obj",
+        "vise_body_col_01.obj",
+        "vise_body_col_02.obj"
+      ]
+    },
+    {
+      "name": "fixed_jaw",
+      "source_visual_object": "fixed_jaw",
+      "source_collision_objects": [
+        "COL__fixed_jaw__00"
+      ],
+      "mass_kg": 0.48,
+      "friction": 0.3,
+      "mujoco_material": {
+        "specular": 0.5,
+        "shininess": 0.5,
+        "reflectance": 0.02
+      },
+      "parent": "vise_body",
+      "joint": null,
+      "texture_px": 1024,
+      "visual": "fixed_jaw.obj",
+      "texture": "fixed_jaw_albedo.png",
+      "collision": [
+        "fixed_jaw_col_00.obj"
+      ]
+    },
+    {
+      "name": "vise_jaw",
+      "source_visual_object": "vise_jaw",
+      "source_collision_objects": [
+        "COL__vise_jaw__00"
+      ],
+      "mass_kg": 0.48,
+      "friction": 0.3,
+      "mujoco_material": {
+        "specular": 0.5,
+        "shininess": 0.5,
+        "reflectance": 0.02
+      },
+      "parent": "vise_body",
+      "joint": {
+        "type": "slide",
+        "parent": "vise_body",
+        "axis": [
+          1,
+          0,
+          0
+        ],
+        "anchor_m": [
+          0.06,
+          0,
+          0.865
+        ],
+        "range": [
+          0,
+          0.02
+        ],
+        "damping": 2,
+        "frictionloss": 1
+      },
+      "texture_px": 1024,
+      "visual": "vise_jaw.obj",
+      "texture": "vise_jaw_albedo.png",
+      "collision": [
+        "vise_jaw_col_00.obj"
+      ]
+    },
+    {
+      "name": "parallels",
+      "source_visual_object": "parallels",
+      "source_collision_objects": [
+        "COL__parallels__00",
+        "COL__parallels__01"
+      ],
+      "mass_kg": 0.1,
+      "friction": 0.3,
+      "mujoco_material": {
+        "specular": 0.5,
+        "shininess": 0.5,
+        "reflectance": 0.02
+      },
+      "parent": "vise_body",
+      "joint": null,
+      "texture_px": 1024,
+      "visual": "parallels.obj",
+      "texture": "parallels_albedo.png",
+      "collision": [
+        "parallels_col_00.obj",
+        "parallels_col_01.obj"
+      ]
+    },
+    {
+      "name": "spindle",
+      "source_visual_object": "spindle",
+      "source_collision_objects": [
+        "COL__spindle__00",
+        "COL__spindle__01"
+      ],
+      "mass_kg": 18,
+      "friction": 0.3,
+      "mujoco_material": {
+        "specular": 0.5,
+        "shininess": 0.5,
+        "reflectance": 0.02
+      },
+      "parent": "body",
+      "joint": null,
+      "texture_px": 1024,
+      "visual": "spindle.obj",
+      "texture": "spindle_albedo.png",
+      "collision": [
+        "spindle_col_00.obj",
+        "spindle_col_01.obj"
+      ]
+    },
+    {
+      "name": "panel",
+      "source_visual_object": "panel",
+      "source_collision_objects": [
+        "COL__panel__00"
+      ],
+      "mass_kg": 1.2,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "parent": "body",
+      "joint": null,
+      "texture_px": 1024,
+      "visual": "panel.obj",
+      "texture": "panel_albedo.png",
+      "collision": [
+        "panel_col_00.obj"
+      ]
+    },
+    {
+      "name": "screen",
+      "source_visual_object": "screen",
+      "source_collision_objects": [],
+      "mass_kg": 0.08,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "parent": "panel",
+      "joint": null,
+      "texture_px": 1024,
+      "emission": 0.5,
+      "visual": "screen.obj",
+      "texture": "screen_albedo.png",
+      "collision": []
+    },
+    {
+      "name": "cycle_start_bezel",
+      "source_visual_object": "cycle_start_bezel",
+      "source_collision_objects": [
+        "COL__cycle_start_bezel__00",
+        "COL__cycle_start_bezel__01",
+        "COL__cycle_start_bezel__02",
+        "COL__cycle_start_bezel__03",
+        "COL__cycle_start_bezel__04",
+        "COL__cycle_start_bezel__05",
+        "COL__cycle_start_bezel__06",
+        "COL__cycle_start_bezel__07",
+        "COL__cycle_start_bezel__08",
+        "COL__cycle_start_bezel__09",
+        "COL__cycle_start_bezel__10",
+        "COL__cycle_start_bezel__11",
+        "COL__cycle_start_bezel__12",
+        "COL__cycle_start_bezel__13",
+        "COL__cycle_start_bezel__14",
+        "COL__cycle_start_bezel__15"
+      ],
+      "mass_kg": 0.008,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "panel",
+      "joint": null,
+      "texture_px": 1024,
+      "library_instance": {
+        "prop_id": "panel_devices",
+        "part": "bezel"
+      },
+      "library_texture": "../panel_devices/bezel_albedo.png",
+      "mounting_position_m": [
+        -0.04,
+        -0.405,
+        1.0
+      ],
+      "local_to_prop_rotation": [
+        [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "visual": "cycle_start_bezel.obj",
+      "texture": "../panel_devices/bezel_albedo.png",
+      "collision": [
+        "cycle_start_bezel_col_00.obj",
+        "cycle_start_bezel_col_01.obj",
+        "cycle_start_bezel_col_02.obj",
+        "cycle_start_bezel_col_03.obj",
+        "cycle_start_bezel_col_04.obj",
+        "cycle_start_bezel_col_05.obj",
+        "cycle_start_bezel_col_06.obj",
+        "cycle_start_bezel_col_07.obj",
+        "cycle_start_bezel_col_08.obj",
+        "cycle_start_bezel_col_09.obj",
+        "cycle_start_bezel_col_10.obj",
+        "cycle_start_bezel_col_11.obj",
+        "cycle_start_bezel_col_12.obj",
+        "cycle_start_bezel_col_13.obj",
+        "cycle_start_bezel_col_14.obj",
+        "cycle_start_bezel_col_15.obj"
+      ]
+    },
+    {
+      "name": "cycle_start",
+      "source_visual_object": "cycle_start",
+      "source_collision_objects": [
+        "COL__cycle_start__00"
+      ],
+      "mass_kg": 0.01,
+      "friction": 0.8,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "cycle_start_bezel",
+      "joint": {
+        "type": "slide",
+        "parent": "cycle_start_bezel",
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "anchor_m": [
+          -0.04,
+          -0.405,
+          1.0
+        ],
+        "range": [
+          0.0,
+          0.004
+        ],
+        "damping": 0.6,
+        "frictionloss": 0.08,
+        "spring": {
+          "stiffness": 400.0,
+          "reference": 0.0
+        }
+      },
+      "texture_px": 1024,
+      "library_instance": {
+        "prop_id": "panel_devices",
+        "part": "btn_green"
+      },
+      "library_texture": "../panel_devices/btn_green_albedo.png",
+      "mounting_position_m": [
+        -0.04,
+        -0.405,
+        1.0
+      ],
+      "local_to_prop_rotation": [
+        [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "visual": "cycle_start.obj",
+      "texture": "../panel_devices/btn_green_albedo.png",
+      "collision": [
+        "cycle_start_col_00.obj"
+      ]
+    },
+    {
+      "name": "feed_hold_bezel",
+      "source_visual_object": "feed_hold_bezel",
+      "source_collision_objects": [
+        "COL__feed_hold_bezel__00",
+        "COL__feed_hold_bezel__01",
+        "COL__feed_hold_bezel__02",
+        "COL__feed_hold_bezel__03",
+        "COL__feed_hold_bezel__04",
+        "COL__feed_hold_bezel__05",
+        "COL__feed_hold_bezel__06",
+        "COL__feed_hold_bezel__07",
+        "COL__feed_hold_bezel__08",
+        "COL__feed_hold_bezel__09",
+        "COL__feed_hold_bezel__10",
+        "COL__feed_hold_bezel__11",
+        "COL__feed_hold_bezel__12",
+        "COL__feed_hold_bezel__13",
+        "COL__feed_hold_bezel__14",
+        "COL__feed_hold_bezel__15"
+      ],
+      "mass_kg": 0.008,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "panel",
+      "joint": null,
+      "texture_px": 1024,
+      "library_instance": {
+        "prop_id": "panel_devices",
+        "part": "bezel"
+      },
+      "library_texture": "../panel_devices/bezel_albedo.png",
+      "mounting_position_m": [
+        -0.04,
+        -0.325,
+        1.0
+      ],
+      "local_to_prop_rotation": [
+        [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "visual": "feed_hold_bezel.obj",
+      "texture": "../panel_devices/bezel_albedo.png",
+      "collision": [
+        "feed_hold_bezel_col_00.obj",
+        "feed_hold_bezel_col_01.obj",
+        "feed_hold_bezel_col_02.obj",
+        "feed_hold_bezel_col_03.obj",
+        "feed_hold_bezel_col_04.obj",
+        "feed_hold_bezel_col_05.obj",
+        "feed_hold_bezel_col_06.obj",
+        "feed_hold_bezel_col_07.obj",
+        "feed_hold_bezel_col_08.obj",
+        "feed_hold_bezel_col_09.obj",
+        "feed_hold_bezel_col_10.obj",
+        "feed_hold_bezel_col_11.obj",
+        "feed_hold_bezel_col_12.obj",
+        "feed_hold_bezel_col_13.obj",
+        "feed_hold_bezel_col_14.obj",
+        "feed_hold_bezel_col_15.obj"
+      ]
+    },
+    {
+      "name": "feed_hold",
+      "source_visual_object": "feed_hold",
+      "source_collision_objects": [
+        "COL__feed_hold__00"
+      ],
+      "mass_kg": 0.01,
+      "friction": 0.8,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "feed_hold_bezel",
+      "joint": {
+        "type": "slide",
+        "parent": "feed_hold_bezel",
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "anchor_m": [
+          -0.04,
+          -0.325,
+          1.0
+        ],
+        "range": [
+          0.0,
+          0.004
+        ],
+        "damping": 0.6,
+        "frictionloss": 0.08,
+        "spring": {
+          "stiffness": 400.0,
+          "reference": 0.0
+        }
+      },
+      "texture_px": 1024,
+      "library_instance": {
+        "prop_id": "panel_devices",
+        "part": "btn_yellow"
+      },
+      "library_texture": "../panel_devices/btn_yellow_albedo.png",
+      "mounting_position_m": [
+        -0.04,
+        -0.325,
+        1.0
+      ],
+      "local_to_prop_rotation": [
+        [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "visual": "feed_hold.obj",
+      "texture": "../panel_devices/btn_yellow_albedo.png",
+      "collision": [
+        "feed_hold_col_00.obj"
+      ]
+    },
+    {
+      "name": "estop_plate",
+      "source_visual_object": "estop_plate.001",
+      "source_collision_objects": [
+        "COL__estop_plate__00.001"
+      ],
+      "mass_kg": 0.012,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "panel",
+      "joint": null,
+      "texture_px": 1024,
+      "library_instance": {
+        "prop_id": "panel_devices",
+        "part": "estop_plate"
+      },
+      "library_texture": "../panel_devices/estop_plate_albedo.png",
+      "mounting_position_m": [
+        -0.04,
+        -0.365,
+        1.18
+      ],
+      "local_to_prop_rotation": [
+        [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "visual": "estop_plate.obj",
+      "texture": "../panel_devices/estop_plate_albedo.png",
+      "collision": [
+        "estop_plate_col_00.obj"
+      ]
+    },
+    {
+      "name": "estop",
+      "source_visual_object": "estop.001",
+      "source_collision_objects": [
+        "COL__estop__00.001"
+      ],
+      "mass_kg": 0.01,
+      "friction": 0.8,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "estop_plate",
+      "joint": {
+        "type": "slide",
+        "parent": "estop_plate",
+        "axis": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "anchor_m": [
+          -0.04,
+          -0.365,
+          1.18
+        ],
+        "range": [
+          0.0,
+          0.005
+        ],
+        "damping": 0.8,
+        "frictionloss": 0.12,
+        "latch": {
+          "engage_at_m": 0.0048,
+          "hold_at_m": 0.005,
+          "reset": "twist_to_release",
+          "release_axis": [
+            -1,
+            0,
+            0
+          ],
+          "implementation": "simulator state machine; hold qpos after threshold"
+        }
+      },
+      "texture_px": 1024,
+      "library_instance": {
+        "prop_id": "panel_devices",
+        "part": "estop"
+      },
+      "library_texture": "../panel_devices/estop_albedo.png",
+      "mounting_position_m": [
+        -0.04,
+        -0.365,
+        1.18
+      ],
+      "local_to_prop_rotation": [
+        [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "visual": "estop.obj",
+      "texture": "../panel_devices/estop_albedo.png",
+      "collision": [
+        "estop_col_00.obj"
+      ]
+    },
+    {
+      "name": "mode_selector",
+      "source_visual_object": "mode_selector",
+      "source_collision_objects": [
+        "COL__mode_selector__00"
+      ],
+      "mass_kg": 0.025,
+      "friction": 0.8,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "panel",
+      "joint": {
+        "type": "hinge",
+        "parent": "panel",
+        "axis": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "anchor_m": [
+          -0.04,
+          -0.365,
+          0.94
+        ],
+        "range": [
+          -0.7853981633974483,
+          0.7853981633974483
+        ],
+        "damping": 0.02,
+        "frictionloss": 0.025,
+        "detents": {
+          "positions_rad": [
+            -0.7853981633974483,
+            0.7853981633974483
+          ],
+          "labels": [
+            "MAN",
+            "AUTO"
+          ],
+          "holding_torque_nm": 0.08,
+          "snap_stiffness_nm_per_rad": 0.4,
+          "implementation": "bistable endpoint torque in simulator"
+        }
+      },
+      "texture_px": 1024,
+      "library_instance": {
+        "prop_id": "panel_devices",
+        "part": "selector_knob"
+      },
+      "library_texture": "../panel_devices/selector_knob_albedo.png",
+      "mounting_position_m": [
+        -0.04,
+        -0.365,
+        0.94
+      ],
+      "local_to_prop_rotation": [
+        [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "recommended_initial_qpos": -0.7853981633974483,
+      "visual": "mode_selector.obj",
+      "texture": "../panel_devices/selector_knob_albedo.png",
+      "collision": [
+        "mode_selector_col_00.obj"
+      ]
+    }
+  ],
+  "variants": [],
+  "dimensions_mm": {
+    "enclosure_xyz": [
+      700,
+      900,
+      1600
+    ],
+    "sheet_thickness": 1.5,
+    "kick_height": 120,
+    "kick_inset": 50,
+    "front_x": 0,
+    "opening_y": [
+      -240,
+      240
+    ],
+    "opening_z": [
+      800,
+      1220
+    ],
+    "door_frame_xyz": [
+      25,
+      500,
+      440
+    ],
+    "door_front_x": -30,
+    "door_window_xyz": [
+      5,
+      380,
+      300
+    ],
+    "handle_diameter": 20,
+    "handle_center_x_y": [
+      -60,
+      -220
+    ],
+    "handle_z": [
+      900,
+      1080
+    ],
+    "table_top_z": 800,
+    "table_x": [
+      20,
+      420
+    ],
+    "table_y": [
+      -200,
+      200
+    ],
+    "vise_body_x": [
+      30,
+      170
+    ],
+    "vise_body_y": [
+      -45,
+      45
+    ],
+    "vise_body_z": [
+      800,
+      850
+    ],
+    "fixed_jaw_face_x": 120,
+    "moving_jaw_face_open_x": 60,
+    "moving_jaw_face_clamped_x": 80,
+    "jaw_plate_yz": [
+      90,
+      30
+    ],
+    "jaw_plate_z": [
+      850,
+      880
+    ],
+    "parallel_xyz": [
+      8,
+      80,
+      10
+    ],
+    "parallel_centres_x": [
+      90,
+      110
+    ],
+    "part_bottom_z": 860,
+    "part_center_xy": [
+      100,
+      0
+    ],
+    "spindle_head_x": [
+      130,
+      260
+    ],
+    "end_mill_diameter": 10,
+    "end_mill_tip_z": 1150,
+    "panel_y": [
+      -440,
+      -290
+    ],
+    "panel_z": [
+      900,
+      1250
+    ],
+    "panel_projection": 40,
+    "screen_yz": [
+      120,
+      90
+    ],
+    "screen_z": [
+      1052,
+      1142
+    ]
+  },
+  "notes": "Only the compact front section is modelled. Door/frame/handle plus the fixed glass child have a combined moving mass of exactly 4 kg: frame 3.316 kg, glass 0.684 kg. The untextured door_window inherits the door slide; do not add a second joint. The 180 mm handle bar centreline is X=-60 mm, 30 mm proud of the X=-30 door face; its outer surface reaches X=-70, so the complete closed prop is 770 X, not 700. A 2 mm general edge radius cannot fit 1.5 mm sheet: thin-stock edges use R0.3, while solid enclosure trim, the plinth, door and panel use R2. The prescribed 120 x 90 screen and 60 mm emergency disc at Z1180 cannot share the top of a 150 mm-wide panel without overlap. The screen is immediately below the emergency disc, Z1052-1142; emergency, button and panel positions are preserved. All seven panel library components are appended, copied and rigidly transformed from the existing Task 2 source; original 1024 atlases are copied byte-for-byte, not rebaked. Press direction is +X; the two-position selector rotates about outward -X, inheriting its detents and recommended initial MAN angle. All main machine atlases are 2048. The specified one-piece table collider fills visual T slots. The specified two spindle proxies cover head and nose, omitting the narrow holder/cutter. Specified door proxies omit small handle standoffs. Coolant streaks and solid curled aluminium chips are visual. Jaw serrations use a 1.8 mm diagonal colour pattern and 0.18 mm source-PBR relief. Jaw mass, damping=2 and frictionloss=1 were unspecified benchmark choices. Automatic clamping, interlocks, button springs, e-stop latch and selector detents are simulator contracts in metadata, not a demonstrated machining controller. The parallels' 80 mm length runs along Y, parallel to the jaw faces, at X90 and X110; this leaves both parallels clear of the complete jaw stroke. No workpiece is fused to this prop: place either separate bar at [0.100,0,0.860]. The suggested X=340 world placement puts the workpiece at X440 but the handle at X280, outside the stated X300-480 ideal reach. Use a phased scene: X360 machine placement puts the initial handle at X300 and part at X460; the complete Y460 door stroke takes its handle through the gap between the two hands' preferred Y bands. The emergency centre Z1180 is also above the Z800-1000 preferred band. Exact geometry is retained; scene-level reach and regrasp planning remain necessary. Metres, Z up, front -X, applied transforms and a common prop frame. Triangulated OBJ, 30-degree smoothing and weighted normals. Smart UV 66 degrees, nonoverlapping islands, 0.01 margins. CPU Cycles 64-sample DIFFUSE COLOR * (0.4 + 0.6 * AO), RGB8 sRGB, excluding direct illumination and highlights. Full Principled PBR and original printing images are packed in source.blend. Preview: CPU Cycles 64, 1024 square, neutral grey, three area lights, front-left above. Per-instance colour multipliers of 0.97-1.03 may be applied by simulation.  Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder.",
+  "build_blender_version": "5.2.0 LTS",
+  "door_assembly_mass_kg": 4.0,
+  "device_placements": [
+    {
+      "name": "cycle_start",
+      "library_part": "btn_green",
+      "position_m": [
+        -0.04,
+        -0.405,
+        1.0
+      ],
+      "press_direction": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "feed_hold",
+      "library_part": "btn_yellow",
+      "position_m": [
+        -0.04,
+        -0.325,
+        1.0
+      ],
+      "press_direction": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "estop",
+      "library_part": "estop",
+      "position_m": [
+        -0.04,
+        -0.365,
+        1.18
+      ],
+      "press_direction": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "mode_selector",
+      "library_part": "selector_knob",
+      "position_m": [
+        -0.04,
+        -0.365,
+        0.94
+      ],
+      "press_direction": [
+        1,
+        0,
+        0
+      ],
+      "rotation_axis": [
+        -1,
+        0,
+        0
+      ]
+    }
+  ],
+  "panel_library_sha256": {
+    "bezel.obj": "634cb32e47fccb968db71822fbaf6f995a4af076c1c685e172dcd3065152762e",
+    "bezel_albedo.png": "f3052cfd8a911a779fb48ded0eb035d8cb59dc4bd60239c933437ba637014568",
+    "bezel_col_00.obj": "fc943858a6a108a6bfba73528fdcdc6cc161cc4fff4156fc0d869454b6461969",
+    "bezel_col_01.obj": "6cfea49cc382a95d2828f82a3e64d4db9f64b0beee7ccddf02d59657e62ae213",
+    "bezel_col_02.obj": "08f9ca38797995ff06741c841866a009a5415bf1c1fdfeba1b0519c705bf5564",
+    "bezel_col_03.obj": "4d92c72a4e608b1b6f156884599a3f6097d6070534a2da868a9acaad6affc47f",
+    "bezel_col_04.obj": "cf3084c2f8eb8ec0b97211bf335bc6224144693ff9f7ca09d4f1685374f3b238",
+    "bezel_col_05.obj": "1cfd39384d78fe51d74d959fe57703c85d99990031eea312c41c66a46bb09620",
+    "bezel_col_06.obj": "e36960359e27aed4708bbc47cecbd614ecf446347b009abf948d80bf5166a050",
+    "bezel_col_07.obj": "c0833eeba728ff7ee19652fc4c434c0f36343827bc434f364aa43f42b6e7a6fb",
+    "bezel_col_08.obj": "f2d924e964491ea88eb3127035ad6cca7011a2712c8b33c495f8cf96f3d19c63",
+    "bezel_col_09.obj": "45ae311ecc5a53f9114f0f3cff8333651734fbdb825cea0157b73cec41088e0f",
+    "bezel_col_10.obj": "43b48c459ac27122711f76a5751b7491ddd211136504b424e870d9911263a24d",
+    "bezel_col_11.obj": "013919ccb7355020c3d3682666929d14715439bad30bf2342e488205e99d82e7",
+    "bezel_col_12.obj": "6044ee4490579bb01c59b2d1d452fae7d038f78126e4bbc4ab1ba18f24868f18",
+    "bezel_col_13.obj": "b388e397e943a5a5937604ddddd7f33348ff99a551e09d5dab62a3ea6a5bd201",
+    "bezel_col_14.obj": "d65e52eb0df5eb550bcb57a18216bfff69794123eca6c5fdb60f1739fe50426d",
+    "bezel_col_15.obj": "4858e36bd3c48819b9214891395639e8fa4dd1be56db786f717d2d5eb077cf05",
+    "btn_green.obj": "4673f630685359727a6cfee2f850c07b3f57395ddafcad3f798476b14ff81b9c",
+    "btn_green_albedo.png": "5db613458a413c6743f3112c05709abaa7f364c877e7a52a1b2650a8ba2ff17f",
+    "btn_green_col_00.obj": "588ea38eca939d1e362d8903bb7c23a42c1b47ab7b54544f7df8922c54921c36",
+    "btn_red.obj": "2996519bb26c217a6f8fb91c2d2357fa10652a19508022b4e7b31ba224a985eb",
+    "btn_red_albedo.png": "26e813c11f4e0b5158ea485b9d50c7021cf7b940456da50bd753dc6566865f19",
+    "btn_red_col_00.obj": "588ea38eca939d1e362d8903bb7c23a42c1b47ab7b54544f7df8922c54921c36",
+    "btn_yellow.obj": "9bd6bd5b5a43b348dea30f051b3aaedb39a96848700480c1fbe236e6b2e8c887",
+    "btn_yellow_albedo.png": "0d845fdc4cd2c21c1b0ccdd54a11dc922f9f20be45dfbf5b716ea0e9758c88d2",
+    "btn_yellow_col_00.obj": "588ea38eca939d1e362d8903bb7c23a42c1b47ab7b54544f7df8922c54921c36",
+    "emergency_print.png": "cc37ef2b0c10d30425e3d5169ba2f96c48b63fe94f4f0ce886cb1aaff2ac2a74",
+    "estop.obj": "c26329c3b8af3f8091a393c59d585e8c33d01bfab16b59b2e33b86fc950e59b3",
+    "estop_albedo.png": "347e1b1228db5f10f40505ca52242c473ca5b16b3a9b11215d431218641ba9a0",
+    "estop_col_00.obj": "3ecf42f2563a710b981880d13e4727bb8a143153a18ff87809d150221d458aa6",
+    "estop_plate.obj": "d6af4ee047d12d08c6a1d41d9822eb597fdc39a62bf99449c754c7270b0d2dd4",
+    "estop_plate_albedo.png": "1bc2013cad570e67f211f40cfa5735f397a2a80f2ea2da558506dc692fbfd96d",
+    "estop_plate_col_00.obj": "6ab1de67b68687983fa42ab115badcf2eb7c44f61b7b55a2dbdc9be1702e2343",
+    "legend_auto_print.png": "e12af4eb009ed97886753a9a420c1f352400cc44617dda2e814352aa77187f4f",
+    "legend_cycle_start_print.png": "f3ec863a820e9c7d143695ffaf7ad3c5c55b45874cba4561d8cc42ce207ceb11",
+    "legend_feed_hold_print.png": "136a58f018c319edb64107cf5470ed41c4f2e8504f5de4414427bdd7785bea51",
+    "legend_man_print.png": "987cdfe6267bc0c61f0edf2ddbf94a759531262e1d59e90efa3896a9af08602b",
+    "legend_plate.obj": "be0a454df56c9d6d92afef068e6976fba50b8d756611d83f7b9600f79b6a1497",
+    "legend_plate_albedo.png": "d140e9303ec22b44b325a43c2c7e1c8fee6f685f99d759c64e2ae2303f1b87b8",
+    "legend_plate_albedo_v1.png": "619cf4b357afb0cd47f11f3385bee982765af9352b88ebbc14a50d5117717a80",
+    "legend_plate_albedo_v2.png": "40a2ab6fe18504c2b444a25b32220338096c5d3fee80853a6656b873b95870ca",
+    "legend_plate_albedo_v3.png": "7573518c2cdebd9b008bc4cd0c42656ec6632bfd6d8ca523d257a635c34d3183",
+    "legend_plate_albedo_v4.png": "7fddf0bedd335b07fc68cb70b6dfb41ace377458b74fb9b5cc2f59ad04ead9c1",
+    "legend_plate_albedo_v5.png": "685a3f54a57691e7ba824ba782bf33e4e7f2b92b586ebf2fa2ef158459bd595c",
+    "legend_plate_col_00.obj": "34a7cc08c6d3e682b69706fc48e6a4f1e0e97cfa55fecdd85b4cf1646ab1aeb1",
+    "legend_start_print.png": "fed749b1ba3b8418fba0648d816bed85e4b7009d5edf86ebdaf3137478c9efa3",
+    "legend_stop_print.png": "44ed3f99b89382fa48eff44087c1c278bc53fa3536b6870607f9fe9e33ee39a8",
+    "pilot_amber.obj": "a2ffabea160488d46c25b235410f4ac6c008abba289dad9f7cb09d01928c63f0",
+    "pilot_amber_albedo.png": "0e862568373239eed0ee11d38296d8a4ec4c46c1bb57e1b4af297d48c7a4f91a",
+    "pilot_amber_col_00.obj": "4d5e4a34338f3771c38564af0545b09258c4f7e73b9d094d43c35e0438618ac9",
+    "pilot_green.obj": "39ea75cd8c818de2535c91b0de1745755aadb1e5418665233c6f7c40ad79c865",
+    "pilot_green_albedo.png": "5d3b76273db65e9933d594493fa69b89e20a4dad75140b58d1f75f8595a7a056",
+    "pilot_green_col_00.obj": "4d5e4a34338f3771c38564af0545b09258c4f7e73b9d094d43c35e0438618ac9",
+    "pilot_red.obj": "73459e30c8bc54638d24eedd6d873169e220cd893b39e328f3f420107b080e3d",
+    "pilot_red_albedo.png": "cd65a2154e3f50e518480c673568aca5a900dfba7113ad332f530f1eefba785b",
+    "pilot_red_col_00.obj": "4d5e4a34338f3771c38564af0545b09258c4f7e73b9d094d43c35e0438618ac9",
+    "preview.png": "64e43fd1b8659f2dca5b7749a6caa910ebf9a67bb88b2bbad89a19881e32952a",
+    "prop.json": "4b0b51898a4a798b59b92aa008a0a2640a0df569d6cabb0273c074c3b02236eb",
+    "selector_knob.obj": "bf14bb241eda4ad7483c44ca540e60cf9cb7d8c17078a36d511a2a6331d41c62",
+    "selector_knob_albedo.png": "9e5cc0b0e4755e90396b8078e1c5694696820a0d1c6f066788726f287323fe45",
+    "selector_knob_col_00.obj": "bbdae94db1c63cee15c0891248814987e6371b096297bcf7c617baa5f289f184",
+    "source.blend": "bf1f4f432e19ca25640b8b9aca0a1d5d7cef600568b64e95b104fa435191e8d5"
+  },
+  "collision_exclusions": [
+    [
+      "cycle_start",
+      "body"
+    ],
+    [
+      "cycle_start",
+      "panel"
+    ],
+    [
+      "cycle_start",
+      "cycle_start_bezel"
+    ],
+    [
+      "feed_hold",
+      "body"
+    ],
+    [
+      "feed_hold",
+      "panel"
+    ],
+    [
+      "feed_hold",
+      "feed_hold_bezel"
+    ],
+    [
+      "estop",
+      "body"
+    ],
+    [
+      "estop",
+      "panel"
+    ],
+    [
+      "estop",
+      "estop_plate"
+    ],
+    [
+      "mode_selector",
+      "body"
+    ],
+    [
+      "mode_selector",
+      "panel"
+    ],
+    [
+      "mode_selector",
+      "panel"
+    ]
+  ],
+  "workpiece_pose_m": [
+    0.1,
+    0,
+    0.86
+  ],
+  "recommended_world_translation_m": [
+    0.36,
+    0,
+    0
+  ],
+  "jaw_controller": {
+    "trigger": "cycle_start",
+    "open_qpos_m": 0,
+    "clamp_qpos_m": 0.02,
+    "part_diameter_m": 0.04
+  },
+  "preview_open": "preview_open.png",
+  "preview_panel": "preview_panel.png"
+}

@@ -1,0 +1,130 @@
+{
+  "id": "sort_bin",
+  "task": "parcel_sorting",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    240.165,
+    160.0,
+    340.0
+  ],
+  "budget_class": "medium",
+  "triangles": 2912,
+  "parts": [
+    {
+      "name": "body",
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "body_col_00.obj",
+        "body_col_01.obj",
+        "body_col_02.obj",
+        "body_col_03.obj",
+        "body_col_04.obj",
+        "body_col_05.obj"
+      ],
+      "mass_kg": 0.77,
+      "friction": 0.3,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": null,
+      "joint": null,
+      "source_visual_object": "body",
+      "source_collision_objects": [
+        "COL bin bottom",
+        "COL bin -X wall",
+        "COL bin +X wall",
+        "COL bin -Y wall",
+        "COL bin +Y wall",
+        "COL 30-degree entry lip"
+      ]
+    },
+    {
+      "name": "sign",
+      "visual": "sign.obj",
+      "texture": "sign_albedo.png",
+      "texture_px": 1024,
+      "collision": [],
+      "mass_kg": 0.03,
+      "friction": 0.3,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "body",
+      "joint": null,
+      "source_visual_object": "sign",
+      "source_collision_objects": []
+    }
+  ],
+  "variants": [
+    {
+      "name": "A",
+      "textures": {
+        "sign": "sign_albedo.png"
+      },
+      "zone_color": "#D32F2F"
+    },
+    {
+      "name": "B",
+      "textures": {
+        "sign": "sign_albedo_v1.png"
+      },
+      "zone_color": "#1976D2"
+    },
+    {
+      "name": "C",
+      "textures": {
+        "sign": "sign_albedo_v2.png"
+      },
+      "zone_color": "#388E3C"
+    }
+  ],
+  "source": "source.blend",
+  "preview": "preview.png",
+  "dimensions_mm": {
+    "bin_body_xyz": [
+      200,
+      160,
+      150
+    ],
+    "wall": 1,
+    "entry_lip_width": 30,
+    "entry_lip_angle_from_horizontal_deg": 30,
+    "post_diameter": 20,
+    "post_top_z": 300,
+    "sign_yz": [
+      120,
+      80
+    ],
+    "sign_center_z": 300
+  },
+  "notes": "A/B/C differ only in the sign texture (A red, B blue, C green); the body, post, geometry and mass stay identical. The 200x160x150 dimensions refer to the open bin body; the entry lip, post and 120x80 sign enlarge its total bbox. Lip width is measured along the 30 mm sloping sheet, rising 30 degrees above horizontal toward -X to guide a parcel into the bin. All parts are recentered together to the complete bottom-bbox centre, not independently. The bin remains open; exactly six proxies represent floor, four walls and entry lip. The post/sign are decorative and intentionally noncolliding under the prescribed six-piece budget. The 0.8 kg total is the specified static effective mass. Metres, Z up, front -X; all meshes and proxies share the prop origin and identity transforms. Smart UV 66 degrees with 0.01 island margins; 30-degree split smoothing and exported normals. Albedo is CPU Cycles 64-sample diffuse COLOR * (0.4 + 0.6 * AO), 8-bit sRGB; no direct light or highlights. Full procedural Principled PBR and source label UVs are packed in source.blend. Colour grain is centred on nominal colour with about +/-3 percent variation. Generated with Blender 5.2.0 LTS. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder.",
+  "functional_frame_offset_m": [
+    0.0060825,
+    -0.0,
+    -0.0
+  ],
+  "source_artwork": {
+    "A": "zone_A.png",
+    "B": "zone_B.png",
+    "C": "zone_C.png"
+  },
+  "simulation": {
+    "fixed_base": true
+  },
+  "recommended_placement_m": {
+    "origin_x": 0.4,
+    "origin_y_options": [
+      -0.3,
+      0,
+      0.3
+    ],
+    "support_z": 0.8
+  }
+}

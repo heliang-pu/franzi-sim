@@ -1,0 +1,217 @@
+{
+  "id": "drawer_cabinet",
+  "task": "lidded_tote",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    264.999986,
+    300.000012,
+    200.000003
+  ],
+  "triangles": 8028,
+  "budget_class": "medium",
+  "source": "source.blend",
+  "preview": "preview.png",
+  "parts": [
+    {
+      "name": "body",
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "body_col_00.obj",
+        "body_col_01.obj",
+        "body_col_02.obj",
+        "body_col_03.obj",
+        "body_col_04.obj"
+      ],
+      "mass_kg": 4.0,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "parent": null,
+      "joint": null,
+      "source_visual_object": "body",
+      "source_collision_objects": [
+        "Cabinet shell proxy",
+        "Cabinet shell proxy.001",
+        "Cabinet shell proxy.002",
+        "Cabinet shell proxy.003",
+        "Cabinet shell proxy.004"
+      ]
+    },
+    {
+      "name": "drawer_lower",
+      "visual": "drawer_lower.obj",
+      "texture": "drawer_lower_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "drawer_lower_col_00.obj",
+        "drawer_lower_col_01.obj",
+        "drawer_lower_col_02.obj",
+        "drawer_lower_col_03.obj",
+        "drawer_lower_col_04.obj",
+        "drawer_lower_col_05.obj",
+        "drawer_lower_col_06.obj",
+        "drawer_lower_col_07.obj",
+        "drawer_lower_col_08.obj",
+        "drawer_lower_col_09.obj",
+        "drawer_lower_col_10.obj"
+      ],
+      "mass_kg": 0.6,
+      "friction": 0.3,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "parent": "body",
+      "joint": {
+        "type": "slide",
+        "parent": "body",
+        "axis": [
+          -1,
+          0,
+          0
+        ],
+        "anchor_m": [
+          0.007500000298023224,
+          0,
+          0
+        ],
+        "range": [
+          0.0,
+          0.18
+        ],
+        "damping": 1.0,
+        "frictionloss": 0.15
+      },
+      "source_visual_object": "drawer_lower",
+      "source_collision_objects": [
+        "Drawer floor/wall/front proxy",
+        "Drawer floor/wall/front proxy.001",
+        "Drawer floor/wall/front proxy.002",
+        "Drawer floor/wall/front proxy.003",
+        "Drawer floor/wall/front proxy.004",
+        "Drawer floor/wall/front proxy.005",
+        "Arched handle proxy 0",
+        "Arched handle proxy 1",
+        "Arched handle proxy 2",
+        "Arched handle proxy 3",
+        "Arched handle proxy 4"
+      ]
+    },
+    {
+      "name": "drawer_upper",
+      "visual": "drawer_upper.obj",
+      "texture": "drawer_upper_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "drawer_upper_col_00.obj",
+        "drawer_upper_col_01.obj",
+        "drawer_upper_col_02.obj",
+        "drawer_upper_col_03.obj",
+        "drawer_upper_col_04.obj",
+        "drawer_upper_col_05.obj",
+        "drawer_upper_col_06.obj",
+        "drawer_upper_col_07.obj",
+        "drawer_upper_col_08.obj",
+        "drawer_upper_col_09.obj",
+        "drawer_upper_col_10.obj"
+      ],
+      "mass_kg": 0.6,
+      "friction": 0.3,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "parent": "body",
+      "joint": {
+        "type": "slide",
+        "parent": "body",
+        "axis": [
+          -1,
+          0,
+          0
+        ],
+        "anchor_m": [
+          0.007500000298023224,
+          0,
+          0
+        ],
+        "range": [
+          0.0,
+          0.18
+        ],
+        "damping": 1.0,
+        "frictionloss": 0.15
+      },
+      "source_visual_object": "drawer_upper",
+      "source_collision_objects": [
+        "Drawer floor/wall/front proxy.006",
+        "Drawer floor/wall/front proxy.007",
+        "Drawer floor/wall/front proxy.008",
+        "Drawer floor/wall/front proxy.009",
+        "Drawer floor/wall/front proxy.010",
+        "Drawer floor/wall/front proxy.011",
+        "Arched handle proxy 0.001",
+        "Arched handle proxy 1.001",
+        "Arched handle proxy 2.001",
+        "Arched handle proxy 3.001",
+        "Arched handle proxy 4.001"
+      ]
+    }
+  ],
+  "variants": [],
+  "dimensions_mm": {
+    "cabinet_shell_xyz": [
+      250,
+      300,
+      200
+    ],
+    "shell_thickness": 1,
+    "shell_center_x": 7.500000298023224,
+    "drawer_front_yz": [
+      290,
+      95
+    ],
+    "drawer_clear_cavity_xyz": [
+      230,
+      270,
+      80
+    ],
+    "drawer_floor_z": [
+      5,
+      105
+    ],
+    "handle_span_projection": [
+      100,
+      15
+    ],
+    "handle_grip_diameter": 8,
+    "label_slot_yz": [
+      50,
+      20
+    ],
+    "drawer_stroke": 180
+  },
+  "notes": "Optional two-drawer variant, built in full. Closed steel shell is 250 X x 300 Y x 200 Z mm with 1 mm sheets; both 290 x 95 mm fronts and both 230 X x 270 Y x 80 mm cavities fit without reducing the specified dimensions. The complete closed assembly, including 15 mm projecting handles, is translated to a bottom bounding-box-centre datum; the nominal shell centre is X=7.500000 mm in that frame. Each drawer has its own -X slide, stroke 0..0.180 m, damping 1.0, and default frictionloss 0.15 N. Cabinet 4 kg is fixed; each drawer is 0.6 kg. The 100 mm arched handles have real open finger clearance, brushed silver surfaces and handling smudges. A 50 x 20 mm label pocket is retained on each front. Five shell proxies and six pan/front proxies per drawer are supplemented by five convex handle pieces per drawer so robot fingers do not pass through the pulls or a filled-in arch. Non-contact telescopic guide rails are visual only. Sheet edges use 0.25..0.35 mm bevels to fit the 1 mm steel; handle edges are rounded. Friction defaults are cabinet 0.50 and drawers 0.30. At the example placement, the first 60 mm of pull travel lies in the robot's nominal X300..480 mm workspace; the full 180 mm joint stroke is available for scene-specific placement. Metres, Z up, front -X; closed parts share the same prop frame, all transforms applied. Triangulated OBJ with normals, 30-degree smoothing and a nonoverlapping Smart UV 66-degree atlas. Each rigid part has a 2048-square, 8-bit sRGB albedo: CPU Cycles 64-sample DIFFUSE COLOR * (0.4 + 0.6 * AO), without direct light or highlights. Full Principled PBR is packed in source.blend. The 1024-square preview uses CPU Cycles 64, three lights, neutral grey and a front-left camera. Joint dynamics are integration parameters, not a claim of an executed robot episode. Generated with Blender 5.2.0 LTS. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder.",
+  "fixed": true,
+  "recommended_placement_m": {
+    "shell_center": [
+      0.5,
+      -0.15,
+      0.8
+    ],
+    "origin": [
+      0.4924999997019768,
+      -0.15,
+      0.8
+    ]
+  },
+  "robot_nominal_pull_travel_m": 0.06
+}

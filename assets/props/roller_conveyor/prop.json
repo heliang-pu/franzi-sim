@@ -1,0 +1,634 @@
+{
+  "id": "roller_conveyor",
+  "task": "carton_carry",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    499.99999,
+    440.0,
+    70.0
+  ],
+  "budget_class": "large",
+  "triangles": 66258,
+  "parts": [
+    {
+      "name": "frame",
+      "visual": "frame.obj",
+      "texture": "frame_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "frame_col_00.obj",
+        "frame_col_01.obj",
+        "frame_col_02.obj",
+        "frame_col_03.obj",
+        "frame_col_04.obj",
+        "frame_col_05.obj",
+        "frame_col_06.obj",
+        "frame_col_07.obj",
+        "frame_col_08.obj",
+        "frame_col_09.obj",
+        "frame_col_10.obj",
+        "frame_col_11.obj",
+        "frame_col_12.obj",
+        "frame_col_13.obj",
+        "frame_col_14.obj",
+        "frame_col_15.obj",
+        "frame_col_16.obj",
+        "frame_col_17.obj",
+        "frame_col_18.obj",
+        "frame_col_19.obj",
+        "frame_col_20.obj",
+        "frame_col_21.obj",
+        "frame_col_22.obj",
+        "frame_col_23.obj",
+        "frame_col_24.obj",
+        "frame_col_25.obj",
+        "frame_col_26.obj",
+        "frame_col_27.obj",
+        "frame_col_28.obj",
+        "frame_col_29.obj",
+        "frame_col_30.obj",
+        "frame_col_31.obj",
+        "frame_col_32.obj",
+        "frame_col_33.obj",
+        "frame_col_34.obj",
+        "frame_col_35.obj"
+      ],
+      "mass_kg": 4.0,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "parent": null,
+      "joint": null,
+      "source_visual_object": "frame",
+      "source_collision_objects": [
+        "COL C-channel web or flange",
+        "COL C-channel web or flange.001",
+        "COL C-channel web or flange.002",
+        "COL L-foot base",
+        "COL L-foot upright",
+        "COL L-foot base.001",
+        "COL L-foot upright.001",
+        "COL stop support ear",
+        "COL fixed spindle",
+        "COL fixed spindle.001",
+        "COL fixed spindle.002",
+        "COL fixed spindle.003",
+        "COL fixed spindle.004",
+        "COL fixed spindle.005",
+        "COL fixed spindle.006",
+        "COL fixed spindle.007",
+        "COL fixed spindle.008",
+        "COL fixed spindle.009",
+        "COL C-channel web or flange.003",
+        "COL C-channel web or flange.004",
+        "COL C-channel web or flange.005",
+        "COL L-foot base.002",
+        "COL L-foot upright.002",
+        "COL L-foot base.003",
+        "COL L-foot upright.003",
+        "COL stop support ear.001",
+        "COL fixed spindle.010",
+        "COL fixed spindle.011",
+        "COL fixed spindle.012",
+        "COL fixed spindle.013",
+        "COL fixed spindle.014",
+        "COL fixed spindle.015",
+        "COL fixed spindle.016",
+        "COL fixed spindle.017",
+        "COL fixed spindle.018",
+        "COL fixed spindle.019"
+      ]
+    },
+    {
+      "name": "roller_00",
+      "visual": "roller_00.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_00_col_00.obj"
+      ],
+      "mass_kg": 0.45,
+      "friction": 0.3,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "parent": "frame",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          -0.215,
+          0,
+          0.035
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0.0
+      },
+      "source_visual_object": "roller_00",
+      "source_collision_objects": [
+        "COL roller 00 16-sided"
+      ]
+    },
+    {
+      "name": "roller_01",
+      "visual": "roller_01.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_01_col_00.obj"
+      ],
+      "mass_kg": 0.45,
+      "friction": 0.3,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "parent": "frame",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          -0.16499999999999998,
+          0,
+          0.035
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0.0
+      },
+      "source_visual_object": "roller_01",
+      "source_collision_objects": [
+        "COL roller 01 16-sided"
+      ],
+      "atlas_copy_from": "roller_00"
+    },
+    {
+      "name": "roller_02",
+      "visual": "roller_02.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_02_col_00.obj"
+      ],
+      "mass_kg": 0.45,
+      "friction": 0.3,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "parent": "frame",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          -0.115,
+          0,
+          0.035
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0.0
+      },
+      "source_visual_object": "roller_02",
+      "source_collision_objects": [
+        "COL roller 02 16-sided"
+      ],
+      "atlas_copy_from": "roller_00"
+    },
+    {
+      "name": "roller_03",
+      "visual": "roller_03.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_03_col_00.obj"
+      ],
+      "mass_kg": 0.45,
+      "friction": 0.3,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "parent": "frame",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          -0.065,
+          0,
+          0.035
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0.0
+      },
+      "source_visual_object": "roller_03",
+      "source_collision_objects": [
+        "COL roller 03 16-sided"
+      ],
+      "atlas_copy_from": "roller_00"
+    },
+    {
+      "name": "roller_04",
+      "visual": "roller_04.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_04_col_00.obj"
+      ],
+      "mass_kg": 0.45,
+      "friction": 0.3,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "parent": "frame",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          -0.015000000000000001,
+          0,
+          0.035
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0.0
+      },
+      "source_visual_object": "roller_04",
+      "source_collision_objects": [
+        "COL roller 04 16-sided"
+      ],
+      "atlas_copy_from": "roller_00"
+    },
+    {
+      "name": "roller_05",
+      "visual": "roller_05.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_05_col_00.obj"
+      ],
+      "mass_kg": 0.45,
+      "friction": 0.3,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "parent": "frame",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.035,
+          0,
+          0.035
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0.0
+      },
+      "source_visual_object": "roller_05",
+      "source_collision_objects": [
+        "COL roller 05 16-sided"
+      ],
+      "atlas_copy_from": "roller_00"
+    },
+    {
+      "name": "roller_06",
+      "visual": "roller_06.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_06_col_00.obj"
+      ],
+      "mass_kg": 0.45,
+      "friction": 0.3,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "parent": "frame",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.08499999999999999,
+          0,
+          0.035
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0.0
+      },
+      "source_visual_object": "roller_06",
+      "source_collision_objects": [
+        "COL roller 06 16-sided"
+      ],
+      "atlas_copy_from": "roller_00"
+    },
+    {
+      "name": "roller_07",
+      "visual": "roller_07.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_07_col_00.obj"
+      ],
+      "mass_kg": 0.45,
+      "friction": 0.3,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "parent": "frame",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.135,
+          0,
+          0.035
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0.0
+      },
+      "source_visual_object": "roller_07",
+      "source_collision_objects": [
+        "COL roller 07 16-sided"
+      ],
+      "atlas_copy_from": "roller_00"
+    },
+    {
+      "name": "roller_08",
+      "visual": "roller_08.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_08_col_00.obj"
+      ],
+      "mass_kg": 0.45,
+      "friction": 0.3,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "parent": "frame",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.185,
+          0,
+          0.035
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0.0
+      },
+      "source_visual_object": "roller_08",
+      "source_collision_objects": [
+        "COL roller 08 16-sided"
+      ],
+      "atlas_copy_from": "roller_00"
+    },
+    {
+      "name": "roller_09",
+      "visual": "roller_09.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_09_col_00.obj"
+      ],
+      "mass_kg": 0.45,
+      "friction": 0.3,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "parent": "frame",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.23500000000000001,
+          0,
+          0.035
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0.0
+      },
+      "source_visual_object": "roller_09",
+      "source_collision_objects": [
+        "COL roller 09 16-sided"
+      ],
+      "atlas_copy_from": "roller_00"
+    },
+    {
+      "name": "end_stop",
+      "visual": "end_stop.obj",
+      "texture": "end_stop_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "end_stop_col_00.obj"
+      ],
+      "mass_kg": 0.38,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "parent": "frame",
+      "joint": null,
+      "source_visual_object": "end_stop",
+      "source_collision_objects": [
+        "COL removable end stop"
+      ],
+      "removable": true
+    }
+  ],
+  "variants": [
+    {
+      "name": "stop_fitted",
+      "disabled_parts": []
+    },
+    {
+      "name": "stop_removed",
+      "disabled_parts": [
+        "end_stop"
+      ]
+    }
+  ],
+  "source": "source.blend",
+  "preview": "preview.png",
+  "dimensions_mm": {
+    "overall_length": 500,
+    "frame_length": 480,
+    "inside_width": 320,
+    "roller_diameter": 30,
+    "roller_length": 316,
+    "roller_count": 10,
+    "roller_pitch": 50,
+    "roller_top_above_table": 50,
+    "side_frame_hwt": [
+      40,
+      20,
+      2
+    ],
+    "side_frame_top_above_table": 40,
+    "foot_base_xy": [
+      40,
+      40
+    ],
+    "end_stop_xyz": [
+      20,
+      320,
+      30
+    ],
+    "end_stop_top_above_rollers": 20,
+    "fitted_overall_xyz": [
+      500,
+      440,
+      70
+    ]
+  },
+  "notes": "Passive conveyor, flow -X, four actual 40x40 L-feet on the tabletop. Ten galvanised D30 x 316 hollow steel rollers, 50 mm pitch, top 50 mm; blue #1E4C9A real 40x20x2 C-channels with top at 40 mm preserve the 10 mm hand clearance. Thin sheet edges use 0.4-0.45 mm 3-segment radii so the 2 mm walls survive; the stop uses 2 mm radii. SPEC CONFLICT: a single convex collider cannot represent the 18x36 mm open C-channel within the general 1 mm rule. Each side therefore has three convex web/flange boxes, rather than one hull filling its groove. Feet, fixed axles and support ears also have individual convex proxies. Each rotating roller has exactly one 16-sided cylinder collider; its polygon vertices lie on the nominal D30 circle. The removable 320Y x 20X x 30Z stop has its top 20 mm above the rollers and is fitted immediately outside the -X end of the 480 mm side channels, so the complete fitted conveyor is exactly 500 mm long. The ten rollers occupy a 480 mm envelope including their radii. The stop is outboard of that envelope to avoid intersecting the first roller. Feet give 440 mm overall width; the internal clear width remains 320. All meshes, proxies and hinge anchors have been shifted +10 mm X together to centre the fitted assembly. Remove the end_stop part for the stop_removed variant. Continuous Y hinges use limited=false, continuous=true, damping=0.001 and frictionloss=0. The finite +/-pi range is present only for the existing schema; simulation must respect limited=false and allow unlimited rotation. Identical translated roller meshes retain identical UVs and reuse the actual roller_00 2048px Cycles bake in ten separate PNG files. Listed masses are reasonable modelling estimates because no equipment masses were specified. Metres, Z up, front -X; identity object transforms and one common prop frame for all parts. 30-degree split smoothing, weighted normals, triangulated OBJ with normals. Nonoverlapping Smart UV 66-degree atlases, 0.01 island margins. Albedo = CPU Cycles 64-sample diffuse COLOR * (0.4 + 0.6 * AO), 8-bit sRGB, without direct lighting or highlights. Full procedural Principled PBR and original label UVs are packed in source.blend. Preview: 1024 square, CPU Cycles 64, neutral grey, three area lights, front-left above. Generated with Blender 5.2.0 LTS. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder.",
+  "flow_axis": [
+    -1,
+    0,
+    0
+  ],
+  "functional_frame_offset_m": [
+    0.01,
+    0,
+    0
+  ],
+  "recommended_placement_m": {
+    "frame_center_x": 0.4,
+    "origin_y": 0,
+    "support_z": 0.8
+  },
+  "static_parts": [
+    "frame",
+    "end_stop"
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "id": "_test_cube",
+  "task": "pipeline_test",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    100.0,
+    100.0,
+    100.0
+  ],
+  "budget_class": "small",
+  "triangles": 188,
+  "source": "source.blend",
+  "preview": "preview.png",
+  "parts": [
+    {
+      "name": "body",
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "body_col_00.obj"
+      ],
+      "mass_kg": 0.1,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.25,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "parent": null,
+      "joint": null
+    }
+  ],
+  "variants": [],
+  "notes": "Pipeline proof only; not a benchmark prop. Cube spans X/Y +/-50 mm and Z 0..100 mm. 0.5 mm three-segment edge bevel; one nominal box collider (corner deviation <1 mm). Checker and TEST source is generated with Pillow and packed in source.blend. Albedo is 64-sample CPU Cycles diffuse colour only, multiplied in linear light by mix(1, AO, 0.6), saved as 8-bit sRGB; source retains Principled PBR wear/grime. Generated with Blender 5.2.0 LTS; identity OBJ axes Y forward, Z up. The 100 mm cube is an export test and exceeds the recommended one-hand grasp width. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder."
+}

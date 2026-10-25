@@ -1,0 +1,64 @@
+{
+  "id": "l_bracket",
+  "task": "shaped_kitting",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    39.999999,
+    59.999999,
+    39.999999
+  ],
+  "budget_class": "small",
+  "triangles": 1816,
+  "source": "source.blend",
+  "preview": "preview.png",
+  "parts": [
+    {
+      "name": "body",
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "body_col_00.obj",
+        "body_col_01.obj"
+      ],
+      "mass_kg": 0.12,
+      "friction": 0.3,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": null,
+      "joint": null,
+      "source_visual_object": "body",
+      "source_collision_objects": [
+        "60 mm leg collision",
+        "40 mm leg collision"
+      ]
+    }
+  ],
+  "variants": [],
+  "dimensions_mm": {
+    "long_leg": 60,
+    "short_leg": 40,
+    "width": 40,
+    "thickness": 4,
+    "inner_bend_radius": 4,
+    "slots": [
+      6.5,
+      12
+    ],
+    "slot_centers_y": [
+      -12,
+      15
+    ],
+    "short_leg_hole_diameter": 6.5,
+    "side_lying_bbox": [
+      40,
+      60,
+      40
+    ]
+  },
+  "notes": "Galvanised steel with procedural zinc spangle and fine straight brushing, 0.120 kg. Side-lying insertion orientation: 60 mm along Y, 40 mm along X, width along Z. R4 inner fillet and softened outer angle. Two 6.5 x 12 slots in long leg, one real 6.5 mm bore in short leg. The prescribed two box proxies omit the holes. Each inside collision face is expanded .25 mm, keeping the R4 fillet deviation <=.922 mm and the straight-leg surface excess at .25 mm. Metres, Z up, front -X, bottom-centre origin; all transforms applied. Triangulated visual OBJ with normals and a nonoverlapping Smart UV 66-degree atlas. Albedo is CPU Cycles 64-sample DIFFUSE COLOR * (0.4 + 0.6 * AO), saved as 8-bit sRGB; no direct illumination or highlights. Procedural Principled PBR retained in source.blend. Preview: CPU Cycles 64, 1024 square, neutral grey and three lights, front-left above. Generated with Blender 5.2.0 LTS. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder."
+}

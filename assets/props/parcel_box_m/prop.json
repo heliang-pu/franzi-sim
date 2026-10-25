@@ -1,0 +1,99 @@
+{
+  "id": "parcel_box_m",
+  "task": "parcel_sorting",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    80.0,
+    180.00001,
+    80.0
+  ],
+  "budget_class": "medium",
+  "triangles": 4964,
+  "parts": [
+    {
+      "name": "body",
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "body_col_00.obj"
+      ],
+      "mass_kg": 0.35,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.05,
+        "shininess": 0.1,
+        "reflectance": 0.0
+      },
+      "parent": null,
+      "joint": null,
+      "source_visual_object": "body",
+      "source_collision_objects": [
+        "COL parcel one box"
+      ]
+    }
+  ],
+  "variants": [
+    {
+      "name": "A",
+      "textures": {
+        "body": "body_albedo.png"
+      },
+      "zone_color": "#D32F2F"
+    },
+    {
+      "name": "B",
+      "textures": {
+        "body": "body_albedo_v1.png"
+      },
+      "zone_color": "#1976D2"
+    },
+    {
+      "name": "C",
+      "textures": {
+        "body": "body_albedo_v2.png"
+      },
+      "zone_color": "#388E3C"
+    }
+  ],
+  "source": "source.blend",
+  "preview": "preview.png",
+  "dimensions_mm": {
+    "nominal_xyz": [
+      80,
+      180,
+      80
+    ],
+    "corrugated_wall": 3,
+    "flap_gap": 1,
+    "tape_width": 48,
+    "tape_end_fold": 25,
+    "label_yx": [
+      100,
+      60
+    ],
+    "label_skew_deg": 2
+  },
+  "notes": "Closed single-wall corrugated carton with 3 mm liner/medium wall, a real 1 mm flap gap, visible wavy cut flute medium, shallow end scores and submillimetre corner compression. 48 mm tape wraps over the top and 25 mm down both ends with procedural wrinkles, thin physical bubbles and a coated PBR finish. Clear tape over kraft is flattened into its amber/kraft composite colour for the opaque MuJoCo atlas; alpha would be ignored. The top face label is 100x60 mm and skewed 2 degrees. Nominal outer dimensions include the tape and paper thickness. A/B/C change only the QF Express shipping-label artwork. Logo, tracking identifiers, decorative random bars, people and addresses are fictional. One full nominal box collision intentionally omits internal air and the flap seam. Metres, Z up, front -X; all meshes and proxies share the prop origin and identity transforms. Smart UV 66 degrees with 0.01 island margins; 30-degree split smoothing and exported normals. Albedo is CPU Cycles 64-sample diffuse COLOR * (0.4 + 0.6 * AO), 8-bit sRGB; no direct light or highlights. Full procedural Principled PBR and source label UVs are packed in source.blend. Colour grain is centred on nominal colour with about +/-3 percent variation. Generated with Blender 5.2.0 LTS. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder.",
+  "functional_frame_offset_m": [
+    -0.0,
+    -0.0,
+    -0.0
+  ],
+  "source_artwork": {
+    "A": "label_A.png",
+    "B": "label_B.png",
+    "C": "label_C.png"
+  },
+  "mass_range_kg": [
+    0.2,
+    0.5
+  ],
+  "recommended_placement_m": {
+    "origin_x": 0.4,
+    "origin_y": 0.16,
+    "support_z": 0.8
+  },
+  "grasp_width_mm": 80
+}

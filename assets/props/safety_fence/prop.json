@@ -1,0 +1,557 @@
+{
+  "id": "safety_fence",
+  "task": "environment",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    40.0,
+    1000.0,
+    1800.0
+  ],
+  "triangles": 17804,
+  "budget_class": "large",
+  "static": true,
+  "source": "source.blend",
+  "preview": "preview.png",
+  "parts": [
+    {
+      "name": "panel",
+      "visual": "panel.obj",
+      "texture": "panel_albedo.png",
+      "texture_px": 1024,
+      "collision": [],
+      "mass_kg": 24,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "parent": null,
+      "joint": null,
+      "source_visual_object": "panel",
+      "source_collision_objects": []
+    }
+  ],
+  "variants": [],
+  "dimensions_mm": {
+    "nominal_panel_yz_including_posts": [
+      1000,
+      1800
+    ],
+    "post_section_xy": [
+      40,
+      40
+    ],
+    "kick_plate_height": 200,
+    "kick_plate_thickness": 2,
+    "rod_diameter": 3,
+    "rod_center_pitch": 50,
+    "vertical_rods": 19,
+    "horizontal_rods": 31
+  },
+  "notes": "A single 1000 mm wide by 1800 mm high panel includes the two yellow 40 x 40 posts. The clear mesh spans Y-460..460 and Z230..1770 above a 200 mm sheet-metal kick plate. All 19 vertical and 31 horizontal wires are real closed 24-sided 3 mm diameter rods on exact 50 mm centre pitch, with small rounded end edges. Orthogonal wire planes are separated by 3 mm and tangent at crossings, as welded mesh; no alpha texture or painted transparency is used. The rod manifest records nominal manufacturing dimensions. Background only: NO collision geometry or primitives. Static environment geometry; mass values are descriptive, not free-body dynamics. Metres, Z up, robot-facing front -X; transforms applied in the shared prop frame. 30-degree split smoothing and triangulated OBJ with exported normals. New parts have nonoverlapping Smart UV 66-degree atlases with 0.01 island margins. Albedo = CPU Cycles 64-sample diffuse COLOR * (0.4 + 0.6 * AO), RGB8 sRGB, without direct illumination or highlights. Full procedural Principled PBR and source images remain packed in source.blend. Source roughness variation cannot be represented by MuJoCo's single highlight setting per part. Preview: CPU Cycles 64, 1024 square, neutral grey, three area lights, front-left above.  Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder.",
+  "build_blender_version": "5.2.0 LTS",
+  "rod_manifest": [
+    {
+      "axis": "Z",
+      "center_mm": [
+        1.5,
+        -450,
+        1000
+      ],
+      "length_mm": 1540,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Z",
+      "center_mm": [
+        1.5,
+        -400,
+        1000
+      ],
+      "length_mm": 1540,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Z",
+      "center_mm": [
+        1.5,
+        -350,
+        1000
+      ],
+      "length_mm": 1540,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Z",
+      "center_mm": [
+        1.5,
+        -300,
+        1000
+      ],
+      "length_mm": 1540,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Z",
+      "center_mm": [
+        1.5,
+        -250,
+        1000
+      ],
+      "length_mm": 1540,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Z",
+      "center_mm": [
+        1.5,
+        -200,
+        1000
+      ],
+      "length_mm": 1540,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Z",
+      "center_mm": [
+        1.5,
+        -150,
+        1000
+      ],
+      "length_mm": 1540,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Z",
+      "center_mm": [
+        1.5,
+        -100,
+        1000
+      ],
+      "length_mm": 1540,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Z",
+      "center_mm": [
+        1.5,
+        -50,
+        1000
+      ],
+      "length_mm": 1540,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Z",
+      "center_mm": [
+        1.5,
+        0,
+        1000
+      ],
+      "length_mm": 1540,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Z",
+      "center_mm": [
+        1.5,
+        50,
+        1000
+      ],
+      "length_mm": 1540,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Z",
+      "center_mm": [
+        1.5,
+        100,
+        1000
+      ],
+      "length_mm": 1540,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Z",
+      "center_mm": [
+        1.5,
+        150,
+        1000
+      ],
+      "length_mm": 1540,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Z",
+      "center_mm": [
+        1.5,
+        200,
+        1000
+      ],
+      "length_mm": 1540,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Z",
+      "center_mm": [
+        1.5,
+        250,
+        1000
+      ],
+      "length_mm": 1540,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Z",
+      "center_mm": [
+        1.5,
+        300,
+        1000
+      ],
+      "length_mm": 1540,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Z",
+      "center_mm": [
+        1.5,
+        350,
+        1000
+      ],
+      "length_mm": 1540,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Z",
+      "center_mm": [
+        1.5,
+        400,
+        1000
+      ],
+      "length_mm": 1540,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Z",
+      "center_mm": [
+        1.5,
+        450,
+        1000
+      ],
+      "length_mm": 1540,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        250
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        300
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        350
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        400
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        450
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        500
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        550
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        600
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        650
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        700
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        750
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        800
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        850
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        900
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        950
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        1000
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        1050
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        1100
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        1150
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        1200
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        1250
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        1300
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        1350
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        1400
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        1450
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        1500
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        1550
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        1600
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        1650
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        1700
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    },
+    {
+      "axis": "Y",
+      "center_mm": [
+        -1.5,
+        0,
+        1750
+      ],
+      "length_mm": 920,
+      "diameter_mm": 3
+    }
+  ]
+}

@@ -12,6 +12,14 @@ assets/derived/
 assets/appearance/head_*.stl
 assets/appearance/head_parts.json
 assets/appearance/inovance_wordmark.png
+# Blender prop pipeline (tools/blender/): the build scripts rebuild each prop's
+# source.blend; the QA renders, logs and reports are Codex's run records.
+assets/props/*/source.blend
+*.blend1
+tools/blender/_qa/
+tools/blender/*.log
+tools/blender/task[0-9]*
+tools/blender/commands.txt
 __pycache__/
 .pytest_cache/
 .ruff_cache/

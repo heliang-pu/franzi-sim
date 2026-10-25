@@ -1,0 +1,52 @@
+{
+  "id": "flanged_bushing",
+  "task": "shaped_kitting",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    39.999999,
+    39.999999,
+    29.999999
+  ],
+  "budget_class": "small",
+  "triangles": 1536,
+  "source": "source.blend",
+  "preview": "preview.png",
+  "parts": [
+    {
+      "name": "body",
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "body_col_00.obj",
+        "body_col_01.obj"
+      ],
+      "mass_kg": 0.128,
+      "friction": 0.3,
+      "mujoco_material": {
+        "specular": 0.6,
+        "shininess": 0.6,
+        "reflectance": 0.03
+      },
+      "parent": null,
+      "joint": null,
+      "source_visual_object": "body",
+      "source_collision_objects": [
+        "Body collision - bore intentionally omitted",
+        "Flange collision - bore intentionally omitted"
+      ]
+    }
+  ],
+  "variants": [],
+  "dimensions_mm": {
+    "outer_diameter": 30,
+    "bore_diameter": 20,
+    "body_length": 25,
+    "flange_diameter": 40,
+    "flange_thickness": 5,
+    "height": 30,
+    "chamfer": 0.5
+  },
+  "notes": "Bronze, 0.128 kg. Real 20 mm through bore and 0.5 mm machined chamfers. The two prescribed convex cylinders omit the bore. Flange is at +Z for insertion. Metres, Z up, front -X, bottom-centre origin; all transforms applied. Triangulated visual OBJ with normals and a nonoverlapping Smart UV 66-degree atlas. Albedo is CPU Cycles 64-sample DIFFUSE COLOR * (0.4 + 0.6 * AO), saved as 8-bit sRGB; no direct illumination or highlights. Procedural Principled PBR retained in source.blend. Preview: CPU Cycles 64, 1024 square, neutral grey and three lights, front-left above. Generated with Blender 5.2.0 LTS. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder."
+}

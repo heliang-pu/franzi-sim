@@ -1,0 +1,145 @@
+{
+  "id": "tray_rail_set",
+  "task": "tray_push",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    246.00001,
+    699.99999,
+    50.0
+  ],
+  "budget_class": "medium",
+  "triangles": 12040,
+  "parts": [
+    {
+      "name": "frame",
+      "visual": "frame.obj",
+      "texture": "frame_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "frame_col_00.obj",
+        "frame_col_01.obj",
+        "frame_col_02.obj",
+        "frame_col_03.obj"
+      ],
+      "mass_kg": 1.0,
+      "friction": 0.25,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": null,
+      "joint": null,
+      "source_visual_object": "frame",
+      "source_collision_objects": [
+        "COL 700 rail",
+        "COL 246 cross bar",
+        "COL 700 rail.001",
+        "COL 246 cross bar.001"
+      ]
+    },
+    {
+      "name": "stop",
+      "visual": "stop.obj",
+      "texture": "stop_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "stop_col_00.obj"
+      ],
+      "mass_kg": 0.13,
+      "friction": 0.9,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": null,
+      "source_visual_object": "stop",
+      "source_collision_objects": [
+        "COL stop and bumper"
+      ]
+    }
+  ],
+  "variants": [],
+  "source": "source.blend",
+  "preview": "preview.png",
+  "dimensions_mm": {
+    "rail_section_xz": [
+      20,
+      20
+    ],
+    "rail_length_y": 700,
+    "rail_centres_x": [
+      -113,
+      113
+    ],
+    "rail_inside_spacing": 206,
+    "t_slot_mouth": 6,
+    "t_slot_cavity_width": 8.5,
+    "t_slot_depth": 5,
+    "extrusion_core_bore_diameter": 4.2,
+    "cross_bar_xyz": [
+      246,
+      20,
+      20
+    ],
+    "cross_bar_centres_y": [
+      -300,
+      300
+    ],
+    "cross_bar_inset_from_rail_end": 50,
+    "cross_bar_z_range": [
+      0,
+      20
+    ],
+    "rail_z_range": [
+      20,
+      40
+    ],
+    "stop_block_xyz": [
+      40,
+      40,
+      30
+    ],
+    "stop_block_centre": [
+      0,
+      -300,
+      35
+    ],
+    "bumper_thickness_y": 5,
+    "bumper_contact_plane_y": -275,
+    "stop_z_range": [
+      20,
+      50
+    ]
+  },
+  "notes": "Two 700 mm 20 x 20 anodised aluminium profiles at X +/-113, inside gap 206; two 246 mm cross bars at Y +/-300, exactly 50 mm inboard. Four real undercut 6 mm T-slot mouths per profile, chosen 8.5 mm cavities/5 mm depth and through core bores; 0.3 mm three-segment profile edge breaks. Cross bars are below the rails so they do not block the tray travel. The 40 x 40 x 30 stop is at Y-300, atop the negative-end cross bar, with a 5 mm black rubber bumper facing +Y and original yellow/black 45-degree tape printed on its top. Mass is estimated (1.0 kg frame, 0.13 kg stop); section 3.3 gives no rail-set mass. Frame friction is 0.25 for the tray; stop friction is 0.9. Five prescribed convex proxies total: four full rectangular profile envelopes and one stop/bumper envelope. The general 1 mm collision fidelity rule is incompatible with one convex proxy per undercut profile: T slots and core bores are deliberately filled in these proxies. Integration constraint in the literal dimensions: a 200 mm tray is narrower than the 206 mm rail gap; these profiles are lateral guides and do not support its floor along the travel. The scene must provide a continuous sliding support plane flush with the cross-bar tops (rail-set local Z20), or an independently designed support. No unrequested support slab or change to the specified 206 mm gap is baked into this prop. The Y+250 suggested tray start extends 50 mm beyond the +Y rail end; the support surface must cover that overhang. Rigid bolted profiles and the fixed stop share the prop frame; no joint or free body is required for the rail set. Metres, Z up, front -X, bottom-centre origin shared by every part and proxy. Triangulated OBJ with normals, 30-degree smoothing and nonoverlapping Smart UV 66-degree atlases. 64-sample CPU Cycles base colour * (0.4 + 0.6 * AO), saved as 8-bit sRGB, without lighting or highlights. Full Principled PBR, source markings and procedural wear remain packed in source.blend. Generated with Blender 5.2.0 LTS. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder.",
+  "contact_pairs": [
+    {
+      "other_prop": "esd_tray",
+      "other_part": "body",
+      "sliding_friction": 0.25
+    }
+  ],
+  "recommended_placement_m": {
+    "x": 0.4,
+    "y": 0,
+    "bottom_z": 0.78,
+    "external_sliding_support_z": 0.8,
+    "tray_bottom_local_z": 0.02,
+    "initial_tray_y": 0.25,
+    "stopped_tray_y": -0.125
+  },
+  "installation": {
+    "fixed_to_world": true,
+    "requires_external_sliding_support": true,
+    "sliding_support_local_z_m": 0.02,
+    "stop_bumper_normal": [
+      0,
+      1,
+      0
+    ]
+  }
+}

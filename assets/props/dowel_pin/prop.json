@@ -1,0 +1,54 @@
+{
+  "id": "dowel_pin",
+  "task": "precision_insertion",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    10.0,
+    10.0,
+    40.0
+  ],
+  "triangles": 1916,
+  "budget_class": "small",
+  "source": "source.blend",
+  "preview": "preview.png",
+  "parts": [
+    {
+      "name": "body",
+      "source_visual_object": "body",
+      "source_collision_objects": [
+        "COL__body__000"
+      ],
+      "mass_kg": 0.025,
+      "friction": 0.3,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "texture_px": 1024,
+      "parent": null,
+      "joint": null,
+      "bake_texture": "body_albedo.png",
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "collision": [
+        "body_col_00.obj"
+      ]
+    }
+  ],
+  "variants": [],
+  "dimensions_mm": {
+    "diameter": 10,
+    "length": 40,
+    "lead_axial": 0.5,
+    "lead_angle_from_axis_deg": 15,
+    "ball_end_rolling_radius": 1
+  },
+  "notes": "OD10 x 40 hardened pin; one 32-sided collision prism, circumradius exactly 5 mm. The requested R1 spherical end cannot span an OD10 shank: a spherical cap covering the full face needs radius >=5 mm. Closest faithful choice: R1 rounded ball-nose rim with a small central flat, following the 0.5 mm axial x 15 degree lead. The opposite end has the specified lead chamfer. Collision ignores end dressing as prescribed and keeps the nominal full-length prism. Metres, Z up, front -X, bottom-centre origin, applied transforms and a shared prop frame. Triangulated visual OBJ with normals, 30-degree smoothing, nonoverlapping 66-degree Smart UVs. Albedo: CPU Cycles 64-sample DIFFUSE COLOR * (0.4 + 0.6 * AO), RGB8 sRGB, no direct light or highlights. Full Principled PBR and marking images packed in source.blend. Preview: 1024 square, CPU Cycles 64, neutral grey, three lights, front-left above. Collision coordinates retain 12 decimal places in metres. Simulation may vary instance colour by 0.97-1.03. Suggested worktable position [0.400, 0, 0.800] m; positioning and reachable grasp poses are left to the scene, not baked into these local meshes.  Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder.",
+  "build_blender_version": "5.2.0 LTS",
+  "precision_mm": 0.01,
+  "diameter_mm": 10,
+  "length_mm": 40,
+  "collision_sides": 32
+}

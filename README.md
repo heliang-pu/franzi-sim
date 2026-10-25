@@ -83,6 +83,7 @@ python -m pytest tests -q
 | 双臂抓放 | 成功，30.0 s。最大接触穿透 0.099 mm，关节越限最大 0.5 mrad，每侧双指离地夹持 2518 步 |
 | 分拣装盘，20 个种子 | 20/20 成功，120/120 个零件入格，一集 62.8–110.0 s。最大穿透 0.13 mm，越限最大 0.16 mrad，零件离格中心最多 0.58 mm |
 | RoboSyn 道具长任务，5 种各 20 个种子 | 厨房做饭、换菜，抽屉收纳、取出，双手端托盘：全部 20/20 成功，每集 49–127 s。最大穿透 0.34 mm，越限最大 0.90 mrad |
+| 工业 benchmark 场景，10 个 | 已搭好并通过场景检查（静置、穿透 ≤ 0.27 mm、关键点可达、相机可见），专家和成功判定还没写；见 [docs/benchmark.md](docs/benchmark.md) |
 | 原厂 SDK 验收，MuJoCo 两种主循环 | 通信 28/28，控制语义 37/37，运动学接口 23/23，物理表现 10/10，故障处理 5/5；经 SDK 重放的完整任务成功 |
 
 这些结果来自本机的 `outputs/expert_wrist_block/`、`outputs/kitting_check_wrist_block/`、RoboSyn 场景的 `outputs/*_check_*/` 和 `outputs/sdk_backends_v12/`（`outputs/` 不入库）。

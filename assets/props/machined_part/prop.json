@@ -1,0 +1,55 @@
+{
+  "id": "machined_part",
+  "task": "cnc_tending",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    40.0,
+    40.0,
+    60.0
+  ],
+  "triangles": 2304,
+  "budget_class": "small",
+  "source": "source.blend",
+  "preview": "preview.png",
+  "parts": [
+    {
+      "name": "body",
+      "source_visual_object": "body",
+      "source_collision_objects": [
+        "COL__body__00",
+        "COL__body__01"
+      ],
+      "mass_kg": 0.17,
+      "friction": 0.35,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": null,
+      "joint": null,
+      "texture_px": 1024,
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "collision": [
+        "body_col_00.obj",
+        "body_col_01.obj"
+      ]
+    }
+  ],
+  "variants": [],
+  "dimensions_mm": {
+    "diameter": 40,
+    "height": 60,
+    "step_diameter": 30,
+    "step_height": 20,
+    "hole_diameter": 12,
+    "hole_depth": 15,
+    "chamfer": 1
+  },
+  "notes": "D40 x 60 envelope; upper D30 step is 20 mm high; D12 blind bore ends at Z45 (15 mm deep). Every profile corner has a 1 x 45 degree chamfer, including bore mouth/bottom and step root. Bright turned finish roughness 0.25 with concentric feed marks. Exactly two nominal cylinder proxies D40 x 40 and D30 x 20, each 32 sides; per section 3.9 the bore is visual and filled by collision, and small chamfers are approximated. The specified 0.170 kg is authoritative rather than recomputed from the stepped/hollow geometric aluminium volume. Metres, Z up, front -X, applied transforms and a common prop frame. Triangulated OBJ, 30-degree smoothing and weighted normals. Smart UV 66 degrees, nonoverlapping islands, 0.01 margins. CPU Cycles 64-sample DIFFUSE COLOR * (0.4 + 0.6 * AO), RGB8 sRGB, excluding direct illumination and highlights. Full Principled PBR and original printing images are packed in source.blend. Preview: CPU Cycles 64, 1024 square, neutral grey, three area lights, front-left above. Per-instance colour multipliers of 0.97-1.03 may be applied by simulation.  Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder.",
+  "build_blender_version": "5.2.0 LTS",
+  "mass_kg": 0.17,
+  "friction": 0.35
+}

@@ -1,0 +1,91 @@
+{
+  "id": "factory_floor",
+  "task": "environment",
+  "units": "m",
+  "origin": "floor_surface_center",
+  "bbox_mm": [
+    6000.0,
+    6000.0,
+    10.0
+  ],
+  "triangles": 188,
+  "budget_class": "large",
+  "static": true,
+  "source": "source.blend",
+  "preview": "preview.png",
+  "parts": [
+    {
+      "name": "floor",
+      "visual": "floor.obj",
+      "texture": "floor_albedo.png",
+      "texture_px": 2048,
+      "collision": [],
+      "mass_kg": 720,
+      "friction": 0.65,
+      "mujoco_material": {
+        "specular": 0.35,
+        "shininess": 0.4,
+        "reflectance": 0.03
+      },
+      "parent": null,
+      "joint": null,
+      "source_visual_object": "floor",
+      "source_collision_objects": [],
+      "collision_primitives": [
+        {
+          "type": "plane",
+          "pos_m": [
+            0,
+            0,
+            0
+          ],
+          "normal": [
+            0,
+            0,
+            1
+          ],
+          "size_m": [
+            3,
+            3,
+            0.01
+          ]
+        }
+      ]
+    }
+  ],
+  "variants": [],
+  "dimensions_mm": {
+    "surface_xy": [
+      6000,
+      6000
+    ],
+    "surface_z": 0,
+    "visual_thickness_below_surface": 10,
+    "substrate_repeat_xy": [
+      1000,
+      1000
+    ],
+    "repeat_count_xy": [
+      6,
+      6
+    ],
+    "safety_line_width": 75,
+    "hatched_zone_xy": [
+      1200,
+      1000
+    ],
+    "hatched_zone_bounds_xy": [
+      [
+        1000,
+        2200
+      ],
+      [
+        -2300,
+        -1300
+      ]
+    ],
+    "hatch_angle_deg": 45
+  },
+  "notes": "The contact surface and origin are Z0. A 10 mm visual-only slab extends down to Z-10 so the visual has a finite bbox; it adds no solid collision. Exactly ONE analytic MuJoCo plane is declared in floor.collision_primitives, with position, unit normal and MuJoCo size. The collision OBJ list is deliberately empty because a plane is not a convex volume; loaders must create type=plane from this explicit metadata. epoxy_1m_source.png is repeated exactly six times per axis in FloorTileUV; the unique baked 2048 atlas includes this 1 m substrate repetition, dragged scuffs, the globally placed 75 mm yellow L safety line and the yellow/black 45-degree zone. Warning markings are intentionally not periodic. Source gloss varies .28..48; MuJoCo uses the part's uniform highlight approximation. Static environment geometry; mass values are descriptive, not free-body dynamics. Metres, Z up, robot-facing front -X; transforms applied in the shared prop frame. 30-degree split smoothing and triangulated OBJ with exported normals. New parts have nonoverlapping Smart UV 66-degree atlases with 0.01 island margins. Albedo = CPU Cycles 64-sample diffuse COLOR * (0.4 + 0.6 * AO), RGB8 sRGB, without direct illumination or highlights. Full procedural Principled PBR and source images remain packed in source.blend. Source roughness variation cannot be represented by MuJoCo's single highlight setting per part. Preview: CPU Cycles 64, 1024 square, neutral grey, three area lights, front-left above.  Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder.",
+  "build_blender_version": "5.2.0 LTS"
+}

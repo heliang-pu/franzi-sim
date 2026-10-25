@@ -1,0 +1,78 @@
+{
+  "id": "station_plate",
+  "task": "lidded_tote",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    150.000006,
+    200.000003,
+    10.0
+  ],
+  "triangles": 9564,
+  "budget_class": "medium",
+  "source": "source.blend",
+  "preview": "preview.png",
+  "parts": [
+    {
+      "name": "body",
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "body_col_00.obj"
+      ],
+      "mass_kg": 0.8,
+      "friction": 0.35,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": null,
+      "joint": null,
+      "source_visual_object": "body",
+      "source_collision_objects": [
+        "Plate box proxy"
+      ]
+    }
+  ],
+  "variants": [],
+  "dimensions_mm": {
+    "outside_xyz": [
+      150,
+      200,
+      10
+    ],
+    "screw_centers_xy": [
+      [
+        -62,
+        -87
+      ],
+      [
+        -62,
+        87
+      ],
+      [
+        62,
+        -87
+      ],
+      [
+        62,
+        87
+      ]
+    ],
+    "through_hole_diameter": 5.2,
+    "countersink_diameter_at_top": 10.2,
+    "part_outline_diameter": 60,
+    "center_cross_span": 14
+  },
+  "notes": "Static 200 Y x 150 X x 10 mm milled aluminium station. Four real through holes with 90-degree countersinks contain flush cross-drive screws. Yellow ST-02, the 60 mm flange outline, bore/bolt references and centre cross are surface print baked into the plate atlas, without raised decal geometry. The task-prescribed single box proxy fills the occupied screw holes. Station mass 0.80 kg and friction 0.35 are reasonable defaults because section 3.7 gives neither; fix the plate to the worktop in simulation. Metres, Z up, front -X; closed parts share the same prop frame, all transforms applied. Triangulated OBJ with normals, 30-degree smoothing and a nonoverlapping Smart UV 66-degree atlas. Each rigid part has a 2048-square, 8-bit sRGB albedo: CPU Cycles 64-sample DIFFUSE COLOR * (0.4 + 0.6 * AO), without direct light or highlights. Full Principled PBR is packed in source.blend. The 1024-square preview uses CPU Cycles 64, three lights, neutral grey and a front-left camera. Joint dynamics are integration parameters, not a claim of an executed robot episode. Generated with Blender 5.2.0 LTS. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder.",
+  "fixed": true,
+  "recommended_placement_m": {
+    "origin": [
+      0.4,
+      -0.2,
+      0.8
+    ]
+  }
+}

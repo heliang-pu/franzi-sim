@@ -1,0 +1,477 @@
+{
+  "id": "background_rack",
+  "task": "environment",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    800.0,
+    1800.0,
+    2400.0001
+  ],
+  "triangles": 112836,
+  "budget_class": "large",
+  "static": true,
+  "source": "source.blend",
+  "preview": "preview.png",
+  "parts": [
+    {
+      "name": "frame",
+      "visual": "frame.obj",
+      "texture": "frame_albedo.png",
+      "texture_px": 1024,
+      "collision": [],
+      "mass_kg": 125,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "parent": null,
+      "joint": null,
+      "source_visual_object": "frame",
+      "source_collision_objects": []
+    },
+    {
+      "name": "tote_0_0",
+      "visual": "tote_0_0.obj",
+      "texture": "../small_tote/body_albedo.png",
+      "texture_px": 1024,
+      "collision": [],
+      "mass_kg": 3.6,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.25,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "parent": "frame",
+      "joint": null,
+      "source_visual_object": "tote_0_0",
+      "source_collision_objects": [],
+      "library_instance": {
+        "prop_id": "small_tote",
+        "part_name": "body",
+        "variant": "blue",
+        "uniform_scale": 2,
+        "position_mm": [
+          -130,
+          -475,
+          650
+        ],
+        "texture_sha256": "33e2d31c6da94037424db7a876b3ddda13ce802450900350fb59b9deaf877c4d"
+      }
+    },
+    {
+      "name": "tote_0_1",
+      "visual": "tote_0_1.obj",
+      "texture": "../small_tote/body_albedo.png",
+      "texture_px": 1024,
+      "collision": [],
+      "mass_kg": 3.6,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.25,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "parent": "frame",
+      "joint": null,
+      "source_visual_object": "tote_0_1",
+      "source_collision_objects": [],
+      "library_instance": {
+        "prop_id": "small_tote",
+        "part_name": "body",
+        "variant": "blue",
+        "uniform_scale": 2,
+        "position_mm": [
+          -130,
+          475,
+          650
+        ],
+        "texture_sha256": "33e2d31c6da94037424db7a876b3ddda13ce802450900350fb59b9deaf877c4d"
+      }
+    },
+    {
+      "name": "carton_0_0",
+      "visual": "carton_0_0.obj",
+      "texture": "../parcel_box_m/body_albedo.png",
+      "texture_px": 1024,
+      "collision": [],
+      "mass_kg": 3.726800000000001,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.05,
+        "shininess": 0.1,
+        "reflectance": 0.0
+      },
+      "parent": "frame",
+      "joint": null,
+      "source_visual_object": "carton_0_0",
+      "source_collision_objects": [],
+      "library_instance": {
+        "prop_id": "parcel_box_m",
+        "part_name": "body",
+        "variant": "A",
+        "uniform_scale": 2.2,
+        "position_mm": [
+          230,
+          -530,
+          650
+        ],
+        "texture_sha256": "fd00f4e0ea3dace002147634c0ff1c7f4914253f2ccd9e0afc45c4f6c628124d"
+      }
+    },
+    {
+      "name": "carton_0_1",
+      "visual": "carton_0_1.obj",
+      "texture": "../parcel_box_m/body_albedo_v1.png",
+      "texture_px": 1024,
+      "collision": [],
+      "mass_kg": 3.726800000000001,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.05,
+        "shininess": 0.1,
+        "reflectance": 0.0
+      },
+      "parent": "frame",
+      "joint": null,
+      "source_visual_object": "carton_0_1",
+      "source_collision_objects": [],
+      "library_instance": {
+        "prop_id": "parcel_box_m",
+        "part_name": "body",
+        "variant": "B",
+        "uniform_scale": 2.2,
+        "position_mm": [
+          230,
+          0,
+          650
+        ],
+        "texture_sha256": "bf54a0f2ec4ba1e1dcff5b9cb7cfa0b83bb48254832579ef1a777b7eee19a434"
+      }
+    },
+    {
+      "name": "carton_0_2",
+      "visual": "carton_0_2.obj",
+      "texture": "../parcel_box_m/body_albedo_v2.png",
+      "texture_px": 1024,
+      "collision": [],
+      "mass_kg": 3.726800000000001,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.05,
+        "shininess": 0.1,
+        "reflectance": 0.0
+      },
+      "parent": "frame",
+      "joint": null,
+      "source_visual_object": "carton_0_2",
+      "source_collision_objects": [],
+      "library_instance": {
+        "prop_id": "parcel_box_m",
+        "part_name": "body",
+        "variant": "C",
+        "uniform_scale": 2.2,
+        "position_mm": [
+          230,
+          530,
+          650
+        ],
+        "texture_sha256": "2e9c5c6b7eeb0a9524d7a3c4905900962fc70bb424b25063303788072c01b22b"
+      }
+    },
+    {
+      "name": "carton_0_stack",
+      "visual": "carton_0_stack.obj",
+      "texture": "../parcel_box_m/body_albedo_v1.png",
+      "texture_px": 1024,
+      "collision": [],
+      "mass_kg": 3.726800000000001,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.05,
+        "shininess": 0.1,
+        "reflectance": 0.0
+      },
+      "parent": "frame",
+      "joint": null,
+      "source_visual_object": "carton_0_stack",
+      "source_collision_objects": [],
+      "library_instance": {
+        "prop_id": "parcel_box_m",
+        "part_name": "body",
+        "variant": "B",
+        "uniform_scale": 2.2,
+        "position_mm": [
+          230,
+          0,
+          826
+        ],
+        "texture_sha256": "bf54a0f2ec4ba1e1dcff5b9cb7cfa0b83bb48254832579ef1a777b7eee19a434"
+      }
+    },
+    {
+      "name": "small_carton_0",
+      "visual": "small_carton_0.obj",
+      "texture": "../parcel_box_s/body_albedo.png",
+      "texture_px": 1024,
+      "collision": [],
+      "mass_kg": 2.662000000000001,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.05,
+        "shininess": 0.1,
+        "reflectance": 0.0
+      },
+      "parent": "frame",
+      "joint": null,
+      "source_visual_object": "small_carton_0",
+      "source_collision_objects": [],
+      "library_instance": {
+        "prop_id": "parcel_box_s",
+        "part_name": "body",
+        "variant": "A",
+        "uniform_scale": 2.2,
+        "position_mm": [
+          -130,
+          0,
+          650
+        ],
+        "texture_sha256": "ea1191b4744ae06e38a6848212e9a7c1c0b4e3128e0fc414ef08a0193b35ec4c"
+      }
+    },
+    {
+      "name": "tote_1_0",
+      "visual": "tote_1_0.obj",
+      "texture": "../small_tote/body_albedo.png",
+      "texture_px": 1024,
+      "collision": [],
+      "mass_kg": 3.6,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.25,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "parent": "frame",
+      "joint": null,
+      "source_visual_object": "tote_1_0",
+      "source_collision_objects": [],
+      "library_instance": {
+        "prop_id": "small_tote",
+        "part_name": "body",
+        "variant": "blue",
+        "uniform_scale": 2,
+        "position_mm": [
+          -130,
+          -475,
+          1450
+        ],
+        "texture_sha256": "33e2d31c6da94037424db7a876b3ddda13ce802450900350fb59b9deaf877c4d"
+      }
+    },
+    {
+      "name": "tote_1_1",
+      "visual": "tote_1_1.obj",
+      "texture": "../small_tote/body_albedo.png",
+      "texture_px": 1024,
+      "collision": [],
+      "mass_kg": 3.6,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.25,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "parent": "frame",
+      "joint": null,
+      "source_visual_object": "tote_1_1",
+      "source_collision_objects": [],
+      "library_instance": {
+        "prop_id": "small_tote",
+        "part_name": "body",
+        "variant": "blue",
+        "uniform_scale": 2,
+        "position_mm": [
+          -130,
+          475,
+          1450
+        ],
+        "texture_sha256": "33e2d31c6da94037424db7a876b3ddda13ce802450900350fb59b9deaf877c4d"
+      }
+    },
+    {
+      "name": "carton_1_0",
+      "visual": "carton_1_0.obj",
+      "texture": "../parcel_box_m/body_albedo.png",
+      "texture_px": 1024,
+      "collision": [],
+      "mass_kg": 3.726800000000001,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.05,
+        "shininess": 0.1,
+        "reflectance": 0.0
+      },
+      "parent": "frame",
+      "joint": null,
+      "source_visual_object": "carton_1_0",
+      "source_collision_objects": [],
+      "library_instance": {
+        "prop_id": "parcel_box_m",
+        "part_name": "body",
+        "variant": "A",
+        "uniform_scale": 2.2,
+        "position_mm": [
+          230,
+          -530,
+          1450
+        ],
+        "texture_sha256": "fd00f4e0ea3dace002147634c0ff1c7f4914253f2ccd9e0afc45c4f6c628124d"
+      }
+    },
+    {
+      "name": "carton_1_1",
+      "visual": "carton_1_1.obj",
+      "texture": "../parcel_box_m/body_albedo_v1.png",
+      "texture_px": 1024,
+      "collision": [],
+      "mass_kg": 3.726800000000001,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.05,
+        "shininess": 0.1,
+        "reflectance": 0.0
+      },
+      "parent": "frame",
+      "joint": null,
+      "source_visual_object": "carton_1_1",
+      "source_collision_objects": [],
+      "library_instance": {
+        "prop_id": "parcel_box_m",
+        "part_name": "body",
+        "variant": "B",
+        "uniform_scale": 2.2,
+        "position_mm": [
+          230,
+          0,
+          1450
+        ],
+        "texture_sha256": "bf54a0f2ec4ba1e1dcff5b9cb7cfa0b83bb48254832579ef1a777b7eee19a434"
+      }
+    },
+    {
+      "name": "carton_1_2",
+      "visual": "carton_1_2.obj",
+      "texture": "../parcel_box_m/body_albedo_v2.png",
+      "texture_px": 1024,
+      "collision": [],
+      "mass_kg": 3.726800000000001,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.05,
+        "shininess": 0.1,
+        "reflectance": 0.0
+      },
+      "parent": "frame",
+      "joint": null,
+      "source_visual_object": "carton_1_2",
+      "source_collision_objects": [],
+      "library_instance": {
+        "prop_id": "parcel_box_m",
+        "part_name": "body",
+        "variant": "C",
+        "uniform_scale": 2.2,
+        "position_mm": [
+          230,
+          530,
+          1450
+        ],
+        "texture_sha256": "2e9c5c6b7eeb0a9524d7a3c4905900962fc70bb424b25063303788072c01b22b"
+      }
+    },
+    {
+      "name": "carton_1_stack",
+      "visual": "carton_1_stack.obj",
+      "texture": "../parcel_box_m/body_albedo_v1.png",
+      "texture_px": 1024,
+      "collision": [],
+      "mass_kg": 3.726800000000001,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.05,
+        "shininess": 0.1,
+        "reflectance": 0.0
+      },
+      "parent": "frame",
+      "joint": null,
+      "source_visual_object": "carton_1_stack",
+      "source_collision_objects": [],
+      "library_instance": {
+        "prop_id": "parcel_box_m",
+        "part_name": "body",
+        "variant": "B",
+        "uniform_scale": 2.2,
+        "position_mm": [
+          230,
+          0,
+          1626
+        ],
+        "texture_sha256": "bf54a0f2ec4ba1e1dcff5b9cb7cfa0b83bb48254832579ef1a777b7eee19a434"
+      }
+    },
+    {
+      "name": "small_carton_1",
+      "visual": "small_carton_1.obj",
+      "texture": "../parcel_box_s/body_albedo.png",
+      "texture_px": 1024,
+      "collision": [],
+      "mass_kg": 2.662000000000001,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.05,
+        "shininess": 0.1,
+        "reflectance": 0.0
+      },
+      "parent": "frame",
+      "joint": null,
+      "source_visual_object": "small_carton_1",
+      "source_collision_objects": [],
+      "library_instance": {
+        "prop_id": "parcel_box_s",
+        "part_name": "body",
+        "variant": "A",
+        "uniform_scale": 2.2,
+        "position_mm": [
+          -130,
+          0,
+          1450
+        ],
+        "texture_sha256": "ea1191b4744ae06e38a6848212e9a7c1c0b4e3128e0fc414ef08a0193b35ec4c"
+      }
+    }
+  ],
+  "variants": [],
+  "dimensions_mm": {
+    "rack_xyz": [
+      800,
+      1800,
+      2400
+    ],
+    "shelf_top_z": [
+      650,
+      1450
+    ],
+    "upright_section_xy": [
+      70,
+      70
+    ],
+    "load_beam_height": 80,
+    "tote_instances": 4,
+    "carton_instances": 10
+  },
+  "notes": "Two loaded levels, blue #1E4C9A uprights and depth/diagonal braces, orange #E86A10 load beams and beam connectors, galvanised deck slats and anchored footplates. The rack is 800 X x 1800 Y x 2400 Z; the prompt's 2400 x 1800 x 800 uses H/W/D. All four totes append Task 1 small_tote PBR geometry, original UVs and byte-identical blue atlas; the ten cartons append Task 4 parcel_box_m/s PBR geometry and reuse byte-identical QF Express A/B/C atlases. These match the task's explicit Task 4/1 reuse instruction; section 3.11 alternatively mentions Task 5 cartons. Stock is uniformly scaled 2x for totes and 2.2x for cartons to suit a full-size background rack, without modifying any library asset. Each stock item is its own fixed part with its original nonoverlapping atlas; repeated items never stack UV islands inside one part. Per-instance lineage and texture SHA256 are included. Background only: NO collision geometry or primitives. The descriptive stock masses scale with volume; these are not manipulated benchmark instances. Static environment geometry; mass values are descriptive, not free-body dynamics. Metres, Z up, robot-facing front -X; transforms applied in the shared prop frame. 30-degree split smoothing and triangulated OBJ with exported normals. New parts have nonoverlapping Smart UV 66-degree atlases with 0.01 island margins. Albedo = CPU Cycles 64-sample diffuse COLOR * (0.4 + 0.6 * AO), RGB8 sRGB, without direct illumination or highlights. Full procedural Principled PBR and source images remain packed in source.blend. Source roughness variation cannot be represented by MuJoCo's single highlight setting per part. Preview: CPU Cycles 64, 1024 square, neutral grey, three area lights, front-left above.  Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder.",
+  "build_blender_version": "5.2.0 LTS"
+}

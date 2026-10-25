@@ -1,0 +1,107 @@
+{
+  "id": "carton_300x200x200",
+  "task": "carton_carry",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    200.0,
+    300.00001,
+    200.0
+  ],
+  "budget_class": "medium",
+  "triangles": 13028,
+  "parts": [
+    {
+      "name": "body",
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "body_col_00.obj"
+      ],
+      "mass_kg": 1.0,
+      "friction": 0.55,
+      "mujoco_material": {
+        "specular": 0.05,
+        "shininess": 0.1,
+        "reflectance": 0.0
+      },
+      "parent": null,
+      "joint": null,
+      "source_visual_object": "body",
+      "source_collision_objects": [
+        "COL nominal one-box carton"
+      ]
+    }
+  ],
+  "variants": [
+    {
+      "name": "mass_0.5kg",
+      "mass_kg": 0.5,
+      "part_masses_kg": {
+        "body": 0.5
+      }
+    },
+    {
+      "name": "mass_1.0kg",
+      "mass_kg": 1.0,
+      "part_masses_kg": {
+        "body": 1.0
+      }
+    },
+    {
+      "name": "mass_1.5kg",
+      "mass_kg": 1.5,
+      "part_masses_kg": {
+        "body": 1.5
+      }
+    }
+  ],
+  "source": "source.blend",
+  "preview": "preview.png",
+  "dimensions_mm": {
+    "nominal_xyz": [
+      200,
+      300,
+      200
+    ],
+    "size_convention": "Y x X x height",
+    "wall": 4,
+    "major_flap_gap": 1.5,
+    "minor_flap_nominal_depth": 100.0,
+    "tape_width": 48,
+    "tape_end_fold": 50,
+    "label_yz": [
+      112,
+      43
+    ],
+    "label_skew_deg": 2,
+    "maximum_corner_compression": 0.68
+  },
+  "notes": "FEFCO 0201 regular slotted single-wall carton: 4 mm shell and four 4 mm inner minor flaps; 1.5 mm gaps between the outer major flaps. A 48 mm #8B5A2B ribbon follows the Y seam and folds 50 mm down both Y ends, with fine wrinkles and an actual shallow trapped-air bubble. The 0.30 mm allowance for tape and bubbles is inside the nominal external dimensions. Flap ends have real 0.7 mm-deep cut sections with two liners and a 4 mm-pitch wavy paper medium; the 4 mm effective board thickness is modelled as an opaque shell elsewhere. Corners have shallow geometric compression. Black arrows, umbrella and fragile glass are our original generic ink drawings on the front and both squeeze sides. The fictional NOVA Logistics · SKU-B0042 paper label is skewed 2 degrees and pressed into a 0.25 mm seat to preserve the nominal box envelope. One full nominal box collider intentionally ignores air, flaps and the small dents. The three masses represent invisible contents; shape and friction stay the same. MuJoCo's single material per rigid body uses paper highlight settings; tape gloss remains in the source PBR while its brown colour is in the atlas. Metres, Z up, front -X; identity object transforms and one common prop frame for all parts. 30-degree split smoothing, weighted normals, triangulated OBJ with normals. Nonoverlapping Smart UV 66-degree atlases, 0.01 island margins. Albedo = CPU Cycles 64-sample diffuse COLOR * (0.4 + 0.6 * AO), 8-bit sRGB, without direct lighting or highlights. Full procedural Principled PBR and original label UVs are packed in source.blend. Preview: 1024 square, CPU Cycles 64, neutral grey, three area lights, front-left above. Generated with Blender 5.2.0 LTS. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder.",
+  "mass_variants_kg": [
+    0.5,
+    1.0,
+    1.5
+  ],
+  "squeeze_axis": [
+    0,
+    1,
+    0
+  ],
+  "source_artwork": [
+    "handling_icons.png",
+    "nova_sku_label.png"
+  ],
+  "shell_volume_m3": 0.0015258771543864656,
+  "recommended_placement_m": {
+    "origin_x": 0.4,
+    "origin_y": 0,
+    "support_z": 0.85
+  },
+  "functional_frame_offset_m": [
+    0,
+    0,
+    0
+  ]
+}

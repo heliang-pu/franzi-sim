@@ -1,0 +1,90 @@
+{
+  "id": "abs_housing",
+  "task": "tote_transfer",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    48.0,
+    70.0,
+    30.0
+  ],
+  "budget_class": "small",
+  "triangles": 2020,
+  "source": "source.blend",
+  "preview": "preview.png",
+  "parts": [
+    {
+      "name": "body",
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "body_col_00.obj"
+      ],
+      "mass_kg": 0.04,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": null,
+      "joint": null
+    }
+  ],
+  "variants": [],
+  "dimensions_mm": {
+    "body_xyz": [
+      45,
+      70,
+      30
+    ],
+    "corner_radius": 4,
+    "edge_round": 0.4,
+    "parting_line_z": 28,
+    "parting_line_width": 0.3,
+    "parting_line_depth": 0.25,
+    "screw_count": 4,
+    "screw_diameter": 3,
+    "screw_nominal_depth": 8,
+    "screw_cylindrical_depth": 7.6,
+    "screw_depth_to_tip": 8.9,
+    "screw_xy": [
+      [
+        -15.5,
+        -28
+      ],
+      [
+        -15.5,
+        28
+      ],
+      [
+        15.5,
+        -28
+      ],
+      [
+        15.5,
+        28
+      ]
+    ],
+    "snap_count": 2,
+    "snap_width_height_projection": [
+      8,
+      3,
+      1.5
+    ],
+    "indicator_window_yz": [
+      20,
+      8
+    ]
+  },
+  "recommended_placement_m": {
+    "x": 0.4,
+    "y": [
+      -0.2,
+      0.2
+    ],
+    "support_z": 0.8
+  },
+  "notes": "Nominal enclosure body is 45 X x 70 Y x 30 Z mm, with R4 plan-view corners and 0.4 mm edge rounds. Two opposed side snap tabs are 8 mm along Y x 3 mm high x 1.5 mm outward projection; their 0.4 mm embedded roots are fused into the enclosure. Therefore overall visual bbox is 48 x 70 x 30, while the specified 45 x 70 x 30 describes the box itself. Real parting groove is 0.30 mm wide, 0.25 mm deep at Z28 (2 mm below top). Four diameter-3 blind screw bores at (+/-15.5, +/-28), 8 mm nominal depth before drill points and 0.4 mm entry chamfers; blind depth was unspecified and chosen for a faithful moulded housing. The rounded 20 x 8 indicator window on -X at Z16 is entirely baked colour, with gloss in source PBR. Fine leather grain, 1.5 mm worn perimeter bands, and cavity grime are procedural and baked. As prescribed by section 3.1, one nominal box collider ignores R4 corners, screw holes and snap details; this explicit simplification exceeds the general 1 mm approximation at rounded corners and tabs. 48 mm total grasp width and 0.040 kg are within the task's one-hand workspace limits. All coordinates are metres with Z up, front -X, common bottom-centre origin. Visual export is triangulated with normals and a nonoverlapping Smart UV 66-degree atlas. Albedo: 64-sample CPU Cycles diffuse colour * (0.4 + 0.6 * AO), linear light to 8-bit sRGB; no direct light or highlights. Full procedural Principled PBR is retained in source.blend. Generated with Blender 5.2.0 LTS. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder."
+}

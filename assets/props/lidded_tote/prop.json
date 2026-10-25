@@ -1,0 +1,189 @@
+{
+  "id": "lidded_tote",
+  "task": "lidded_tote",
+  "units": "m",
+  "origin": "body_bottom_center",
+  "bbox_mm": [
+    225.364998,
+    303.99999,
+    165.16
+  ],
+  "triangles": 14220,
+  "budget_class": "medium",
+  "source": "source.blend",
+  "preview": "preview.png",
+  "parts": [
+    {
+      "name": "body",
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "body_col_00.obj",
+        "body_col_01.obj",
+        "body_col_02.obj",
+        "body_col_03.obj",
+        "body_col_04.obj",
+        "body_col_05.obj",
+        "body_col_06.obj",
+        "body_col_07.obj",
+        "body_col_08.obj"
+      ],
+      "mass_kg": 1.0,
+      "friction": 0.45,
+      "mujoco_material": {
+        "specular": 0.25,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "parent": null,
+      "joint": null,
+      "source_visual_object": "body",
+      "source_collision_objects": [
+        "Tote floor proxy",
+        "Drafted wall proxy",
+        "Drafted wall proxy.001",
+        "Drafted wall proxy.002",
+        "Drafted wall proxy.003",
+        "Rim X proxy",
+        "Rim Y proxy",
+        "Rim X proxy.001",
+        "Rim Y proxy.001"
+      ]
+    },
+    {
+      "name": "lid",
+      "visual": "lid.obj",
+      "texture": "lid_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "lid_col_00.obj",
+        "lid_col_01.obj",
+        "lid_col_02.obj",
+        "lid_col_03.obj",
+        "lid_col_04.obj",
+        "lid_col_05.obj"
+      ],
+      "mass_kg": 0.25,
+      "friction": 0.45,
+      "mujoco_material": {
+        "specular": 0.25,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "parent": "body",
+      "joint": {
+        "type": "hinge",
+        "parent": "body",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.102,
+          0,
+          0.152
+        ],
+        "range": [
+          0.0,
+          1.9198621771937625
+        ],
+        "damping": 0.05,
+        "frictionloss": 0.4,
+        "solimpfriction": [
+          0.9999,
+          0.9999,
+          0.001
+        ],
+        "solreffriction": [
+          0.002,
+          1
+        ]
+      },
+      "source_visual_object": "lid",
+      "source_collision_objects": [
+        "Lid roof proxy",
+        "Lid X skirt proxy",
+        "Lid Y skirt proxy",
+        "Lid X skirt proxy.001",
+        "Lid Y skirt proxy.001",
+        "Pull tab proxy"
+      ]
+    }
+  ],
+  "variants": [],
+  "dimensions_mm": {
+    "body_outer_rim_xyz": [
+      200,
+      300,
+      150
+    ],
+    "draft_degrees": 2,
+    "wall_normal_thickness": 3,
+    "floor_thickness": 4,
+    "rim_width": 6,
+    "rim_thickness": 4,
+    "wall_top_xy": [
+      188,
+      288
+    ],
+    "wall_base_xy": [
+      177.5237691524757,
+      277.52376915247567
+    ],
+    "lid_crown_and_skirt_xyz": [
+      204,
+      304,
+      15
+    ],
+    "lid_shell_z": [
+      150,
+      165
+    ],
+    "lid_skirt_drop": 12,
+    "lid_skirt_thickness": 1.5,
+    "hinge_centers_y": [
+      -94,
+      94
+    ],
+    "hinge_length": 40,
+    "hinge_pin_diameter": 5,
+    "hinge_axis_xz": [
+      102,
+      152
+    ],
+    "pull_tab_yxz": [
+      60,
+      18,
+      3
+    ],
+    "pull_tab_down_degrees": 10
+  },
+  "notes": "The 200 x 300 x 150 mm envelope includes the 6 mm outward rim; 2-degree draft therefore applies to the 188 x 288 mm wall top. Origin exception: body_bottom_center preserves the exact hinge x=102, z=152 mm datum; the forward tab makes the complete assembly bounding box asymmetric. The specification does not locate the 15 mm lid vertically; it is seated at Z150..165, crown Z162..165 and full 12 mm skirt Z150..162. This raised crown keeps all four skirts and avoids rear-skirt/body interference around the mandated high hinge. Label thickness and hinge hardware are additional details. Positive rotation about +Y opens upward toward +X; the illustrative -Y axis in section 1.8 would open downward. Frictionloss 0.4 N m exceeds the 0.25 kg lid's gravity torque and is intended to hold any opening angle; damping is 0.05. Snap catch return torque is 0.3 N m toward q=0 only within 0..3 degrees, to be implemented by the simulator, not as a full-range hinge spring. Body proxies expand the prescribed floor+four-wall decomposition with four rim bars to preserve the 6 mm overhang without filling the open cavity. Lid has exactly roof+four skirts+pull tab proxies. Pins, knuckles and compliant catch are non-contact hardware; the receiving groove is visual and must not lock the simulated hinge. Rounded proxy corners differ by up to 1 mm. Contents reuse flange_part, abs_housing and hex_blank; they are not copied or rebuilt. Metres, Z up, front -X; closed parts share the same prop frame, all transforms applied. Triangulated OBJ with normals, 30-degree smoothing and a nonoverlapping Smart UV 66-degree atlas. Each rigid part has a 2048-square, 8-bit sRGB albedo: CPU Cycles 64-sample DIFFUSE COLOR * (0.4 + 0.6 * AO), without direct light or highlights. Full Principled PBR is packed in source.blend. The 1024-square preview uses CPU Cycles 64, three lights, neutral grey and a front-left camera. Joint dynamics are integration parameters, not a claim of an executed robot episode. Generated with Blender 5.2.0 LTS. MuJoCo soft-friction defaults allow numerical creep even below the 0.4 N m threshold. Apply joint solimpfriction=[0.9999,0.9999,0.001] and solreffriction=[0.002,1] for static holding, with damping/frictionloss unchanged. Suggested body placement X445 mm puts the initial tab around X335 mm, visible to the head camera and inside the left hand workspace. The full 110-degree mechanical arc exceeds the fixed robot's nominal X window; task integration must use a partial opening or regrasp rather than assume one grasp follows the complete arc. The preferred 200 mm height band is also exceeded while opening. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder.",
+  "recommended_placement_m": {
+    "body_origin": [
+      0.445,
+      0.15,
+      0.8
+    ],
+    "nominal_pull_tab": [
+      0.334637,
+      0.15,
+      0.961937
+    ]
+  },
+  "interaction": {
+    "lid_grip_span_mm": 60,
+    "catch_return_torque_Nm": 0.3,
+    "catch_active_range_rad": [
+      0,
+      0.05235987755982989
+    ],
+    "reuse_prop_ids": [
+      "flange_part",
+      "abs_housing",
+      "hex_blank"
+    ]
+  }
+}

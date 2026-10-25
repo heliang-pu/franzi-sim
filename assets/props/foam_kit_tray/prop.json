@@ -1,0 +1,408 @@
+{
+  "id": "foam_kit_tray",
+  "task": "shaped_kitting",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    259.99999,
+    379.999995,
+    50.000001
+  ],
+  "budget_class": "medium",
+  "triangles": 8374,
+  "source": "source.blend",
+  "preview": "preview.png",
+  "parts": [
+    {
+      "name": "body",
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "body_col_00.obj",
+        "body_col_01.obj",
+        "body_col_02.obj",
+        "body_col_03.obj",
+        "body_col_04.obj",
+        "body_col_05.obj",
+        "body_col_06.obj",
+        "body_col_07.obj",
+        "body_col_08.obj",
+        "body_col_09.obj",
+        "body_col_10.obj",
+        "body_col_11.obj",
+        "body_col_12.obj",
+        "body_col_13.obj",
+        "body_col_14.obj",
+        "body_col_15.obj",
+        "body_col_16.obj",
+        "body_col_17.obj",
+        "body_col_18.obj",
+        "body_col_19.obj",
+        "body_col_20.obj",
+        "body_col_21.obj",
+        "body_col_22.obj",
+        "body_col_23.obj",
+        "body_col_24.obj",
+        "body_col_25.obj",
+        "body_col_26.obj",
+        "body_col_27.obj",
+        "body_col_28.obj",
+        "body_col_29.obj",
+        "body_col_30.obj",
+        "body_col_31.obj",
+        "body_col_32.obj",
+        "body_col_33.obj",
+        "body_col_34.obj",
+        "body_col_35.obj",
+        "body_col_36.obj",
+        "body_col_37.obj",
+        "body_col_38.obj",
+        "body_col_39.obj",
+        "body_col_40.obj",
+        "body_col_41.obj",
+        "body_col_42.obj",
+        "body_col_43.obj",
+        "body_col_44.obj",
+        "body_col_45.obj",
+        "body_col_46.obj",
+        "body_col_47.obj",
+        "body_col_48.obj",
+        "body_col_49.obj",
+        "body_col_50.obj",
+        "body_col_51.obj",
+        "body_col_52.obj",
+        "body_col_53.obj",
+        "body_col_54.obj",
+        "body_col_55.obj",
+        "body_col_56.obj",
+        "body_col_57.obj",
+        "body_col_58.obj",
+        "body_col_59.obj",
+        "body_col_60.obj",
+        "body_col_61.obj",
+        "body_col_62.obj",
+        "body_col_63.obj"
+      ],
+      "mass_kg": 0.6,
+      "friction": 0.8,
+      "mujoco_material": {
+        "specular": 0.02,
+        "shininess": 0.05,
+        "reflectance": 0.0
+      },
+      "parent": null,
+      "joint": null,
+      "source_visual_object": "body",
+      "source_collision_objects": [
+        "Common floor, shell plus foam below deepest pocket",
+        "Hex and L floors, plus lower inter-pocket fill",
+        "Gear floor plus lower front-right inter-pocket fill",
+        "PP -X wall",
+        "PP +X wall",
+        "PP -Y wall",
+        "PP +Y wall",
+        "Hex face or notch wall_00",
+        "Hex face or notch wall_01",
+        "Hex face or notch wall_02",
+        "Hex face or notch wall_03",
+        "Hex face or notch wall_04",
+        "Hex face or notch wall_05",
+        "Hex face or notch wall_06",
+        "bushing_body wall_00",
+        "bushing_body wall_01",
+        "bushing_body wall_02",
+        "bushing_body wall_03",
+        "bushing_body wall_04",
+        "bushing_body wall_05",
+        "bushing_body wall_06",
+        "bushing_body wall_07",
+        "bushing_body wall_08",
+        "bushing_body wall_09",
+        "bushing_body wall_10",
+        "bushing_body wall_11",
+        "bushing_body wall_12",
+        "bushing_body wall_13",
+        "bushing_counterbore wall_00",
+        "bushing_counterbore wall_01",
+        "bushing_counterbore wall_02",
+        "bushing_counterbore wall_03",
+        "bushing_counterbore wall_04",
+        "bushing_counterbore wall_05",
+        "bushing_counterbore wall_06",
+        "bushing_counterbore wall_07",
+        "bushing_counterbore wall_08",
+        "bushing_counterbore wall_09",
+        "bushing_counterbore wall_10",
+        "bushing_counterbore wall_11",
+        "bushing_counterbore wall_12",
+        "bushing_counterbore wall_13",
+        "gear wall_00",
+        "gear wall_01",
+        "gear wall_02",
+        "gear wall_03",
+        "gear wall_04",
+        "gear wall_05",
+        "gear wall_06",
+        "gear wall_07",
+        "gear wall_08",
+        "gear wall_09",
+        "gear wall_10",
+        "gear wall_11",
+        "gear wall_12",
+        "gear wall_13",
+        "L rectangular fill 0",
+        "L rectangular fill 1",
+        "L rectangular fill 2",
+        "L rectangular fill 3",
+        "L notch wall_00",
+        "L notch wall_01",
+        "L notch wall_02",
+        "L notch wall_03"
+      ]
+    }
+  ],
+  "variants": [
+    {
+      "name": "black",
+      "textures": {
+        "body": "body_albedo.png"
+      },
+      "source_material": "Black EVA foam #161616"
+    },
+    {
+      "name": "light_grey",
+      "textures": {
+        "body": "body_albedo_v1.png"
+      },
+      "source_material": "Light-grey EVA foam #A9AFB6",
+      "foam_base_color_srgb": "#A9AFB6",
+      "pocket_ao_strength": 0.8,
+      "pocket_floor_tint_linear": 0.8
+    }
+  ],
+  "dimensions_mm": {
+    "outer_xyz": [
+      260,
+      380,
+      50
+    ],
+    "shell_wall": 3,
+    "shell_floor": 3,
+    "foam_xyz": [
+      252,
+      372,
+      40
+    ],
+    "foam_bottom_z": 3,
+    "foam_top_z": 43,
+    "outline_clearance_per_side": 1.5,
+    "notch_diameter": 24
+  },
+  "notes": "Static 0.6 kg PP tray with EVA insert; foam seated on the 3 mm shell floor, top Z=43 mm. Pockets derived from part outlines +1.5 mm per side; the gear uses its specified circular tip envelope. Bushing has 43 x 5 over 33 x 25, full 30 mm notch; flange up alone seats to its proper floor. Gear seat 51 x 10 leaves hub up, L side-lying. Each finger notch is 24 mm on -X, at pocket depth. Where a curved/hex wall meets the notch, its overlapping circle is used; the straight L wall has a literal semicircle. Collision uses 16 boundary wall segments per round step including the notch, with pairs at concave joins merged when their union is convex; seven hex/notch walls replace six plain hex walls so the finger opening is preserved. This interprets the nominal wall counts after adding finger notches while keeping the entire tray at most 64 convex pieces. Wall sectors extend to rectangular cell edges to fill between pockets; L and floor fill are boxes. Hole polygon apothems preserve seat clearance; maximum round/notch error <1 mm. Hex notch approximation has <=0.915 mm radial error. The 1 mm insert/shell gap is bridged only by the base proxy. Uniform MuJoCo material/friction uses EVA; complete PP/EVA PBR is retained in source. Metres, Z up, front -X, bottom-centre origin; all transforms applied. Triangulated visual OBJ with normals and a nonoverlapping Smart UV 66-degree atlas. Albedo is CPU Cycles 64-sample DIFFUSE COLOR * (0.4 + 0.6 * AO), saved as 8-bit sRGB; no direct illumination or highlights. Procedural Principled PBR retained in source.blend. Preview: CPU Cycles 64, 1024 square, neutral grey and three lights, front-left above. Generated with Blender 5.2.0 LTS. Light-grey EVA variant: #A9AFB6 with the original fine foam-cell noise/bump, CPU Cycles 64-sample colour-only albedo * (0.2 + 0.8 * AO); pocket floors receive a subtle 0.80 linear colour multiplier. No direct light or highlights are baked. Black remains the default part texture and source material; both variants share exactly the same visual mesh, UVs, collisions and physics. Preview uses the exported light-grey atlas. Robot-camera QA is 640 x 480, 0.6 m above the foam top, 30 degrees from vertical (0.693 m slant range), with the four existing parts beside the empty tray. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder.",
+  "static": true,
+  "pockets": [
+    {
+      "part": "hex_blank",
+      "center_yx_mm": [
+        -90,
+        55
+      ],
+      "shape": "hexagon",
+      "across_flats_mm": 30,
+      "depth_mm": 25,
+      "floor_z_mm": 18,
+      "notch_center_xy_mm": [
+        40,
+        -90
+      ]
+    },
+    {
+      "part": "flanged_bushing",
+      "center_yx_mm": [
+        90,
+        55
+      ],
+      "shape": "stepped_circle",
+      "steps": [
+        {
+          "diameter_mm": 43,
+          "depth_mm": 5,
+          "floor_z_mm": 38
+        },
+        {
+          "diameter_mm": 33,
+          "depth_mm": 25,
+          "floor_z_mm": 13
+        }
+      ],
+      "depth_mm": 30,
+      "floor_z_mm": 13,
+      "notch_center_xy_mm": [
+        33.5,
+        90
+      ],
+      "required_orientation": "flange_up"
+    },
+    {
+      "part": "l_bracket",
+      "center_yx_mm": [
+        -90,
+        -55
+      ],
+      "shape": "side_lying_L",
+      "outer_yx_mm": [
+        63,
+        43
+      ],
+      "leg_mm": 7,
+      "depth_mm": 25,
+      "floor_z_mm": 18,
+      "notch_center_xy_mm": [
+        -76.5,
+        -90
+      ]
+    },
+    {
+      "part": "spur_gear",
+      "center_yx_mm": [
+        90,
+        -55
+      ],
+      "shape": "circle",
+      "diameter_mm": 51,
+      "depth_mm": 10,
+      "floor_z_mm": 33,
+      "notch_center_xy_mm": [
+        -80.5,
+        90
+      ],
+      "required_orientation": "hub_up"
+    }
+  ],
+  "collision_layout": {
+    "hex": {
+      "primary_hex_faces": 6,
+      "combined_boundary_segments": 9,
+      "convex_wall_pieces": 7,
+      "notch_max_error_mm": 0.915
+    },
+    "bushing_body": {
+      "round_sides": 10,
+      "boundary_segments": 16,
+      "notch_sides": 8,
+      "round_max_error_mm": 0.8491266999314085,
+      "convex_wall_pieces": 14
+    },
+    "bushing_counterbore": {
+      "round_sides": 11,
+      "boundary_segments": 16,
+      "notch_sides": 8,
+      "round_max_error_mm": 0.9076679988677195,
+      "convex_wall_pieces": 14
+    },
+    "gear": {
+      "round_sides": 12,
+      "boundary_segments": 16,
+      "notch_sides": 8,
+      "round_max_error_mm": 0.8995426004571154,
+      "convex_wall_pieces": 14
+    },
+    "l_bracket": {
+      "rectangular_fills": 4,
+      "notch_walls": 4,
+      "inner_corner_collision_clearance": 0.5
+    }
+  },
+  "collision_roles": {
+    "body_col_00.obj": "base",
+    "body_col_01.obj": "hex_l_floor",
+    "body_col_02.obj": "gear_floor",
+    "body_col_03.obj": "shell_wall",
+    "body_col_04.obj": "shell_wall",
+    "body_col_05.obj": "shell_wall",
+    "body_col_06.obj": "shell_wall",
+    "body_col_07.obj": "hex_wall",
+    "body_col_08.obj": "hex_wall",
+    "body_col_09.obj": "hex_wall",
+    "body_col_10.obj": "hex_wall",
+    "body_col_11.obj": "hex_wall",
+    "body_col_12.obj": "hex_wall",
+    "body_col_13.obj": "hex_wall",
+    "body_col_14.obj": "bushing_body_wall",
+    "body_col_15.obj": "bushing_body_wall",
+    "body_col_16.obj": "bushing_body_wall",
+    "body_col_17.obj": "bushing_body_wall",
+    "body_col_18.obj": "bushing_body_wall",
+    "body_col_19.obj": "bushing_body_wall",
+    "body_col_20.obj": "bushing_body_wall",
+    "body_col_21.obj": "bushing_body_wall",
+    "body_col_22.obj": "bushing_body_wall",
+    "body_col_23.obj": "bushing_body_wall",
+    "body_col_24.obj": "bushing_body_wall",
+    "body_col_25.obj": "bushing_body_wall",
+    "body_col_26.obj": "bushing_body_wall",
+    "body_col_27.obj": "bushing_body_wall",
+    "body_col_28.obj": "bushing_counterbore_wall",
+    "body_col_29.obj": "bushing_counterbore_wall",
+    "body_col_30.obj": "bushing_counterbore_wall",
+    "body_col_31.obj": "bushing_counterbore_wall",
+    "body_col_32.obj": "bushing_counterbore_wall",
+    "body_col_33.obj": "bushing_counterbore_wall",
+    "body_col_34.obj": "bushing_counterbore_wall",
+    "body_col_35.obj": "bushing_counterbore_wall",
+    "body_col_36.obj": "bushing_counterbore_wall",
+    "body_col_37.obj": "bushing_counterbore_wall",
+    "body_col_38.obj": "bushing_counterbore_wall",
+    "body_col_39.obj": "bushing_counterbore_wall",
+    "body_col_40.obj": "bushing_counterbore_wall",
+    "body_col_41.obj": "bushing_counterbore_wall",
+    "body_col_42.obj": "gear_wall",
+    "body_col_43.obj": "gear_wall",
+    "body_col_44.obj": "gear_wall",
+    "body_col_45.obj": "gear_wall",
+    "body_col_46.obj": "gear_wall",
+    "body_col_47.obj": "gear_wall",
+    "body_col_48.obj": "gear_wall",
+    "body_col_49.obj": "gear_wall",
+    "body_col_50.obj": "gear_wall",
+    "body_col_51.obj": "gear_wall",
+    "body_col_52.obj": "gear_wall",
+    "body_col_53.obj": "gear_wall",
+    "body_col_54.obj": "gear_wall",
+    "body_col_55.obj": "gear_wall",
+    "body_col_56.obj": "l_box",
+    "body_col_57.obj": "l_box",
+    "body_col_58.obj": "l_box",
+    "body_col_59.obj": "l_box",
+    "body_col_60.obj": "l_notch_wall",
+    "body_col_61.obj": "l_notch_wall",
+    "body_col_62.obj": "l_notch_wall",
+    "body_col_63.obj": "l_notch_wall"
+  },
+  "recommended_placement_m": {
+    "origin": [
+      0.4,
+      0,
+      0.8
+    ],
+    "pocket_centers_world_xy": [
+      [
+        0.455,
+        -0.09
+      ],
+      [
+        0.455,
+        0.09
+      ],
+      [
+        0.345,
+        -0.09
+      ],
+      [
+        0.345,
+        0.09
+      ]
+    ]
+  }
+}

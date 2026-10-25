@@ -1,0 +1,206 @@
+{
+  "id": "part_tray_6",
+  "task": "cnc_tending",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    170.0,
+    250.0,
+    30.0
+  ],
+  "triangles": 2516,
+  "budget_class": "medium",
+  "source": "source.blend",
+  "preview": "preview.png",
+  "parts": [
+    {
+      "name": "body",
+      "source_visual_object": "body",
+      "source_collision_objects": [
+        "COL__body__00",
+        "COL__body__01",
+        "COL__body__02",
+        "COL__body__03",
+        "COL__body__04",
+        "COL__body__05",
+        "COL__body__06",
+        "COL__body__07",
+        "COL__body__08",
+        "COL__body__09",
+        "COL__body__10",
+        "COL__body__11",
+        "COL__body__12",
+        "COL__body__13",
+        "COL__body__14",
+        "COL__body__15",
+        "COL__body__16",
+        "COL__body__17",
+        "COL__body__18",
+        "COL__body__19",
+        "COL__body__20",
+        "COL__body__21",
+        "COL__body__22",
+        "COL__body__23",
+        "COL__body__24",
+        "COL__body__25",
+        "COL__body__26",
+        "COL__body__27",
+        "COL__body__28",
+        "COL__body__29",
+        "COL__body__30",
+        "COL__body__31",
+        "COL__body__32",
+        "COL__body__33",
+        "COL__body__34",
+        "COL__body__35",
+        "COL__body__36",
+        "COL__body__37",
+        "COL__body__38",
+        "COL__body__39",
+        "COL__body__40",
+        "COL__body__41",
+        "COL__body__42",
+        "COL__body__43",
+        "COL__body__44",
+        "COL__body__45",
+        "COL__body__46",
+        "COL__body__47",
+        "COL__body__48",
+        "COL__body__49",
+        "COL__body__50",
+        "COL__body__51",
+        "COL__body__52",
+        "COL__body__53",
+        "COL__body__54",
+        "COL__body__55"
+      ],
+      "mass_kg": 0.9,
+      "friction": 0.35,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": null,
+      "joint": null,
+      "texture_px": 1024,
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "collision": [
+        "body_col_00.obj",
+        "body_col_01.obj",
+        "body_col_02.obj",
+        "body_col_03.obj",
+        "body_col_04.obj",
+        "body_col_05.obj",
+        "body_col_06.obj",
+        "body_col_07.obj",
+        "body_col_08.obj",
+        "body_col_09.obj",
+        "body_col_10.obj",
+        "body_col_11.obj",
+        "body_col_12.obj",
+        "body_col_13.obj",
+        "body_col_14.obj",
+        "body_col_15.obj",
+        "body_col_16.obj",
+        "body_col_17.obj",
+        "body_col_18.obj",
+        "body_col_19.obj",
+        "body_col_20.obj",
+        "body_col_21.obj",
+        "body_col_22.obj",
+        "body_col_23.obj",
+        "body_col_24.obj",
+        "body_col_25.obj",
+        "body_col_26.obj",
+        "body_col_27.obj",
+        "body_col_28.obj",
+        "body_col_29.obj",
+        "body_col_30.obj",
+        "body_col_31.obj",
+        "body_col_32.obj",
+        "body_col_33.obj",
+        "body_col_34.obj",
+        "body_col_35.obj",
+        "body_col_36.obj",
+        "body_col_37.obj",
+        "body_col_38.obj",
+        "body_col_39.obj",
+        "body_col_40.obj",
+        "body_col_41.obj",
+        "body_col_42.obj",
+        "body_col_43.obj",
+        "body_col_44.obj",
+        "body_col_45.obj",
+        "body_col_46.obj",
+        "body_col_47.obj",
+        "body_col_48.obj",
+        "body_col_49.obj",
+        "body_col_50.obj",
+        "body_col_51.obj",
+        "body_col_52.obj",
+        "body_col_53.obj",
+        "body_col_54.obj",
+        "body_col_55.obj"
+      ]
+    }
+  ],
+  "variants": [
+    {
+      "name": "IN",
+      "textures": {
+        "body": "body_albedo.png"
+      }
+    },
+    {
+      "name": "OUT",
+      "textures": {
+        "body": "body_albedo_v1.png"
+      },
+      "preview": "preview_out.png"
+    }
+  ],
+  "dimensions_mm": {
+    "xyz": [
+      170,
+      250,
+      30
+    ],
+    "pocket_diameter": 44,
+    "pocket_depth": 20,
+    "pocket_entry_chamfer": 1,
+    "pocket_centres_xy": [
+      [
+        -35,
+        -75
+      ],
+      [
+        -35,
+        0
+      ],
+      [
+        -35,
+        75
+      ],
+      [
+        35,
+        -75
+      ],
+      [
+        35,
+        0
+      ],
+      [
+        35,
+        75
+      ]
+    ],
+    "collision_pocket_apothem": 22,
+    "collision_walls_per_pocket": 8
+  },
+  "notes": "Six real 64-sided circular blind pockets, 20 mm deep, with 1 x 45 degree entry chamfers. Collision is one 10 mm floor plus eight convex wall sectors per pocket, each within a 50 x 50 mm cell; seven additional boxes fill all remaining material between cells. The union is the complete plate minus exactly six circumscribed octagonal pockets, apothem 22 mm; 56 pieces total, no hull across any pocket. The specifically required 8-wall, apothem-22 proxy has a maximum 1.813 mm excess radial clearance at octagon vertices relative to a round R22 bore, exceeding the general 1 mm proxy target; the task-specific eight-wall prescription is preserved. IN and OUT are laser-etch albedo variants on identical UVs, with 0.06 mm etch relief in source PBR. MuJoCo only shows the colour mark, because it cannot render the PBR relief. This 0.9 kg tray is static, not a workpiece for single-hand pickup. Metres, Z up, front -X, applied transforms and a common prop frame. Triangulated OBJ, 30-degree smoothing and weighted normals. Smart UV 66 degrees, nonoverlapping islands, 0.01 margins. CPU Cycles 64-sample DIFFUSE COLOR * (0.4 + 0.6 * AO), RGB8 sRGB, excluding direct illumination and highlights. Full Principled PBR and original printing images are packed in source.blend. Preview: CPU Cycles 64, 1024 square, neutral grey, three area lights, front-left above. Per-instance colour multipliers of 0.97-1.03 may be applied by simulation.  Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder.",
+  "build_blender_version": "5.2.0 LTS",
+  "variant_material": "Brushed aluminium laser etched IN OUT",
+  "static": true
+}

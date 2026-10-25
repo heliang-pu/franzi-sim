@@ -1,0 +1,103 @@
+{
+  "id": "esd_tray",
+  "task": "tray_push",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    200.0,
+    300.00001,
+    50.0
+  ],
+  "budget_class": "medium",
+  "triangles": 3332,
+  "parts": [
+    {
+      "name": "body",
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "body_col_00.obj",
+        "body_col_01.obj",
+        "body_col_02.obj",
+        "body_col_03.obj",
+        "body_col_04.obj"
+      ],
+      "mass_kg": 0.35,
+      "friction": 0.25,
+      "mujoco_material": {
+        "specular": 0.25,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "parent": null,
+      "joint": null,
+      "source_visual_object": "body",
+      "source_collision_objects": [
+        "COL tray floor R8",
+        "COL rounded wall strip",
+        "COL rounded wall strip.001",
+        "COL rounded wall strip.002",
+        "COL rounded wall strip.003"
+      ]
+    }
+  ],
+  "variants": [],
+  "source": "source.blend",
+  "preview": "preview.png",
+  "dimensions_mm": {
+    "outside_xyz": [
+      200,
+      300,
+      50
+    ],
+    "wall": 3,
+    "floor": 3,
+    "outer_corner_radius": 8,
+    "inner_corner_radius": 5,
+    "hard_edge_radius": 1,
+    "finger_hole_width_height": [
+      70,
+      22
+    ],
+    "finger_hole_corner_radius": 6,
+    "finger_hole_centres": [
+      [
+        0,
+        -148.5,
+        32
+      ],
+      [
+        0,
+        148.5,
+        32
+      ]
+    ],
+    "esd_print_width_height": [
+      84,
+      25
+    ]
+  },
+  "notes": "Continuous open-top conductive PP #1B1B1B, roughness 0.65; two real 70 x 22 mm short-wall finger openings centred at Z32 (chosen R6), nominal dimensions before the 1 mm edge roll. Original yellow ESD triangle/finger/spark and ESD SAFE screen print on -X. Five-piece collision is the mandated floor plus four walls, never a cavity-filling hull. This fixed convex-piece count cannot reproduce concave finger holes within the general 1 mm rule: the two holes are deliberately filled in the proxies. Each wall proxy is a convex strip clipped to the R8 outer outline; its inner plane is inset 0.5 mm into the cavity to keep the rounded corner seam error below 1 mm while retaining only four convex walls. The floor preserves its R8 outline with 56 vertices. Task 1 payloads are reused by scene assembly and are not rebuilt or embedded here. Friction 0.25 is the intended tray/rail sliding coefficient; use an explicit simulator contact pair if combining it with another material's coefficient. See the rail set's support-plane integration note. Metres, Z up, front -X, bottom-centre origin shared by every part and proxy. Triangulated OBJ with normals, 30-degree smoothing and nonoverlapping Smart UV 66-degree atlases. 64-sample CPU Cycles base colour * (0.4 + 0.6 * AO), saved as 8-bit sRGB, without lighting or highlights. Full Principled PBR, source markings and procedural wear remain packed in source.blend. Generated with Blender 5.2.0 LTS. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder.",
+  "contact_pairs": [
+    {
+      "other_prop": "tray_rail_set",
+      "other_part": "frame",
+      "sliding_friction": 0.25
+    }
+  ],
+  "recommended_placement_m": {
+    "x": 0.4,
+    "initial_y": 0.25,
+    "slide_axis": [
+      0,
+      -1,
+      0
+    ],
+    "support_z": 0.8
+  },
+  "payload_reuse": [
+    "flange_part",
+    "abs_housing"
+  ]
+}

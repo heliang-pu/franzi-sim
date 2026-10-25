@@ -1,0 +1,640 @@
+{
+  "id": "panel_devices",
+  "task": "panel_operation",
+  "units": "m",
+  "origin": "each_component_mounting_face_center",
+  "bbox_mm": [
+    59.99999865889549,
+    59.99999865889549,
+    27.999999467283487
+  ],
+  "budget_class": "small",
+  "triangles": 8780,
+  "source": "source.blend",
+  "preview": "preview.png",
+  "parts": [
+    {
+      "name": "bezel",
+      "visual": "bezel.obj",
+      "texture": "bezel_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "bezel_col_00.obj",
+        "bezel_col_01.obj",
+        "bezel_col_02.obj",
+        "bezel_col_03.obj",
+        "bezel_col_04.obj",
+        "bezel_col_05.obj",
+        "bezel_col_06.obj",
+        "bezel_col_07.obj",
+        "bezel_col_08.obj",
+        "bezel_col_09.obj",
+        "bezel_col_10.obj",
+        "bezel_col_11.obj",
+        "bezel_col_12.obj",
+        "bezel_col_13.obj",
+        "bezel_col_14.obj",
+        "bezel_col_15.obj"
+      ],
+      "mass_kg": 0.008,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": null,
+      "joint": null,
+      "source_collision_objects": [
+        "COL__bezel__00",
+        "COL__bezel__01",
+        "COL__bezel__02",
+        "COL__bezel__03",
+        "COL__bezel__04",
+        "COL__bezel__05",
+        "COL__bezel__06",
+        "COL__bezel__07",
+        "COL__bezel__08",
+        "COL__bezel__09",
+        "COL__bezel__10",
+        "COL__bezel__11",
+        "COL__bezel__12",
+        "COL__bezel__13",
+        "COL__bezel__14",
+        "COL__bezel__15"
+      ],
+      "frame": {
+        "origin": "mounting_face_center",
+        "press_direction": [
+          0,
+          0,
+          -1
+        ]
+      },
+      "dimensions_mm": {
+        "diameter": 29.5,
+        "height": 3,
+        "clear_bore": 24.3
+      }
+    },
+    {
+      "name": "btn_green",
+      "visual": "btn_green.obj",
+      "texture": "btn_green_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "btn_green_col_00.obj"
+      ],
+      "mass_kg": 0.01,
+      "friction": 0.8,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "bezel",
+      "joint": {
+        "type": "slide",
+        "parent": "bezel",
+        "axis": [
+          0,
+          0,
+          -1
+        ],
+        "anchor_m": [
+          0,
+          0,
+          0
+        ],
+        "range": [
+          0.0,
+          0.004
+        ],
+        "damping": 0.6,
+        "frictionloss": 0.08,
+        "spring": {
+          "stiffness": 400.0,
+          "reference": 0.0
+        }
+      },
+      "source_collision_objects": [
+        "COL__btn_green__00"
+      ],
+      "frame": {
+        "origin": "mounting_face_center",
+        "press_direction": [
+          0,
+          0,
+          -1
+        ]
+      },
+      "dimensions_mm": {
+        "cap_diameter": 24,
+        "cap_envelope_height": 8,
+        "cap_top_above_mount": 9,
+        "cap_top_above_bezel": 6,
+        "lower_skirt_diameter": 21.6,
+        "travel": 4
+      },
+      "base_color": "#2E9E44",
+      "collision_dimensions_mm": {
+        "diameter": 23.0,
+        "height": 8
+      }
+    },
+    {
+      "name": "btn_red",
+      "visual": "btn_red.obj",
+      "texture": "btn_red_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "btn_red_col_00.obj"
+      ],
+      "mass_kg": 0.01,
+      "friction": 0.8,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "bezel",
+      "joint": {
+        "type": "slide",
+        "parent": "bezel",
+        "axis": [
+          0,
+          0,
+          -1
+        ],
+        "anchor_m": [
+          0,
+          0,
+          0
+        ],
+        "range": [
+          0.0,
+          0.004
+        ],
+        "damping": 0.6,
+        "frictionloss": 0.08,
+        "spring": {
+          "stiffness": 400.0,
+          "reference": 0.0
+        }
+      },
+      "source_collision_objects": [
+        "COL__btn_red__00"
+      ],
+      "frame": {
+        "origin": "mounting_face_center",
+        "press_direction": [
+          0,
+          0,
+          -1
+        ]
+      },
+      "dimensions_mm": {
+        "cap_diameter": 24,
+        "cap_envelope_height": 8,
+        "cap_top_above_mount": 9,
+        "cap_top_above_bezel": 6,
+        "lower_skirt_diameter": 21.6,
+        "travel": 4
+      },
+      "base_color": "#D32F2F",
+      "collision_dimensions_mm": {
+        "diameter": 23.0,
+        "height": 8
+      }
+    },
+    {
+      "name": "btn_yellow",
+      "visual": "btn_yellow.obj",
+      "texture": "btn_yellow_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "btn_yellow_col_00.obj"
+      ],
+      "mass_kg": 0.01,
+      "friction": 0.8,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "bezel",
+      "joint": {
+        "type": "slide",
+        "parent": "bezel",
+        "axis": [
+          0,
+          0,
+          -1
+        ],
+        "anchor_m": [
+          0,
+          0,
+          0
+        ],
+        "range": [
+          0.0,
+          0.004
+        ],
+        "damping": 0.6,
+        "frictionloss": 0.08,
+        "spring": {
+          "stiffness": 400.0,
+          "reference": 0.0
+        }
+      },
+      "source_collision_objects": [
+        "COL__btn_yellow__00"
+      ],
+      "frame": {
+        "origin": "mounting_face_center",
+        "press_direction": [
+          0,
+          0,
+          -1
+        ]
+      },
+      "dimensions_mm": {
+        "cap_diameter": 24,
+        "cap_envelope_height": 8,
+        "cap_top_above_mount": 9,
+        "cap_top_above_bezel": 6,
+        "lower_skirt_diameter": 21.6,
+        "travel": 4
+      },
+      "base_color": "#F2B705",
+      "collision_dimensions_mm": {
+        "diameter": 23.0,
+        "height": 8
+      }
+    },
+    {
+      "name": "selector_knob",
+      "visual": "selector_knob.obj",
+      "texture": "selector_knob_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "selector_knob_col_00.obj"
+      ],
+      "mass_kg": 0.025,
+      "friction": 0.8,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "bezel",
+      "joint": {
+        "type": "hinge",
+        "parent": "bezel",
+        "axis": [
+          0,
+          0,
+          1
+        ],
+        "anchor_m": [
+          0,
+          0,
+          0
+        ],
+        "range": [
+          -0.7853981633974483,
+          0.7853981633974483
+        ],
+        "damping": 0.02,
+        "frictionloss": 0.025,
+        "detents": {
+          "positions_rad": [
+            -0.7853981633974483,
+            0.7853981633974483
+          ],
+          "labels": [
+            "MAN",
+            "AUTO"
+          ],
+          "holding_torque_nm": 0.08,
+          "snap_stiffness_nm_per_rad": 0.4,
+          "implementation": "bistable endpoint torque in simulator"
+        }
+      },
+      "source_collision_objects": [
+        "COL__selector_knob__00"
+      ],
+      "frame": {
+        "origin": "mounting_face_center",
+        "press_direction": [
+          0,
+          0,
+          -1
+        ]
+      },
+      "dimensions_mm": {
+        "base_diameter": 27,
+        "base_height": 6,
+        "lever_xyz": [
+          9,
+          32,
+          14
+        ]
+      },
+      "recommended_initial_qpos": -0.7853981633974483
+    },
+    {
+      "name": "estop_plate",
+      "visual": "estop_plate.obj",
+      "texture": "estop_plate_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "estop_plate_col_00.obj"
+      ],
+      "mass_kg": 0.012,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": null,
+      "joint": null,
+      "source_collision_objects": [
+        "COL__estop_plate__00"
+      ],
+      "frame": {
+        "origin": "mounting_face_center",
+        "press_direction": [
+          0,
+          0,
+          -1
+        ]
+      },
+      "dimensions_mm": {
+        "diameter": 60,
+        "height": 1.5
+      },
+      "text": "EMERGENCY STOP"
+    },
+    {
+      "name": "estop",
+      "visual": "estop.obj",
+      "texture": "estop_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "estop_col_00.obj"
+      ],
+      "mass_kg": 0.01,
+      "friction": 0.8,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "estop_plate",
+      "joint": {
+        "type": "slide",
+        "parent": "estop_plate",
+        "axis": [
+          0,
+          0,
+          -1
+        ],
+        "anchor_m": [
+          0,
+          0,
+          0
+        ],
+        "range": [
+          0.0,
+          0.005
+        ],
+        "damping": 0.8,
+        "frictionloss": 0.12,
+        "latch": {
+          "engage_at_m": 0.0048,
+          "hold_at_m": 0.005,
+          "reset": "twist_to_release",
+          "release_axis": [
+            0,
+            0,
+            1
+          ],
+          "implementation": "simulator state machine; hold qpos after threshold"
+        }
+      },
+      "source_collision_objects": [
+        "COL__estop__00"
+      ],
+      "frame": {
+        "origin": "mounting_face_center",
+        "press_direction": [
+          0,
+          0,
+          -1
+        ]
+      },
+      "dimensions_mm": {
+        "head_diameter": 40,
+        "head_height": 18,
+        "head_bottom_z": 6.5,
+        "stem_diameter": 14,
+        "travel": 5
+      },
+      "base_color": "#D32F2F",
+      "collision_dimensions_mm": {
+        "diameter": 39.6,
+        "height": 18
+      }
+    },
+    {
+      "name": "pilot_green",
+      "visual": "pilot_green.obj",
+      "texture": "pilot_green_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "pilot_green_col_00.obj"
+      ],
+      "mass_kg": 0.008,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "bezel",
+      "joint": null,
+      "source_collision_objects": [
+        "COL__pilot_green__00"
+      ],
+      "frame": {
+        "origin": "mounting_face_center",
+        "press_direction": [
+          0,
+          0,
+          -1
+        ]
+      },
+      "emission": 0.8,
+      "dimensions_mm": {
+        "lens_diameter": 24,
+        "lens_height": 6
+      },
+      "base_color": "#2ECC40"
+    },
+    {
+      "name": "pilot_amber",
+      "visual": "pilot_amber.obj",
+      "texture": "pilot_amber_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "pilot_amber_col_00.obj"
+      ],
+      "mass_kg": 0.008,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "bezel",
+      "joint": null,
+      "source_collision_objects": [
+        "COL__pilot_amber__00"
+      ],
+      "frame": {
+        "origin": "mounting_face_center",
+        "press_direction": [
+          0,
+          0,
+          -1
+        ]
+      },
+      "emission": 0.8,
+      "dimensions_mm": {
+        "lens_diameter": 24,
+        "lens_height": 6
+      },
+      "base_color": "#FFB000"
+    },
+    {
+      "name": "pilot_red",
+      "visual": "pilot_red.obj",
+      "texture": "pilot_red_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "pilot_red_col_00.obj"
+      ],
+      "mass_kg": 0.008,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "bezel",
+      "joint": null,
+      "source_collision_objects": [
+        "COL__pilot_red__00"
+      ],
+      "frame": {
+        "origin": "mounting_face_center",
+        "press_direction": [
+          0,
+          0,
+          -1
+        ]
+      },
+      "emission": 0.8,
+      "dimensions_mm": {
+        "lens_diameter": 24,
+        "lens_height": 6
+      },
+      "base_color": "#E53935"
+    },
+    {
+      "name": "legend_plate",
+      "visual": "legend_plate.obj",
+      "texture": "legend_plate_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "legend_plate_col_00.obj"
+      ],
+      "mass_kg": 0.002,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": null,
+      "joint": null,
+      "source_collision_objects": [
+        "COL__legend_plate__00"
+      ],
+      "frame": {
+        "origin": "mounting_face_center",
+        "press_direction": [
+          0,
+          0,
+          -1
+        ]
+      },
+      "dimensions_mm": {
+        "xyz": [
+          30,
+          10,
+          1
+        ]
+      }
+    }
+  ],
+  "variants": [
+    {
+      "name": "START",
+      "text": "START",
+      "textures": {
+        "legend_plate": "legend_plate_albedo.png"
+      }
+    },
+    {
+      "name": "STOP",
+      "text": "STOP",
+      "textures": {
+        "legend_plate": "legend_plate_albedo_v1.png"
+      }
+    },
+    {
+      "name": "AUTO",
+      "text": "AUTO",
+      "textures": {
+        "legend_plate": "legend_plate_albedo_v2.png"
+      }
+    },
+    {
+      "name": "MAN",
+      "text": "MAN",
+      "textures": {
+        "legend_plate": "legend_plate_albedo_v3.png"
+      }
+    },
+    {
+      "name": "CYCLE START",
+      "text": "CYCLE START",
+      "textures": {
+        "legend_plate": "legend_plate_albedo_v4.png"
+      }
+    },
+    {
+      "name": "FEED HOLD",
+      "text": "FEED HOLD",
+      "textures": {
+        "legend_plate": "legend_plate_albedo_v5.png"
+      }
+    }
+  ],
+  "notes": "This is an independent-component library, NOT an overlaid physical assembly. Each visual/collider has its own mounting-face-centre origin and +Z outward; pressing is -Z. bbox_mm is only the union of these independent local frames, not the staged preview. Yellow estop_plate is an additional fixed part so the specified yellow disc never moves with estop. Red head is exactly diameter 40 x 18 mm; its lower face starts at Z6.5 to allow the 5 mm stroke above the 1.5 mm yellow plate. The integral 14 mm stem is additional geometry. Button envelopes are diameter 24 x 8 with tops at Z9, six mm above the 3 mm bezel; their underside skirts step to diameter 21.6 for mounting-hole clearance. Specified simple button cylinders intentionally fill this skirt step; cap/support contact pairs must be excluded in the simulator. The selector lever is 32 long along Y x 9 X x 14 Z on a 27 x 6 base; its symmetric base rotates with the lever. Per the task, its only collider is the lever box, omitting the fixed base. Zero-angle geometry is the neutral joint reference; recommended initial qpos is MAN=-45 degrees, because a symmetric -45/+45 joint range cannot put its zero at an endpoint. Endpoint detents and the e-stop latch are explicit simulator behaviour specifications, not Blender constraints. Spring stiffness, damping, frictionloss and detent forces were unspecified and are documented benchmark choices. Pilot emission 0.8 is retained in both PBR and MuJoCo metadata; emission is not baked into the albedo. Six legend atlases share the same mesh/UVs. 64-sample CPU Cycles DIFFUSE COLOR * (0.4 + 0.6 * AO); 8-bit sRGB; no direct/highlight bake. Collision refinement: button cylinders are diameter 23 x 8 mm and emergency head cylinder diameter 39.6 x 18 mm, keeping rounded/stepped cap boundary errors below 1 mm. Convex proxy topology is rebuilt from unchanged one-micrometre OBJ points after export rounding. Legend ink is enlarged vertically and placed in the lower band of each unchanged 30 x 10 mm plate, keeping text clear of the bezel at the prescribed 15 mm plate-centre offset; the emergency plate remains occluded by the mandatory 60 mm yellow disc. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder.",
+  "nominal_mounting_diameter_mm": 22,
+  "required_panel_hole_mm": 22.3
+}

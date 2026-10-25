@@ -1,0 +1,775 @@
+{
+  "id": "pattern_sign",
+  "task": "palletizing",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    60.0,
+    220.0,
+    307.00001
+  ],
+  "triangles": 692,
+  "budget_class": "medium",
+  "source": "source.blend",
+  "preview": "preview.png",
+  "parts": [
+    {
+      "name": "base",
+      "mass_kg": 0.45,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "texture_px": 1024,
+      "parent": null,
+      "joint": null,
+      "source_visual_object": "base",
+      "source_collision_objects": [],
+      "visual": "base.obj",
+      "texture": "base_albedo.png",
+      "collision": []
+    },
+    {
+      "name": "acrylic",
+      "mass_kg": 0.22,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.45,
+        "shininess": 0.75,
+        "reflectance": 0.03
+      },
+      "texture_px": null,
+      "parent": "base",
+      "joint": null,
+      "source_visual_object": "acrylic",
+      "source_collision_objects": [
+        "COL single thin acrylic sign proxy"
+      ],
+      "visual": "acrylic.obj",
+      "texture": null,
+      "collision": [
+        "acrylic_col_00.obj"
+      ],
+      "rgba": [
+        0.85,
+        0.9,
+        0.95,
+        0.25
+      ]
+    },
+    {
+      "name": "plan_sheet",
+      "mass_kg": 0.01,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.05,
+        "shininess": 0.1,
+        "reflectance": 0.0
+      },
+      "texture_px": 1024,
+      "parent": "base",
+      "joint": null,
+      "source_visual_object": "plan_sheet",
+      "source_collision_objects": [],
+      "visual": "plan_sheet.obj",
+      "texture": "plan_sheet_albedo.png",
+      "collision": []
+    }
+  ],
+  "variants": [
+    {
+      "name": "plan_01",
+      "textures": {
+        "plan_sheet": "plan_sheet_albedo.png"
+      },
+      "stacking_plan": {
+        "name": "plan_01",
+        "title": "COMPACT / SKU-B",
+        "description": "Tight 2 x 2 cross stack",
+        "layers": [
+          [
+            {
+              "number": 1,
+              "sku": "SKU-B",
+              "center_xy_mm": [
+                -40,
+                -60
+              ],
+              "size_xy_mm": [
+                80,
+                120
+              ]
+            },
+            {
+              "number": 2,
+              "sku": "SKU-B",
+              "center_xy_mm": [
+                40,
+                -60
+              ],
+              "size_xy_mm": [
+                80,
+                120
+              ]
+            },
+            {
+              "number": 3,
+              "sku": "SKU-B",
+              "center_xy_mm": [
+                -40,
+                60
+              ],
+              "size_xy_mm": [
+                80,
+                120
+              ]
+            },
+            {
+              "number": 4,
+              "sku": "SKU-B",
+              "center_xy_mm": [
+                40,
+                60
+              ],
+              "size_xy_mm": [
+                80,
+                120
+              ]
+            }
+          ],
+          [
+            {
+              "number": 5,
+              "sku": "SKU-B",
+              "center_xy_mm": [
+                -60,
+                -40
+              ],
+              "size_xy_mm": [
+                120,
+                80
+              ]
+            },
+            {
+              "number": 6,
+              "sku": "SKU-B",
+              "center_xy_mm": [
+                60,
+                -40
+              ],
+              "size_xy_mm": [
+                120,
+                80
+              ]
+            },
+            {
+              "number": 7,
+              "sku": "SKU-B",
+              "center_xy_mm": [
+                -60,
+                40
+              ],
+              "size_xy_mm": [
+                120,
+                80
+              ]
+            },
+            {
+              "number": 8,
+              "sku": "SKU-B",
+              "center_xy_mm": [
+                60,
+                40
+              ],
+              "size_xy_mm": [
+                120,
+                80
+              ]
+            }
+          ]
+        ]
+      },
+      "preview": "preview.png"
+    },
+    {
+      "name": "plan_02",
+      "textures": {
+        "plan_sheet": "plan_sheet_albedo_v1.png"
+      },
+      "stacking_plan": {
+        "name": "plan_02",
+        "title": "MIXED / SKU-A + SKU-B",
+        "description": "Mixed-length 2 x 2 cross stack",
+        "layers": [
+          [
+            {
+              "number": 1,
+              "sku": "SKU-A",
+              "center_xy_mm": [
+                -40,
+                -80
+              ],
+              "size_xy_mm": [
+                80,
+                160
+              ]
+            },
+            {
+              "number": 2,
+              "sku": "SKU-B",
+              "center_xy_mm": [
+                40,
+                -60
+              ],
+              "size_xy_mm": [
+                80,
+                120
+              ]
+            },
+            {
+              "number": 3,
+              "sku": "SKU-A",
+              "center_xy_mm": [
+                -40,
+                80
+              ],
+              "size_xy_mm": [
+                80,
+                160
+              ]
+            },
+            {
+              "number": 4,
+              "sku": "SKU-B",
+              "center_xy_mm": [
+                40,
+                60
+              ],
+              "size_xy_mm": [
+                80,
+                120
+              ]
+            }
+          ],
+          [
+            {
+              "number": 5,
+              "sku": "SKU-A",
+              "center_xy_mm": [
+                -60,
+                -40
+              ],
+              "size_xy_mm": [
+                160,
+                80
+              ]
+            },
+            {
+              "number": 6,
+              "sku": "SKU-A",
+              "center_xy_mm": [
+                -60,
+                40
+              ],
+              "size_xy_mm": [
+                160,
+                80
+              ]
+            },
+            {
+              "number": 7,
+              "sku": "SKU-B",
+              "center_xy_mm": [
+                80,
+                -40
+              ],
+              "size_xy_mm": [
+                120,
+                80
+              ]
+            },
+            {
+              "number": 8,
+              "sku": "SKU-B",
+              "center_xy_mm": [
+                80,
+                40
+              ],
+              "size_xy_mm": [
+                120,
+                80
+              ]
+            }
+          ]
+        ]
+      },
+      "preview": "preview_plan_02.png"
+    },
+    {
+      "name": "plan_03",
+      "textures": {
+        "plan_sheet": "plan_sheet_albedo_v2.png"
+      },
+      "stacking_plan": {
+        "name": "plan_03",
+        "title": "CLEARANCE / SKU-B",
+        "description": "Spaced 2 x 2 cross stack",
+        "layers": [
+          [
+            {
+              "number": 1,
+              "sku": "SKU-B",
+              "center_xy_mm": [
+                -45,
+                -70
+              ],
+              "size_xy_mm": [
+                80,
+                120
+              ]
+            },
+            {
+              "number": 2,
+              "sku": "SKU-B",
+              "center_xy_mm": [
+                45,
+                -70
+              ],
+              "size_xy_mm": [
+                80,
+                120
+              ]
+            },
+            {
+              "number": 3,
+              "sku": "SKU-B",
+              "center_xy_mm": [
+                -45,
+                70
+              ],
+              "size_xy_mm": [
+                80,
+                120
+              ]
+            },
+            {
+              "number": 4,
+              "sku": "SKU-B",
+              "center_xy_mm": [
+                45,
+                70
+              ],
+              "size_xy_mm": [
+                80,
+                120
+              ]
+            }
+          ],
+          [
+            {
+              "number": 5,
+              "sku": "SKU-B",
+              "center_xy_mm": [
+                -70,
+                -45
+              ],
+              "size_xy_mm": [
+                120,
+                80
+              ]
+            },
+            {
+              "number": 6,
+              "sku": "SKU-B",
+              "center_xy_mm": [
+                70,
+                -45
+              ],
+              "size_xy_mm": [
+                120,
+                80
+              ]
+            },
+            {
+              "number": 7,
+              "sku": "SKU-B",
+              "center_xy_mm": [
+                -70,
+                45
+              ],
+              "size_xy_mm": [
+                120,
+                80
+              ]
+            },
+            {
+              "number": 8,
+              "sku": "SKU-B",
+              "center_xy_mm": [
+                70,
+                45
+              ],
+              "size_xy_mm": [
+                120,
+                80
+              ]
+            }
+          ]
+        ]
+      },
+      "preview": "preview_plan_03.png"
+    }
+  ],
+  "dimensions_mm": {
+    "acrylic_xyz": [
+      3,
+      210,
+      297
+    ],
+    "base_xyz": [
+      60,
+      220,
+      20
+    ],
+    "acrylic_bottom_z": 10,
+    "insertion_depth": 10,
+    "sheet_yz": [
+      196,
+      283
+    ]
+  },
+  "notes": "A4-size 210Y x297Z x3X clear acrylic inserted 10 mm into an actual slot in the 220Y x60X x20Z base. Separate untextured acrylic part uses uniform rgba [0.85,0.90,0.95,0.25]; the opaque paper sheet is a separate part, never an alpha texture. Three original numbered 2x2 layer-one plans and 90-degree-rotated layer-two cartons, with fictional NOVA Logistics footer. Compact SKU-B, mixed SKU-A/B and clearance SKU-B plans have distinct packing footprints. All eight numbered cartons in each plan fit within a 300X x400Y pallet; mixed layer 2 is rearranged after rotating individual cartons because a rigid 90-degree rotation of the 320 mm long layer would overhang the 300 mm pallet. SPEC CONFLICT: one convex box cannot cover both the 60 mm deep base and 3 mm thin sign without large empty-space collisions. The single requested box therefore follows the acrylic; the out-of-workspace stationary base is visual-only. Slot and paper are not collision geometry. Masses are modelling estimates. The base is oriented with its 220 mm width along robot-left Y. Metres, Z up, front -X, common bottom-centre prop frame, applied transforms. Triangulated OBJ with normals, 30-degree split smoothing and weighted normals; nonoverlapping Smart UV 66-degree atlases with 0.01 island margins. Each opaque rigid part has one RGB8 sRGB albedo, CPU Cycles 64 DIFFUSE COLOR * (0.4 + 0.6 * AO), excluding direct illumination and highlights. Full procedural Principled PBR and original artwork are packed in source.blend. 1024-square previews: CPU Cycles 64, neutral grey, three lights, front-left above. Instance colour variation may be multiplied by 0.97-1.03 in simulation.  Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder.",
+  "build_blender_version": "5.2.0 LTS",
+  "static": true,
+  "artwork_material": "Original NOVA stacking-plan artwork",
+  "stacking_plans": [
+    {
+      "name": "plan_01",
+      "title": "COMPACT / SKU-B",
+      "description": "Tight 2 x 2 cross stack",
+      "layers": [
+        [
+          {
+            "number": 1,
+            "sku": "SKU-B",
+            "center_xy_mm": [
+              -40,
+              -60
+            ],
+            "size_xy_mm": [
+              80,
+              120
+            ]
+          },
+          {
+            "number": 2,
+            "sku": "SKU-B",
+            "center_xy_mm": [
+              40,
+              -60
+            ],
+            "size_xy_mm": [
+              80,
+              120
+            ]
+          },
+          {
+            "number": 3,
+            "sku": "SKU-B",
+            "center_xy_mm": [
+              -40,
+              60
+            ],
+            "size_xy_mm": [
+              80,
+              120
+            ]
+          },
+          {
+            "number": 4,
+            "sku": "SKU-B",
+            "center_xy_mm": [
+              40,
+              60
+            ],
+            "size_xy_mm": [
+              80,
+              120
+            ]
+          }
+        ],
+        [
+          {
+            "number": 5,
+            "sku": "SKU-B",
+            "center_xy_mm": [
+              -60,
+              -40
+            ],
+            "size_xy_mm": [
+              120,
+              80
+            ]
+          },
+          {
+            "number": 6,
+            "sku": "SKU-B",
+            "center_xy_mm": [
+              60,
+              -40
+            ],
+            "size_xy_mm": [
+              120,
+              80
+            ]
+          },
+          {
+            "number": 7,
+            "sku": "SKU-B",
+            "center_xy_mm": [
+              -60,
+              40
+            ],
+            "size_xy_mm": [
+              120,
+              80
+            ]
+          },
+          {
+            "number": 8,
+            "sku": "SKU-B",
+            "center_xy_mm": [
+              60,
+              40
+            ],
+            "size_xy_mm": [
+              120,
+              80
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "name": "plan_02",
+      "title": "MIXED / SKU-A + SKU-B",
+      "description": "Mixed-length 2 x 2 cross stack",
+      "layers": [
+        [
+          {
+            "number": 1,
+            "sku": "SKU-A",
+            "center_xy_mm": [
+              -40,
+              -80
+            ],
+            "size_xy_mm": [
+              80,
+              160
+            ]
+          },
+          {
+            "number": 2,
+            "sku": "SKU-B",
+            "center_xy_mm": [
+              40,
+              -60
+            ],
+            "size_xy_mm": [
+              80,
+              120
+            ]
+          },
+          {
+            "number": 3,
+            "sku": "SKU-A",
+            "center_xy_mm": [
+              -40,
+              80
+            ],
+            "size_xy_mm": [
+              80,
+              160
+            ]
+          },
+          {
+            "number": 4,
+            "sku": "SKU-B",
+            "center_xy_mm": [
+              40,
+              60
+            ],
+            "size_xy_mm": [
+              80,
+              120
+            ]
+          }
+        ],
+        [
+          {
+            "number": 5,
+            "sku": "SKU-A",
+            "center_xy_mm": [
+              -60,
+              -40
+            ],
+            "size_xy_mm": [
+              160,
+              80
+            ]
+          },
+          {
+            "number": 6,
+            "sku": "SKU-A",
+            "center_xy_mm": [
+              -60,
+              40
+            ],
+            "size_xy_mm": [
+              160,
+              80
+            ]
+          },
+          {
+            "number": 7,
+            "sku": "SKU-B",
+            "center_xy_mm": [
+              80,
+              -40
+            ],
+            "size_xy_mm": [
+              120,
+              80
+            ]
+          },
+          {
+            "number": 8,
+            "sku": "SKU-B",
+            "center_xy_mm": [
+              80,
+              40
+            ],
+            "size_xy_mm": [
+              120,
+              80
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "name": "plan_03",
+      "title": "CLEARANCE / SKU-B",
+      "description": "Spaced 2 x 2 cross stack",
+      "layers": [
+        [
+          {
+            "number": 1,
+            "sku": "SKU-B",
+            "center_xy_mm": [
+              -45,
+              -70
+            ],
+            "size_xy_mm": [
+              80,
+              120
+            ]
+          },
+          {
+            "number": 2,
+            "sku": "SKU-B",
+            "center_xy_mm": [
+              45,
+              -70
+            ],
+            "size_xy_mm": [
+              80,
+              120
+            ]
+          },
+          {
+            "number": 3,
+            "sku": "SKU-B",
+            "center_xy_mm": [
+              -45,
+              70
+            ],
+            "size_xy_mm": [
+              80,
+              120
+            ]
+          },
+          {
+            "number": 4,
+            "sku": "SKU-B",
+            "center_xy_mm": [
+              45,
+              70
+            ],
+            "size_xy_mm": [
+              80,
+              120
+            ]
+          }
+        ],
+        [
+          {
+            "number": 5,
+            "sku": "SKU-B",
+            "center_xy_mm": [
+              -70,
+              -45
+            ],
+            "size_xy_mm": [
+              120,
+              80
+            ]
+          },
+          {
+            "number": 6,
+            "sku": "SKU-B",
+            "center_xy_mm": [
+              70,
+              -45
+            ],
+            "size_xy_mm": [
+              120,
+              80
+            ]
+          },
+          {
+            "number": 7,
+            "sku": "SKU-B",
+            "center_xy_mm": [
+              -70,
+              45
+            ],
+            "size_xy_mm": [
+              120,
+              80
+            ]
+          },
+          {
+            "number": 8,
+            "sku": "SKU-B",
+            "center_xy_mm": [
+              70,
+              45
+            ],
+            "size_xy_mm": [
+              120,
+              80
+            ]
+          }
+        ]
+      ]
+    }
+  ],
+  "recommended_placement_m": {
+    "origin_x": 0.56,
+    "origin_y": 0.35,
+    "support_z": 0.8
+  }
+}

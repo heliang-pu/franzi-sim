@@ -1,0 +1,79 @@
+{
+  "id": "scissor_lift_table",
+  "task": "palletizing",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    419.99999,
+    519.99998,
+    720.00003
+  ],
+  "triangles": 13168,
+  "budget_class": "large",
+  "source": "source.blend",
+  "preview": "preview.png",
+  "parts": [
+    {
+      "name": "body",
+      "mass_kg": 42.0,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "texture_px": 1024,
+      "parent": null,
+      "joint": null,
+      "source_visual_object": "body",
+      "source_collision_objects": [
+        "COL top",
+        "COL base"
+      ],
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "collision": [
+        "body_col_00.obj",
+        "body_col_01.obj"
+      ]
+    }
+  ],
+  "variants": [],
+  "dimensions_mm": {
+    "top_xyz": [
+      400,
+      500,
+      40
+    ],
+    "top_surface_z": 720,
+    "base_xyz": [
+      420,
+      520,
+      60
+    ],
+    "scissor_tube_cross_section": [
+      30,
+      15
+    ],
+    "scissor_pairs": 2,
+    "pallet_top_z": 800
+  },
+  "notes": "Static yellow steel scissor table, two separated pairs of black 30x15x2 hollow steel tubes, zinc pins/retainers, hydraulic barrel and chrome rod. Diagonal black/yellow stripes on all four vertical top edges; surface grain, restrained edge wear and cavity dirt. Top is z=720 mm, so a nominal 80 mm pallet reaches 800 mm. Base dimensions use the same Y-first convention as the top: 520Y x420X x60Z. Exactly two specified collision boxes: arms, hydraulic equipment and mounting clevises are visual only. The 620-760 mm top-surface range is configuration metadata, not an animated joint; changing height requires regenerating the linkage pose. No live movable mechanism is claimed. Mass 42 kg is an estimate because the spec gives none. Metres, Z up, front -X, common bottom-centre prop frame, applied transforms. Triangulated OBJ with normals, 30-degree split smoothing and weighted normals; nonoverlapping Smart UV 66-degree atlases with 0.01 island margins. Each opaque rigid part has one RGB8 sRGB albedo, CPU Cycles 64 DIFFUSE COLOR * (0.4 + 0.6 * AO), excluding direct illumination and highlights. Full procedural Principled PBR and original artwork are packed in source.blend. 1024-square previews: CPU Cycles 64, neutral grey, three lights, front-left above. Instance colour variation may be multiplied by 0.97-1.03 in simulation.  Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder.",
+  "build_blender_version": "5.2.0 LTS",
+  "static": true,
+  "adjustable_height_mm": [
+    620,
+    760
+  ],
+  "initial_top_height_mm": 720,
+  "adjustable_height_m": [
+    0.62,
+    0.76
+  ],
+  "height_reference": "top surface above base origin",
+  "recommended_placement_m": {
+    "origin_x": 0.4,
+    "origin_y": 0,
+    "support_z": 0
+  }
+}

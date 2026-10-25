@@ -1,0 +1,77 @@
+{
+  "id": "pallet_carton_120x80x80",
+  "task": "palletizing",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    80.0,
+    120.0,
+    80.0
+  ],
+  "triangles": 8660,
+  "budget_class": "small",
+  "source": "source.blend",
+  "preview": "preview.png",
+  "parts": [
+    {
+      "name": "body",
+      "mass_kg": 0.25,
+      "friction": 0.55,
+      "mujoco_material": {
+        "specular": 0.05,
+        "shininess": 0.1,
+        "reflectance": 0.0
+      },
+      "texture_px": 1024,
+      "parent": null,
+      "joint": null,
+      "source_visual_object": "body",
+      "source_collision_objects": [
+        "COL nominal carton single box"
+      ],
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "collision": [
+        "body_col_00.obj"
+      ]
+    }
+  ],
+  "variants": [],
+  "dimensions_mm": {
+    "nominal_xyz": [
+      80,
+      120,
+      80
+    ],
+    "size_convention": "Y x X x height",
+    "wall": 4,
+    "major_flap_gap": 1.5,
+    "tape_width": 48,
+    "tape_end_fold": 50,
+    "label_yz": [
+      94,
+      30
+    ],
+    "label_skew_deg": 2
+  },
+  "notes": "Task 5 carton style scaled to 120Y x80X x80Z: actual hollow 4 mm FEFCO 0201 shell, four inner minor flaps, 1.5 mm major-flap seams, exposed real wavy cut-edge flutes and compressed corners. Glossy 48 mm brown tape turns down 50 mm at each end, with fine wrinkles and a shallow air bubble. Original generic arrows, umbrella and glass ink; fictional NOVA Logistics / SKU-B label skewed 2 degrees. A large black top orientation arrow points +Y, printed on the sealing tape. Tape, label and bubble allowances stay inside the nominal box envelope. Exactly one full nominal box collider, ignoring the interior and flap gaps. Paper highlight parameters apply to the single export material; tape gloss survives in the source PBR. Task 8 specified masses replace Task 5's heavier mass variants. Grip the 80 mm X span with one hand; do not squeeze the 120/160 mm Y span. Metres, Z up, front -X, common bottom-centre prop frame, applied transforms. Triangulated OBJ with normals, 30-degree split smoothing and weighted normals; nonoverlapping Smart UV 66-degree atlases with 0.01 island margins. Each opaque rigid part has one RGB8 sRGB albedo, CPU Cycles 64 DIFFUSE COLOR * (0.4 + 0.6 * AO), excluding direct illumination and highlights. Full procedural Principled PBR and original artwork are packed in source.blend. 1024-square previews: CPU Cycles 64, neutral grey, three lights, front-left above. Instance colour variation may be multiplied by 0.97-1.03 in simulation.  Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder.",
+  "build_blender_version": "5.2.0 LTS",
+  "sku": "SKU-B",
+  "grasp_axis": [
+    1,
+    0,
+    0
+  ],
+  "grasp_width_mm": 80,
+  "orientation_arrow_axis": [
+    0,
+    1,
+    0
+  ],
+  "single_hand_payload_kg": 0.25,
+  "recommended_placement_m": {
+    "origin_x": 0.4,
+    "origin_y": 0.16,
+    "support_z": 0.85
+  }
+}

@@ -1,0 +1,251 @@
+{
+  "id": "din_rail_kit",
+  "task": "precision_insertion",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    47.0,
+    250.0,
+    48.5
+  ],
+  "triangles": 30272,
+  "budget_class": "medium",
+  "source": "source.blend",
+  "preview": "preview.png",
+  "parts": [
+    {
+      "name": "rail",
+      "source_visual_object": "rail",
+      "source_collision_objects": [],
+      "mass_kg": 0.09,
+      "friction": 0.35,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "texture_px": 1024,
+      "parent": null,
+      "joint": null,
+      "bake_texture": "rail_albedo.png",
+      "visual": "rail.obj",
+      "texture": "rail_albedo.png",
+      "collision": []
+    },
+    {
+      "name": "terminal_01",
+      "source_visual_object": "terminal_01",
+      "source_collision_objects": [],
+      "mass_kg": 0.012,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "texture_px": 1024,
+      "parent": null,
+      "joint": null,
+      "bake_texture": "terminal_block_albedo.png",
+      "visual": "terminal_01.obj",
+      "texture": "terminal_block_albedo.png",
+      "collision": []
+    },
+    {
+      "name": "terminal_02",
+      "source_visual_object": "terminal_02",
+      "source_collision_objects": [],
+      "mass_kg": 0.012,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "texture_px": 1024,
+      "parent": null,
+      "joint": null,
+      "bake_texture": "terminal_block_albedo.png",
+      "visual": "terminal_02.obj",
+      "texture": "terminal_block_albedo.png",
+      "collision": []
+    },
+    {
+      "name": "terminal_03",
+      "source_visual_object": "terminal_03",
+      "source_collision_objects": [],
+      "mass_kg": 0.012,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "texture_px": 1024,
+      "parent": null,
+      "joint": null,
+      "bake_texture": "terminal_block_albedo.png",
+      "visual": "terminal_03.obj",
+      "texture": "terminal_block_albedo.png",
+      "collision": []
+    },
+    {
+      "name": "terminal_04",
+      "source_visual_object": "terminal_04",
+      "source_collision_objects": [],
+      "mass_kg": 0.012,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "texture_px": 1024,
+      "parent": null,
+      "joint": null,
+      "bake_texture": "terminal_block_albedo.png",
+      "visual": "terminal_04.obj",
+      "texture": "terminal_block_albedo.png",
+      "collision": []
+    },
+    {
+      "name": "terminal_05",
+      "source_visual_object": "terminal_05",
+      "source_collision_objects": [],
+      "mass_kg": 0.012,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "texture_px": 1024,
+      "parent": null,
+      "joint": null,
+      "bake_texture": "terminal_block_albedo.png",
+      "visual": "terminal_05.obj",
+      "texture": "terminal_block_albedo.png",
+      "collision": []
+    },
+    {
+      "name": "terminal_06",
+      "source_visual_object": "terminal_06",
+      "source_collision_objects": [],
+      "mass_kg": 0.012,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "texture_px": 1024,
+      "parent": null,
+      "joint": null,
+      "bake_texture": "terminal_block_albedo.png",
+      "visual": "terminal_06.obj",
+      "texture": "terminal_block_albedo.png",
+      "collision": []
+    },
+    {
+      "name": "terminal_07",
+      "source_visual_object": "terminal_07",
+      "source_collision_objects": [],
+      "mass_kg": 0.012,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "texture_px": 1024,
+      "parent": null,
+      "joint": null,
+      "bake_texture": "terminal_block_albedo.png",
+      "visual": "terminal_07.obj",
+      "texture": "terminal_block_albedo.png",
+      "collision": []
+    },
+    {
+      "name": "terminal_08",
+      "source_visual_object": "terminal_08",
+      "source_collision_objects": [],
+      "mass_kg": 0.012,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "texture_px": 1024,
+      "parent": null,
+      "joint": null,
+      "bake_texture": "terminal_block_albedo.png",
+      "visual": "terminal_08.obj",
+      "texture": "terminal_block_albedo.png",
+      "collision": []
+    },
+    {
+      "name": "end_cover",
+      "source_visual_object": "end_cover",
+      "source_collision_objects": [],
+      "mass_kg": 0.003,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "texture_px": 1024,
+      "parent": null,
+      "joint": null,
+      "bake_texture": "end_cover_albedo.png",
+      "visual": "end_cover.obj",
+      "texture": "end_cover_albedo.png",
+      "collision": []
+    },
+    {
+      "name": "end_clamp",
+      "source_visual_object": "end_clamp",
+      "source_collision_objects": [],
+      "mass_kg": 0.016,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "texture_px": 1024,
+      "parent": null,
+      "joint": null,
+      "bake_texture": "end_clamp_albedo.png",
+      "visual": "end_clamp.obj",
+      "texture": "end_clamp_albedo.png",
+      "collision": []
+    }
+  ],
+  "variants": [],
+  "dimensions_mm": {
+    "rail_xyz": [
+      35,
+      250,
+      7.5
+    ],
+    "rail_thickness": 1,
+    "slot_length_width": [
+      25,
+      5.3
+    ],
+    "slot_pitch": 25,
+    "slot_lateral_stagger": 1,
+    "terminal_xyz": [
+      47,
+      5.2,
+      42.5
+    ],
+    "terminal_count": 8
+  },
+  "notes": "Geometry and textures only: no collision proxies, joints, springs or clip-on behaviour are modelled. TS35 x 7.5 x 250 rail, 1 mm stock, true through slots; eight generic IMC Controls screw terminals with wire tunnels, brass clamps, recessed slotted screws, fixed under-flange hooks and sliding latch feet; one end cover and one screw end clamp. Slots are exactly 25 x 5.3 at 25 mm longitudinal pitch, alternately offset +/-1 mm laterally. Equal-length, collinear slots at that pitch would touch and create nonmanifold web edges; the stagger is the closest faithful way to retain both dimensions and pitch. The terminals share a single baked atlas and retain distinct meshes. Metres, Z up, front -X, bottom-centre origin, applied transforms and a shared prop frame. Triangulated visual OBJ with normals, 30-degree smoothing, nonoverlapping 66-degree Smart UVs. Albedo: CPU Cycles 64-sample DIFFUSE COLOR * (0.4 + 0.6 * AO), RGB8 sRGB, no direct light or highlights. Full Principled PBR and marking images packed in source.blend. Preview: 1024 square, CPU Cycles 64, neutral grey, three lights, front-left above. Collision coordinates retain 12 decimal places in metres. Simulation may vary instance colour by 0.97-1.03. Suggested worktable position [0.400, 0, 0.800] m; positioning and reachable grasp poses are left to the scene, not baked into these local meshes.  Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder.",
+  "build_blender_version": "5.2.0 LTS",
+  "geometry_only": true,
+  "clip_on_behaviour_modelled": false
+}

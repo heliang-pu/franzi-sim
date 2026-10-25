@@ -1,0 +1,74 @@
+{
+  "id": "bearing_6204",
+  "task": "precision_insertion",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    47.0,
+    47.0,
+    14.0
+  ],
+  "triangles": 7168,
+  "budget_class": "small",
+  "source": "source.blend",
+  "preview": "preview.png",
+  "parts": [
+    {
+      "name": "body",
+      "source_visual_object": "body",
+      "source_collision_objects": [
+        "COL__body__000"
+      ],
+      "mass_kg": 0.106,
+      "friction": 0.25,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "texture_px": 1024,
+      "parent": null,
+      "joint": null,
+      "bake_texture": "body_albedo.png",
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "collision": [
+        "body_col_00.obj",
+        "body_col_01.obj",
+        "body_col_02.obj",
+        "body_col_03.obj"
+      ]
+    }
+  ],
+  "variants": [
+    {
+      "name": "black_2rs",
+      "textures": {
+        "body": "body_albedo.png"
+      }
+    },
+    {
+      "name": "orange_2rs",
+      "textures": {
+        "body": "body_albedo_v1.png"
+      }
+    }
+  ],
+  "dimensions_mm": {
+    "outer_diameter": 47,
+    "inner_diameter": 20,
+    "width": 14,
+    "chamfer": 0.6,
+    "seal_recess": 0.5
+  },
+  "notes": "NVK 6204-2RS, two black recessed rubber seals; orange E25B12 seal variant. One analytic convex 48-sided prism with vertices on the nominal OD47 circle, 0.6 mm bevel rings at both ends; collision deliberately fills the ID20 visual bore. A 48-sided prism requires at least 96 vertices (192 with both bevel rings), which cannot meet the universal 64-vertex/file rule. prop_lib therefore divides that same convex solid into exact convex subpieces without changing its union or enlarging its diameter. This is the closest faithful validator-compatible choice. Metres, Z up, front -X, bottom-centre origin, applied transforms and a shared prop frame. Triangulated visual OBJ with normals, 30-degree smoothing, nonoverlapping 66-degree Smart UVs. Albedo: CPU Cycles 64-sample DIFFUSE COLOR * (0.4 + 0.6 * AO), RGB8 sRGB, no direct light or highlights. Full Principled PBR and marking images packed in source.blend. Preview: 1024 square, CPU Cycles 64, neutral grey, three lights, front-left above. Collision coordinates retain 12 decimal places in metres. Simulation may vary instance colour by 0.97-1.03. Suggested worktable position [0.400, 0, 0.800] m; positioning and reachable grasp poses are left to the scene, not baked into these local meshes.  Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 10 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder.",
+  "build_blender_version": "5.2.0 LTS",
+  "precision_mm": 0.01,
+  "outer_diameter_mm": 47,
+  "inner_diameter_mm": 20,
+  "width_mm": 14,
+  "collision_sides": 48,
+  "collision_nominal_prisms": 1,
+  "seal_material": "2RS rubber",
+  "marking": "NVK 6204-2RS"
+}

@@ -1,0 +1,96 @@
+{
+  "id": "spur_gear",
+  "task": "shaped_kitting",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    47.998,
+    47.839999,
+    17.999999
+  ],
+  "budget_class": "small",
+  "triangles": 5314,
+  "source": "source.blend",
+  "preview": "preview.png",
+  "parts": [
+    {
+      "name": "body",
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "body_col_00.obj",
+        "body_col_01.obj"
+      ],
+      "mass_kg": 0.029,
+      "friction": 0.3,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": null,
+      "joint": null,
+      "source_visual_object": "body",
+      "source_collision_objects": [
+        "Tip-circle collision - teeth and bore simplified",
+        "Hub collision"
+      ]
+    }
+  ],
+  "variants": [
+    {
+      "name": "white_pom",
+      "textures": {
+        "body": "body_albedo.png"
+      },
+      "mass_kg": 0.029,
+      "masses_kg": {
+        "body": 0.029
+      },
+      "mujoco_materials": {
+        "body": {
+          "specular": 0.3,
+          "shininess": 0.4,
+          "reflectance": 0.0
+        }
+      }
+    },
+    {
+      "name": "steel",
+      "textures": {
+        "body": "body_albedo_v1.png"
+      },
+      "mass_kg": 0.161454,
+      "masses_kg": {
+        "body": 0.161454
+      },
+      "mujoco_materials": {
+        "body": {
+          "specular": 0.7,
+          "shininess": 0.7,
+          "reflectance": 0.05
+        }
+      },
+      "source_material": "Steel variant #9CA3AA"
+    }
+  ],
+  "dimensions_mm": {
+    "module_mm": 1.5,
+    "teeth": 30,
+    "pressure_angle_deg": 20,
+    "pitch_diameter": 45.0,
+    "base_diameter": 42.28616793536588,
+    "tip_diameter": 48.0,
+    "root_diameter": 41.25,
+    "involute_samples_per_flank": 6,
+    "pitch_tooth_thickness": 2.356194490192345,
+    "face_width": 12,
+    "hub_diameter": 24,
+    "hub_height": 6,
+    "bore_diameter": 8,
+    "keyway_width": 3,
+    "keyway_radial_depth": 1.4
+  },
+  "notes": "Python-generated true involute flanks; standard 20 degree pressure angle selected because the specification does not state one. Standard full-depth dedendum 1.25m, radial root transitions below base circle and 0.3 mm face chamfers. Keyway width 3 mm; unspecified radial depth chosen as 1.4 mm. Hub up (+Z). White POM default 0.029 kg; steel variant mass 0.161454 kg estimated by density ratio 7850/1410, with its own texture, PBR and MuJoCo material override. Specified tip-circle collision bridges tooth gaps and ignores bore/keyway; tooth-root discrepancy 3.375 mm is the explicit section 3.6 cylinder simplification. Metres, Z up, front -X, bottom-centre origin; all transforms applied. Triangulated visual OBJ with normals and a nonoverlapping Smart UV 66-degree atlas. Albedo is CPU Cycles 64-sample DIFFUSE COLOR * (0.4 + 0.6 * AO), saved as 8-bit sRGB; no direct illumination or highlights. Procedural Principled PBR retained in source.blend. Preview: CPU Cycles 64, 1024 square, neutral grey and three lights, front-left above. Generated with Blender 5.2.0 LTS. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder."
+}

@@ -1,0 +1,146 @@
+{
+  "id": "mini_pallet",
+  "task": "palletizing",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    300.00001,
+    400.00001,
+    80.03
+  ],
+  "triangles": 16516,
+  "budget_class": "medium",
+  "source": "source.blend",
+  "preview": "preview.png",
+  "parts": [
+    {
+      "name": "body",
+      "mass_kg": 2.5,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.1,
+        "shininess": 0.15,
+        "reflectance": 0.0
+      },
+      "texture_px": 1024,
+      "parent": null,
+      "joint": null,
+      "source_visual_object": "body",
+      "source_collision_objects": [
+        "COL top board 00",
+        "COL top board 01",
+        "COL top board 02",
+        "COL top board 03",
+        "COL top board 04",
+        "COL specified combined blocks and bottom runners"
+      ],
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "collision": [
+        "body_col_00.obj",
+        "body_col_01.obj",
+        "body_col_02.obj",
+        "body_col_03.obj",
+        "body_col_04.obj",
+        "body_col_05.obj"
+      ]
+    }
+  ],
+  "variants": [
+    {
+      "name": "pine",
+      "textures": {
+        "body": "body_albedo.png"
+      }
+    },
+    {
+      "name": "blue_hdpe",
+      "textures": {
+        "body": "body_albedo_v1.png"
+      },
+      "part_overrides": {
+        "body": {
+          "visual": "body_hdpe.obj",
+          "texture": "body_albedo_v1.png",
+          "collision": [
+            "body_col_00.obj",
+            "body_col_01.obj",
+            "body_col_02.obj",
+            "body_col_03.obj",
+            "body_col_04.obj",
+            "body_col_05.obj"
+          ],
+          "mujoco_material": {
+            "specular": 0.25,
+            "shininess": 0.3,
+            "reflectance": 0.0
+          },
+          "source_visual_object": "body_hdpe",
+          "triangles": 26292,
+          "bbox_mm": [
+            300.00001192092896,
+            400.0000059604645,
+            79.99999821186066
+          ]
+        }
+      },
+      "preview": "preview_blue_hdpe.png",
+      "mass_kg": 2.5
+    }
+  ],
+  "dimensions_mm": {
+    "nominal_xyz": [
+      300,
+      400,
+      80
+    ],
+    "top_board_xyz": [
+      300,
+      64,
+      12
+    ],
+    "top_board_y": [
+      -168,
+      -84,
+      0,
+      84,
+      168
+    ],
+    "top_board_gap": 20,
+    "block_xyz": [
+      60,
+      60,
+      56
+    ],
+    "block_x": [
+      -120,
+      0,
+      120
+    ],
+    "block_y": [
+      -170,
+      0,
+      170
+    ],
+    "bottom_board_xyz": [
+      64,
+      400,
+      12
+    ],
+    "bottom_board_x": [
+      -118,
+      0,
+      118
+    ]
+  },
+  "notes": "Five pine deckboards, nine support blocks and three Y-grain bottom runners. Elongated wood grain, 3-percent board variation, worn edges, cavity dirt, thirty dark nail heads and an original fictional NOVA / HT / FICT-008 stamp. Nail heads stand 0.03 mm proud of the nominal 80 mm deck. The blue HDPE variant replaces the body mesh, not just the colour: seventy real rounded through-holes form five grid panels. Apply variants[].part_overrides by part name and then variants[].textures; the same common frame and six prescribed collision boxes are retained. SPEC EXCEPTION: the required single lower 300x400x68 proxy fills the fork openings, and the top proxies fill HDPE grid cells. These deliberately coarse, task-specific proxies override the general 1 mm concavity rule. This pallet may be fixed to the lift; it is not a fork-entry collision model. Metres, Z up, front -X, common bottom-centre prop frame, applied transforms. Triangulated OBJ with normals, 30-degree split smoothing and weighted normals; nonoverlapping Smart UV 66-degree atlases with 0.01 island margins. Each opaque rigid part has one RGB8 sRGB albedo, CPU Cycles 64 DIFFUSE COLOR * (0.4 + 0.6 * AO), excluding direct illumination and highlights. Full procedural Principled PBR and original artwork are packed in source.blend. 1024-square previews: CPU Cycles 64, neutral grey, three lights, front-left above. Instance colour variation may be multiplied by 0.97-1.03 in simulation.  Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder.",
+  "build_blender_version": "5.2.0 LTS",
+  "fixed_to_lift_allowed": true,
+  "static_mount": "scissor_lift_table at z=0.720 m",
+  "recommended_placement_m": {
+    "origin_x": 0.4,
+    "origin_y": 0,
+    "support_z": 0.72
+  },
+  "variant_contract": "Merge part_overrides into the named base part; then merge textures. Unspecified fields inherit."
+}

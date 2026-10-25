@@ -1,0 +1,4414 @@
+{
+  "id": "control_console",
+  "task": "panel_operation",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    211.99999749660492,
+    319.9999928474426,
+    159.9850058555603
+  ],
+  "budget_class": "medium",
+  "triangles": 28488,
+  "source": "source.blend",
+  "preview": "preview.png",
+  "parts": [
+    {
+      "name": "body",
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "body_col_00.obj",
+        "body_col_01.obj",
+        "body_col_02.obj",
+        "body_col_03.obj",
+        "body_col_04.obj",
+        "body_col_05.obj"
+      ],
+      "mass_kg": 3.535,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "parent": null,
+      "joint": null
+    },
+    {
+      "name": "panel",
+      "visual": "panel.obj",
+      "texture": "panel_albedo.png",
+      "texture_px": 1024,
+      "collision": [],
+      "mass_kg": 0.3,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "parent": "body",
+      "joint": null
+    },
+    {
+      "name": "gland",
+      "visual": "gland.obj",
+      "texture": "gland_B_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "gland_col_00.obj",
+        "gland_col_01.obj"
+      ],
+      "mass_kg": 0.02,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "body",
+      "joint": null
+    },
+    {
+      "name": "lamp_green_bezel",
+      "visual": "lamp_green_bezel.obj",
+      "texture": "../panel_devices/bezel_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "lamp_green_bezel_col_00.obj",
+        "lamp_green_bezel_col_01.obj",
+        "lamp_green_bezel_col_02.obj",
+        "lamp_green_bezel_col_03.obj",
+        "lamp_green_bezel_col_04.obj",
+        "lamp_green_bezel_col_05.obj",
+        "lamp_green_bezel_col_06.obj",
+        "lamp_green_bezel_col_07.obj",
+        "lamp_green_bezel_col_08.obj",
+        "lamp_green_bezel_col_09.obj",
+        "lamp_green_bezel_col_10.obj",
+        "lamp_green_bezel_col_11.obj",
+        "lamp_green_bezel_col_12.obj",
+        "lamp_green_bezel_col_13.obj",
+        "lamp_green_bezel_col_14.obj",
+        "lamp_green_bezel_col_15.obj"
+      ],
+      "mass_kg": 0.008,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "panel",
+      "joint": null,
+      "dimensions_mm": {
+        "diameter": 29.5,
+        "height": 3,
+        "clear_bore": 24.3
+      }
+    },
+    {
+      "name": "lamp_green",
+      "visual": "lamp_green.obj",
+      "texture": "../panel_devices/pilot_green_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "lamp_green_col_00.obj"
+      ],
+      "mass_kg": 0.008,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "lamp_green_bezel",
+      "joint": null,
+      "emission": 0.8,
+      "dimensions_mm": {
+        "lens_diameter": 24,
+        "lens_height": 6
+      },
+      "base_color": "#2ECC40"
+    },
+    {
+      "name": "lamp_green_legend",
+      "visual": "lamp_green_legend.obj",
+      "texture": "../panel_devices/legend_plate_albedo_v2.png",
+      "texture_px": 1024,
+      "collision": [
+        "lamp_green_legend_col_00.obj"
+      ],
+      "mass_kg": 0.002,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "panel",
+      "joint": null,
+      "dimensions_mm": {
+        "xyz": [
+          30,
+          10,
+          1
+        ]
+      },
+      "text": "AUTO"
+    },
+    {
+      "name": "lamp_amber_bezel",
+      "visual": "lamp_amber_bezel.obj",
+      "texture": "../panel_devices/bezel_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "lamp_amber_bezel_col_00.obj",
+        "lamp_amber_bezel_col_01.obj",
+        "lamp_amber_bezel_col_02.obj",
+        "lamp_amber_bezel_col_03.obj",
+        "lamp_amber_bezel_col_04.obj",
+        "lamp_amber_bezel_col_05.obj",
+        "lamp_amber_bezel_col_06.obj",
+        "lamp_amber_bezel_col_07.obj",
+        "lamp_amber_bezel_col_08.obj",
+        "lamp_amber_bezel_col_09.obj",
+        "lamp_amber_bezel_col_10.obj",
+        "lamp_amber_bezel_col_11.obj",
+        "lamp_amber_bezel_col_12.obj",
+        "lamp_amber_bezel_col_13.obj",
+        "lamp_amber_bezel_col_14.obj",
+        "lamp_amber_bezel_col_15.obj"
+      ],
+      "mass_kg": 0.008,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "panel",
+      "joint": null,
+      "dimensions_mm": {
+        "diameter": 29.5,
+        "height": 3,
+        "clear_bore": 24.3
+      }
+    },
+    {
+      "name": "lamp_amber",
+      "visual": "lamp_amber.obj",
+      "texture": "../panel_devices/pilot_amber_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "lamp_amber_col_00.obj"
+      ],
+      "mass_kg": 0.008,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "lamp_amber_bezel",
+      "joint": null,
+      "emission": 0.8,
+      "dimensions_mm": {
+        "lens_diameter": 24,
+        "lens_height": 6
+      },
+      "base_color": "#FFB000"
+    },
+    {
+      "name": "lamp_amber_legend",
+      "visual": "lamp_amber_legend.obj",
+      "texture": "../panel_devices/legend_plate_albedo_v3.png",
+      "texture_px": 1024,
+      "collision": [
+        "lamp_amber_legend_col_00.obj"
+      ],
+      "mass_kg": 0.002,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "panel",
+      "joint": null,
+      "dimensions_mm": {
+        "xyz": [
+          30,
+          10,
+          1
+        ]
+      },
+      "text": "MAN"
+    },
+    {
+      "name": "lamp_red_bezel",
+      "visual": "lamp_red_bezel.obj",
+      "texture": "../panel_devices/bezel_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "lamp_red_bezel_col_00.obj",
+        "lamp_red_bezel_col_01.obj",
+        "lamp_red_bezel_col_02.obj",
+        "lamp_red_bezel_col_03.obj",
+        "lamp_red_bezel_col_04.obj",
+        "lamp_red_bezel_col_05.obj",
+        "lamp_red_bezel_col_06.obj",
+        "lamp_red_bezel_col_07.obj",
+        "lamp_red_bezel_col_08.obj",
+        "lamp_red_bezel_col_09.obj",
+        "lamp_red_bezel_col_10.obj",
+        "lamp_red_bezel_col_11.obj",
+        "lamp_red_bezel_col_12.obj",
+        "lamp_red_bezel_col_13.obj",
+        "lamp_red_bezel_col_14.obj",
+        "lamp_red_bezel_col_15.obj"
+      ],
+      "mass_kg": 0.008,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "panel",
+      "joint": null,
+      "dimensions_mm": {
+        "diameter": 29.5,
+        "height": 3,
+        "clear_bore": 24.3
+      }
+    },
+    {
+      "name": "lamp_red",
+      "visual": "lamp_red.obj",
+      "texture": "../panel_devices/pilot_red_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "lamp_red_col_00.obj"
+      ],
+      "mass_kg": 0.008,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "lamp_red_bezel",
+      "joint": null,
+      "emission": 0.8,
+      "dimensions_mm": {
+        "lens_diameter": 24,
+        "lens_height": 6
+      },
+      "base_color": "#E53935"
+    },
+    {
+      "name": "lamp_red_legend",
+      "visual": "lamp_red_legend.obj",
+      "texture": "../panel_devices/legend_plate_albedo_v1.png",
+      "texture_px": 1024,
+      "collision": [
+        "lamp_red_legend_col_00.obj"
+      ],
+      "mass_kg": 0.002,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "panel",
+      "joint": null,
+      "dimensions_mm": {
+        "xyz": [
+          30,
+          10,
+          1
+        ]
+      },
+      "text": "STOP"
+    },
+    {
+      "name": "mode",
+      "visual": "mode.obj",
+      "texture": "../panel_devices/selector_knob_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "mode_col_00.obj"
+      ],
+      "mass_kg": 0.025,
+      "friction": 0.8,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "panel",
+      "joint": {
+        "type": "hinge",
+        "parent": "panel",
+        "axis": [
+          -0.4472135901451111,
+          0.0,
+          0.8944271802902222
+        ],
+        "anchor_m": [
+          -0.04406091690063477,
+          -0.09,
+          0.09264659881591797
+        ],
+        "range": [
+          -0.7853981633974483,
+          0.7853981633974483
+        ],
+        "damping": 0.02,
+        "frictionloss": 0.025,
+        "detents": {
+          "positions_rad": [
+            -0.7853981633974483,
+            0.7853981633974483
+          ],
+          "labels": [
+            "MAN",
+            "AUTO"
+          ],
+          "holding_torque_nm": 0.08,
+          "snap_stiffness_nm_per_rad": 0.4,
+          "implementation": "bistable endpoint torque in simulator"
+        }
+      },
+      "dimensions_mm": {
+        "base_diameter": 27,
+        "base_height": 6,
+        "lever_xyz": [
+          9,
+          32,
+          14
+        ]
+      }
+    },
+    {
+      "name": "mode_legend",
+      "visual": "mode_legend.obj",
+      "texture": "../panel_devices/legend_plate_albedo_v3.png",
+      "texture_px": 1024,
+      "collision": [
+        "mode_legend_col_00.obj"
+      ],
+      "mass_kg": 0.002,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "panel",
+      "joint": null,
+      "dimensions_mm": {
+        "xyz": [
+          30,
+          10,
+          1
+        ]
+      },
+      "text": "MAN"
+    },
+    {
+      "name": "start_bezel",
+      "visual": "start_bezel.obj",
+      "texture": "../panel_devices/bezel_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "start_bezel_col_00.obj",
+        "start_bezel_col_01.obj",
+        "start_bezel_col_02.obj",
+        "start_bezel_col_03.obj",
+        "start_bezel_col_04.obj",
+        "start_bezel_col_05.obj",
+        "start_bezel_col_06.obj",
+        "start_bezel_col_07.obj",
+        "start_bezel_col_08.obj",
+        "start_bezel_col_09.obj",
+        "start_bezel_col_10.obj",
+        "start_bezel_col_11.obj",
+        "start_bezel_col_12.obj",
+        "start_bezel_col_13.obj",
+        "start_bezel_col_14.obj",
+        "start_bezel_col_15.obj"
+      ],
+      "mass_kg": 0.008,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "panel",
+      "joint": null,
+      "dimensions_mm": {
+        "diameter": 29.5,
+        "height": 3,
+        "clear_bore": 24.3
+      }
+    },
+    {
+      "name": "start",
+      "visual": "start.obj",
+      "texture": "../panel_devices/btn_green_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "start_col_00.obj"
+      ],
+      "mass_kg": 0.01,
+      "friction": 0.8,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "start_bezel",
+      "joint": {
+        "type": "slide",
+        "parent": "start_bezel",
+        "axis": [
+          0.4472135901451111,
+          0.0,
+          -0.8944271802902222
+        ],
+        "anchor_m": [
+          -0.04406091690063477,
+          -0.02,
+          0.09264659881591797
+        ],
+        "range": [
+          0.0,
+          0.004
+        ],
+        "damping": 0.6,
+        "frictionloss": 0.08,
+        "spring": {
+          "stiffness": 400.0,
+          "reference": 0.0
+        }
+      },
+      "dimensions_mm": {
+        "cap_diameter": 24,
+        "cap_envelope_height": 8,
+        "cap_top_above_mount": 9,
+        "cap_top_above_bezel": 6,
+        "lower_skirt_diameter": 21.6,
+        "travel": 4
+      },
+      "base_color": "#2E9E44",
+      "collision_dimensions_mm": {
+        "diameter": 23.0,
+        "height": 8
+      }
+    },
+    {
+      "name": "start_legend",
+      "visual": "start_legend.obj",
+      "texture": "../panel_devices/legend_plate_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "start_legend_col_00.obj"
+      ],
+      "mass_kg": 0.002,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "panel",
+      "joint": null,
+      "dimensions_mm": {
+        "xyz": [
+          30,
+          10,
+          1
+        ]
+      },
+      "text": "START"
+    },
+    {
+      "name": "stop_bezel",
+      "visual": "stop_bezel.obj",
+      "texture": "../panel_devices/bezel_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "stop_bezel_col_00.obj",
+        "stop_bezel_col_01.obj",
+        "stop_bezel_col_02.obj",
+        "stop_bezel_col_03.obj",
+        "stop_bezel_col_04.obj",
+        "stop_bezel_col_05.obj",
+        "stop_bezel_col_06.obj",
+        "stop_bezel_col_07.obj",
+        "stop_bezel_col_08.obj",
+        "stop_bezel_col_09.obj",
+        "stop_bezel_col_10.obj",
+        "stop_bezel_col_11.obj",
+        "stop_bezel_col_12.obj",
+        "stop_bezel_col_13.obj",
+        "stop_bezel_col_14.obj",
+        "stop_bezel_col_15.obj"
+      ],
+      "mass_kg": 0.008,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "panel",
+      "joint": null,
+      "dimensions_mm": {
+        "diameter": 29.5,
+        "height": 3,
+        "clear_bore": 24.3
+      }
+    },
+    {
+      "name": "stop",
+      "visual": "stop.obj",
+      "texture": "../panel_devices/btn_red_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "stop_col_00.obj"
+      ],
+      "mass_kg": 0.01,
+      "friction": 0.8,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "stop_bezel",
+      "joint": {
+        "type": "slide",
+        "parent": "stop_bezel",
+        "axis": [
+          0.4472135901451111,
+          0.0,
+          -0.8944271802902222
+        ],
+        "anchor_m": [
+          -0.04406091690063477,
+          0.04,
+          0.09264659881591797
+        ],
+        "range": [
+          0.0,
+          0.004
+        ],
+        "damping": 0.6,
+        "frictionloss": 0.08,
+        "spring": {
+          "stiffness": 400.0,
+          "reference": 0.0
+        }
+      },
+      "dimensions_mm": {
+        "cap_diameter": 24,
+        "cap_envelope_height": 8,
+        "cap_top_above_mount": 9,
+        "cap_top_above_bezel": 6,
+        "lower_skirt_diameter": 21.6,
+        "travel": 4
+      },
+      "base_color": "#D32F2F",
+      "collision_dimensions_mm": {
+        "diameter": 23.0,
+        "height": 8
+      }
+    },
+    {
+      "name": "stop_legend",
+      "visual": "stop_legend.obj",
+      "texture": "../panel_devices/legend_plate_albedo_v1.png",
+      "texture_px": 1024,
+      "collision": [
+        "stop_legend_col_00.obj"
+      ],
+      "mass_kg": 0.002,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "panel",
+      "joint": null,
+      "dimensions_mm": {
+        "xyz": [
+          30,
+          10,
+          1
+        ]
+      },
+      "text": "STOP"
+    },
+    {
+      "name": "emergency_plate",
+      "visual": "emergency_plate.obj",
+      "texture": "../panel_devices/estop_plate_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "emergency_plate_col_00.obj"
+      ],
+      "mass_kg": 0.012,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "panel",
+      "joint": null,
+      "dimensions_mm": {
+        "diameter": 60,
+        "height": 1.5
+      },
+      "text": "EMERGENCY STOP"
+    },
+    {
+      "name": "emergency",
+      "visual": "emergency.obj",
+      "texture": "../panel_devices/estop_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "emergency_col_00.obj"
+      ],
+      "mass_kg": 0.01,
+      "friction": 0.8,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "emergency_plate",
+      "joint": {
+        "type": "slide",
+        "parent": "emergency_plate",
+        "axis": [
+          0.4472135901451111,
+          0.0,
+          -0.8944271802902222
+        ],
+        "anchor_m": [
+          -0.00828382968902588,
+          0.11,
+          0.11053514099121094
+        ],
+        "range": [
+          0.0,
+          0.005
+        ],
+        "damping": 0.8,
+        "frictionloss": 0.12,
+        "latch": {
+          "engage_at_m": 0.0048,
+          "hold_at_m": 0.005,
+          "reset": "twist_to_release",
+          "release_axis": [
+            -0.4472135901451111,
+            0.0,
+            0.8944271802902222
+          ],
+          "implementation": "simulator state machine; hold qpos after threshold"
+        }
+      },
+      "dimensions_mm": {
+        "head_diameter": 40,
+        "head_height": 18,
+        "head_bottom_z": 6.5,
+        "stem_diameter": 14,
+        "travel": 5
+      },
+      "base_color": "#D32F2F",
+      "collision_dimensions_mm": {
+        "diameter": 39.6,
+        "height": 18
+      }
+    },
+    {
+      "name": "emergency_legend",
+      "visual": "emergency_legend.obj",
+      "texture": "../panel_devices/legend_plate_albedo_v1.png",
+      "texture_px": 1024,
+      "collision": [
+        "emergency_legend_col_00.obj"
+      ],
+      "mass_kg": 0.002,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "panel",
+      "joint": null,
+      "dimensions_mm": {
+        "xyz": [
+          30,
+          10,
+          1
+        ]
+      },
+      "text": "STOP"
+    }
+  ],
+  "variants": [
+    {
+      "name": "A",
+      "parts": [
+        {
+          "name": "body",
+          "visual": "body.obj",
+          "texture": "body_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "body_col_00.obj",
+            "body_col_01.obj",
+            "body_col_02.obj",
+            "body_col_03.obj",
+            "body_col_04.obj",
+            "body_col_05.obj"
+          ],
+          "mass_kg": 3.535,
+          "friction": 0.5,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.3,
+            "reflectance": 0.0
+          },
+          "parent": null,
+          "joint": null
+        },
+        {
+          "name": "panel",
+          "visual": "panel.obj",
+          "texture": "panel_albedo.png",
+          "texture_px": 1024,
+          "collision": [],
+          "mass_kg": 0.3,
+          "friction": 0.5,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.3,
+            "reflectance": 0.0
+          },
+          "parent": "body",
+          "joint": null
+        },
+        {
+          "name": "gland",
+          "visual": "gland.obj",
+          "texture": "gland_B_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "gland_col_00.obj",
+            "gland_col_01.obj"
+          ],
+          "mass_kg": 0.02,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "body",
+          "joint": null
+        },
+        {
+          "name": "lamp_green_bezel",
+          "visual": "lamp_green_bezel.obj",
+          "texture": "../panel_devices/bezel_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "lamp_green_bezel_col_00.obj",
+            "lamp_green_bezel_col_01.obj",
+            "lamp_green_bezel_col_02.obj",
+            "lamp_green_bezel_col_03.obj",
+            "lamp_green_bezel_col_04.obj",
+            "lamp_green_bezel_col_05.obj",
+            "lamp_green_bezel_col_06.obj",
+            "lamp_green_bezel_col_07.obj",
+            "lamp_green_bezel_col_08.obj",
+            "lamp_green_bezel_col_09.obj",
+            "lamp_green_bezel_col_10.obj",
+            "lamp_green_bezel_col_11.obj",
+            "lamp_green_bezel_col_12.obj",
+            "lamp_green_bezel_col_13.obj",
+            "lamp_green_bezel_col_14.obj",
+            "lamp_green_bezel_col_15.obj"
+          ],
+          "mass_kg": 0.008,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.7,
+            "shininess": 0.7,
+            "reflectance": 0.05
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "diameter": 29.5,
+            "height": 3,
+            "clear_bore": 24.3
+          }
+        },
+        {
+          "name": "lamp_green",
+          "visual": "lamp_green.obj",
+          "texture": "../panel_devices/pilot_green_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "lamp_green_col_00.obj"
+          ],
+          "mass_kg": 0.008,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "lamp_green_bezel",
+          "joint": null,
+          "emission": 0.8,
+          "dimensions_mm": {
+            "lens_diameter": 24,
+            "lens_height": 6
+          },
+          "base_color": "#2ECC40"
+        },
+        {
+          "name": "lamp_green_legend",
+          "visual": "lamp_green_legend.obj",
+          "texture": "../panel_devices/legend_plate_albedo_v2.png",
+          "texture_px": 1024,
+          "collision": [
+            "lamp_green_legend_col_00.obj"
+          ],
+          "mass_kg": 0.002,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "xyz": [
+              30,
+              10,
+              1
+            ]
+          },
+          "text": "AUTO"
+        },
+        {
+          "name": "lamp_amber_bezel",
+          "visual": "lamp_amber_bezel.obj",
+          "texture": "../panel_devices/bezel_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "lamp_amber_bezel_col_00.obj",
+            "lamp_amber_bezel_col_01.obj",
+            "lamp_amber_bezel_col_02.obj",
+            "lamp_amber_bezel_col_03.obj",
+            "lamp_amber_bezel_col_04.obj",
+            "lamp_amber_bezel_col_05.obj",
+            "lamp_amber_bezel_col_06.obj",
+            "lamp_amber_bezel_col_07.obj",
+            "lamp_amber_bezel_col_08.obj",
+            "lamp_amber_bezel_col_09.obj",
+            "lamp_amber_bezel_col_10.obj",
+            "lamp_amber_bezel_col_11.obj",
+            "lamp_amber_bezel_col_12.obj",
+            "lamp_amber_bezel_col_13.obj",
+            "lamp_amber_bezel_col_14.obj",
+            "lamp_amber_bezel_col_15.obj"
+          ],
+          "mass_kg": 0.008,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.7,
+            "shininess": 0.7,
+            "reflectance": 0.05
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "diameter": 29.5,
+            "height": 3,
+            "clear_bore": 24.3
+          }
+        },
+        {
+          "name": "lamp_amber",
+          "visual": "lamp_amber.obj",
+          "texture": "../panel_devices/pilot_amber_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "lamp_amber_col_00.obj"
+          ],
+          "mass_kg": 0.008,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "lamp_amber_bezel",
+          "joint": null,
+          "emission": 0.8,
+          "dimensions_mm": {
+            "lens_diameter": 24,
+            "lens_height": 6
+          },
+          "base_color": "#FFB000"
+        },
+        {
+          "name": "lamp_amber_legend",
+          "visual": "lamp_amber_legend.obj",
+          "texture": "../panel_devices/legend_plate_albedo_v3.png",
+          "texture_px": 1024,
+          "collision": [
+            "lamp_amber_legend_col_00.obj"
+          ],
+          "mass_kg": 0.002,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "xyz": [
+              30,
+              10,
+              1
+            ]
+          },
+          "text": "MAN"
+        },
+        {
+          "name": "lamp_red_bezel",
+          "visual": "lamp_red_bezel.obj",
+          "texture": "../panel_devices/bezel_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "lamp_red_bezel_col_00.obj",
+            "lamp_red_bezel_col_01.obj",
+            "lamp_red_bezel_col_02.obj",
+            "lamp_red_bezel_col_03.obj",
+            "lamp_red_bezel_col_04.obj",
+            "lamp_red_bezel_col_05.obj",
+            "lamp_red_bezel_col_06.obj",
+            "lamp_red_bezel_col_07.obj",
+            "lamp_red_bezel_col_08.obj",
+            "lamp_red_bezel_col_09.obj",
+            "lamp_red_bezel_col_10.obj",
+            "lamp_red_bezel_col_11.obj",
+            "lamp_red_bezel_col_12.obj",
+            "lamp_red_bezel_col_13.obj",
+            "lamp_red_bezel_col_14.obj",
+            "lamp_red_bezel_col_15.obj"
+          ],
+          "mass_kg": 0.008,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.7,
+            "shininess": 0.7,
+            "reflectance": 0.05
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "diameter": 29.5,
+            "height": 3,
+            "clear_bore": 24.3
+          }
+        },
+        {
+          "name": "lamp_red",
+          "visual": "lamp_red.obj",
+          "texture": "../panel_devices/pilot_red_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "lamp_red_col_00.obj"
+          ],
+          "mass_kg": 0.008,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "lamp_red_bezel",
+          "joint": null,
+          "emission": 0.8,
+          "dimensions_mm": {
+            "lens_diameter": 24,
+            "lens_height": 6
+          },
+          "base_color": "#E53935"
+        },
+        {
+          "name": "lamp_red_legend",
+          "visual": "lamp_red_legend.obj",
+          "texture": "../panel_devices/legend_plate_albedo_v1.png",
+          "texture_px": 1024,
+          "collision": [
+            "lamp_red_legend_col_00.obj"
+          ],
+          "mass_kg": 0.002,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "xyz": [
+              30,
+              10,
+              1
+            ]
+          },
+          "text": "STOP"
+        },
+        {
+          "name": "mode",
+          "visual": "mode.obj",
+          "texture": "../panel_devices/selector_knob_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "mode_col_00.obj"
+          ],
+          "mass_kg": 0.025,
+          "friction": 0.8,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "panel",
+          "joint": {
+            "type": "hinge",
+            "parent": "panel",
+            "axis": [
+              -0.4472135901451111,
+              0.0,
+              0.8944271802902222
+            ],
+            "anchor_m": [
+              -0.04406091690063477,
+              -0.09,
+              0.09264659881591797
+            ],
+            "range": [
+              -0.7853981633974483,
+              0.7853981633974483
+            ],
+            "damping": 0.02,
+            "frictionloss": 0.025,
+            "detents": {
+              "positions_rad": [
+                -0.7853981633974483,
+                0.7853981633974483
+              ],
+              "labels": [
+                "MAN",
+                "AUTO"
+              ],
+              "holding_torque_nm": 0.08,
+              "snap_stiffness_nm_per_rad": 0.4,
+              "implementation": "bistable endpoint torque in simulator"
+            }
+          },
+          "dimensions_mm": {
+            "base_diameter": 27,
+            "base_height": 6,
+            "lever_xyz": [
+              9,
+              32,
+              14
+            ]
+          }
+        },
+        {
+          "name": "mode_legend",
+          "visual": "mode_legend.obj",
+          "texture": "../panel_devices/legend_plate_albedo_v3.png",
+          "texture_px": 1024,
+          "collision": [
+            "mode_legend_col_00.obj"
+          ],
+          "mass_kg": 0.002,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "xyz": [
+              30,
+              10,
+              1
+            ]
+          },
+          "text": "MAN"
+        },
+        {
+          "name": "start_bezel",
+          "visual": "start_bezel.obj",
+          "texture": "../panel_devices/bezel_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "start_bezel_col_00.obj",
+            "start_bezel_col_01.obj",
+            "start_bezel_col_02.obj",
+            "start_bezel_col_03.obj",
+            "start_bezel_col_04.obj",
+            "start_bezel_col_05.obj",
+            "start_bezel_col_06.obj",
+            "start_bezel_col_07.obj",
+            "start_bezel_col_08.obj",
+            "start_bezel_col_09.obj",
+            "start_bezel_col_10.obj",
+            "start_bezel_col_11.obj",
+            "start_bezel_col_12.obj",
+            "start_bezel_col_13.obj",
+            "start_bezel_col_14.obj",
+            "start_bezel_col_15.obj"
+          ],
+          "mass_kg": 0.008,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.7,
+            "shininess": 0.7,
+            "reflectance": 0.05
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "diameter": 29.5,
+            "height": 3,
+            "clear_bore": 24.3
+          }
+        },
+        {
+          "name": "start",
+          "visual": "start.obj",
+          "texture": "../panel_devices/btn_green_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "start_col_00.obj"
+          ],
+          "mass_kg": 0.01,
+          "friction": 0.8,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "start_bezel",
+          "joint": {
+            "type": "slide",
+            "parent": "start_bezel",
+            "axis": [
+              0.4472135901451111,
+              0.0,
+              -0.8944271802902222
+            ],
+            "anchor_m": [
+              -0.04406091690063477,
+              -0.02,
+              0.09264659881591797
+            ],
+            "range": [
+              0.0,
+              0.004
+            ],
+            "damping": 0.6,
+            "frictionloss": 0.08,
+            "spring": {
+              "stiffness": 400.0,
+              "reference": 0.0
+            }
+          },
+          "dimensions_mm": {
+            "cap_diameter": 24,
+            "cap_envelope_height": 8,
+            "cap_top_above_mount": 9,
+            "cap_top_above_bezel": 6,
+            "lower_skirt_diameter": 21.6,
+            "travel": 4
+          },
+          "base_color": "#2E9E44",
+          "collision_dimensions_mm": {
+            "diameter": 23.0,
+            "height": 8
+          }
+        },
+        {
+          "name": "start_legend",
+          "visual": "start_legend.obj",
+          "texture": "../panel_devices/legend_plate_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "start_legend_col_00.obj"
+          ],
+          "mass_kg": 0.002,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "xyz": [
+              30,
+              10,
+              1
+            ]
+          },
+          "text": "START"
+        },
+        {
+          "name": "stop_bezel",
+          "visual": "stop_bezel.obj",
+          "texture": "../panel_devices/bezel_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "stop_bezel_col_00.obj",
+            "stop_bezel_col_01.obj",
+            "stop_bezel_col_02.obj",
+            "stop_bezel_col_03.obj",
+            "stop_bezel_col_04.obj",
+            "stop_bezel_col_05.obj",
+            "stop_bezel_col_06.obj",
+            "stop_bezel_col_07.obj",
+            "stop_bezel_col_08.obj",
+            "stop_bezel_col_09.obj",
+            "stop_bezel_col_10.obj",
+            "stop_bezel_col_11.obj",
+            "stop_bezel_col_12.obj",
+            "stop_bezel_col_13.obj",
+            "stop_bezel_col_14.obj",
+            "stop_bezel_col_15.obj"
+          ],
+          "mass_kg": 0.008,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.7,
+            "shininess": 0.7,
+            "reflectance": 0.05
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "diameter": 29.5,
+            "height": 3,
+            "clear_bore": 24.3
+          }
+        },
+        {
+          "name": "stop",
+          "visual": "stop.obj",
+          "texture": "../panel_devices/btn_red_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "stop_col_00.obj"
+          ],
+          "mass_kg": 0.01,
+          "friction": 0.8,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "stop_bezel",
+          "joint": {
+            "type": "slide",
+            "parent": "stop_bezel",
+            "axis": [
+              0.4472135901451111,
+              0.0,
+              -0.8944271802902222
+            ],
+            "anchor_m": [
+              -0.04406091690063477,
+              0.04,
+              0.09264659881591797
+            ],
+            "range": [
+              0.0,
+              0.004
+            ],
+            "damping": 0.6,
+            "frictionloss": 0.08,
+            "spring": {
+              "stiffness": 400.0,
+              "reference": 0.0
+            }
+          },
+          "dimensions_mm": {
+            "cap_diameter": 24,
+            "cap_envelope_height": 8,
+            "cap_top_above_mount": 9,
+            "cap_top_above_bezel": 6,
+            "lower_skirt_diameter": 21.6,
+            "travel": 4
+          },
+          "base_color": "#D32F2F",
+          "collision_dimensions_mm": {
+            "diameter": 23.0,
+            "height": 8
+          }
+        },
+        {
+          "name": "stop_legend",
+          "visual": "stop_legend.obj",
+          "texture": "../panel_devices/legend_plate_albedo_v1.png",
+          "texture_px": 1024,
+          "collision": [
+            "stop_legend_col_00.obj"
+          ],
+          "mass_kg": 0.002,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "xyz": [
+              30,
+              10,
+              1
+            ]
+          },
+          "text": "STOP"
+        },
+        {
+          "name": "emergency_plate",
+          "visual": "emergency_plate.obj",
+          "texture": "../panel_devices/estop_plate_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "emergency_plate_col_00.obj"
+          ],
+          "mass_kg": 0.012,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "diameter": 60,
+            "height": 1.5
+          },
+          "text": "EMERGENCY STOP"
+        },
+        {
+          "name": "emergency",
+          "visual": "emergency.obj",
+          "texture": "../panel_devices/estop_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "emergency_col_00.obj"
+          ],
+          "mass_kg": 0.01,
+          "friction": 0.8,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "emergency_plate",
+          "joint": {
+            "type": "slide",
+            "parent": "emergency_plate",
+            "axis": [
+              0.4472135901451111,
+              0.0,
+              -0.8944271802902222
+            ],
+            "anchor_m": [
+              -0.00828382968902588,
+              0.11,
+              0.11053514099121094
+            ],
+            "range": [
+              0.0,
+              0.005
+            ],
+            "damping": 0.8,
+            "frictionloss": 0.12,
+            "latch": {
+              "engage_at_m": 0.0048,
+              "hold_at_m": 0.005,
+              "reset": "twist_to_release",
+              "release_axis": [
+                -0.4472135901451111,
+                0.0,
+                0.8944271802902222
+              ],
+              "implementation": "simulator state machine; hold qpos after threshold"
+            }
+          },
+          "dimensions_mm": {
+            "head_diameter": 40,
+            "head_height": 18,
+            "head_bottom_z": 6.5,
+            "stem_diameter": 14,
+            "travel": 5
+          },
+          "base_color": "#D32F2F",
+          "collision_dimensions_mm": {
+            "diameter": 39.6,
+            "height": 18
+          }
+        },
+        {
+          "name": "emergency_legend",
+          "visual": "emergency_legend.obj",
+          "texture": "../panel_devices/legend_plate_albedo_v1.png",
+          "texture_px": 1024,
+          "collision": [
+            "emergency_legend_col_00.obj"
+          ],
+          "mass_kg": 0.002,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "xyz": [
+              30,
+              10,
+              1
+            ]
+          },
+          "text": "STOP"
+        }
+      ],
+      "devices": [
+        {
+          "name": "lamp_green",
+          "library_part": "pilot_green",
+          "u_mm": -60,
+          "v_mm": 150,
+          "position_m": [
+            0.027493257522583008,
+            -0.06,
+            0.12842367553710937
+          ],
+          "quaternion_wxyz": [
+            0.6881909966468811,
+            0.1624598503112793,
+            -0.1624598503112793,
+            -0.6881909370422363
+          ],
+          "rotation_matrix": [
+            [
+              0.0,
+              0.8944271802902222,
+              -0.4472135901451111
+            ],
+            [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.4472135901451111,
+              0.8944271802902222
+            ]
+          ],
+          "press_direction": [
+            0.4472135901451111,
+            -0.0,
+            -0.8944271802902222
+          ],
+          "legend": "AUTO",
+          "legend_u_v_mm": [
+            -60,
+            135
+          ],
+          "legend_position_m": [
+            0.01407685089111328,
+            -0.06,
+            0.1217154769897461
+          ]
+        },
+        {
+          "name": "lamp_amber",
+          "library_part": "pilot_amber",
+          "u_mm": 0,
+          "v_mm": 150,
+          "position_m": [
+            0.027493257522583008,
+            0.0,
+            0.12842367553710937
+          ],
+          "quaternion_wxyz": [
+            0.6881909966468811,
+            0.1624598503112793,
+            -0.1624598503112793,
+            -0.6881909370422363
+          ],
+          "rotation_matrix": [
+            [
+              0.0,
+              0.8944271802902222,
+              -0.4472135901451111
+            ],
+            [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.4472135901451111,
+              0.8944271802902222
+            ]
+          ],
+          "press_direction": [
+            0.4472135901451111,
+            -0.0,
+            -0.8944271802902222
+          ],
+          "legend": "MAN",
+          "legend_u_v_mm": [
+            0,
+            135
+          ],
+          "legend_position_m": [
+            0.01407685089111328,
+            0.0,
+            0.1217154769897461
+          ]
+        },
+        {
+          "name": "lamp_red",
+          "library_part": "pilot_red",
+          "u_mm": 60,
+          "v_mm": 150,
+          "position_m": [
+            0.027493257522583008,
+            0.06,
+            0.12842367553710937
+          ],
+          "quaternion_wxyz": [
+            0.6881909966468811,
+            0.1624598503112793,
+            -0.1624598503112793,
+            -0.6881909370422363
+          ],
+          "rotation_matrix": [
+            [
+              0.0,
+              0.8944271802902222,
+              -0.4472135901451111
+            ],
+            [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.4472135901451111,
+              0.8944271802902222
+            ]
+          ],
+          "press_direction": [
+            0.4472135901451111,
+            -0.0,
+            -0.8944271802902222
+          ],
+          "legend": "STOP",
+          "legend_u_v_mm": [
+            60,
+            135
+          ],
+          "legend_position_m": [
+            0.01407685089111328,
+            0.06,
+            0.1217154769897461
+          ]
+        },
+        {
+          "name": "mode",
+          "library_part": "selector_knob",
+          "u_mm": -90,
+          "v_mm": 70,
+          "position_m": [
+            -0.04406091690063477,
+            -0.09,
+            0.09264659881591797
+          ],
+          "quaternion_wxyz": [
+            0.6881909966468811,
+            0.1624598503112793,
+            -0.1624598503112793,
+            -0.6881909370422363
+          ],
+          "rotation_matrix": [
+            [
+              0.0,
+              0.8944271802902222,
+              -0.4472135901451111
+            ],
+            [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.4472135901451111,
+              0.8944271802902222
+            ]
+          ],
+          "press_direction": [
+            0.4472135901451111,
+            -0.0,
+            -0.8944271802902222
+          ],
+          "legend": "MAN",
+          "legend_u_v_mm": [
+            -90,
+            55
+          ],
+          "legend_position_m": [
+            -0.05747732543945312,
+            -0.09,
+            0.08593839263916016
+          ]
+        },
+        {
+          "name": "start",
+          "library_part": "btn_green",
+          "u_mm": -20,
+          "v_mm": 70,
+          "position_m": [
+            -0.04406091690063477,
+            -0.02,
+            0.09264659881591797
+          ],
+          "quaternion_wxyz": [
+            0.6881909966468811,
+            0.1624598503112793,
+            -0.1624598503112793,
+            -0.6881909370422363
+          ],
+          "rotation_matrix": [
+            [
+              0.0,
+              0.8944271802902222,
+              -0.4472135901451111
+            ],
+            [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.4472135901451111,
+              0.8944271802902222
+            ]
+          ],
+          "press_direction": [
+            0.4472135901451111,
+            -0.0,
+            -0.8944271802902222
+          ],
+          "legend": "START",
+          "legend_u_v_mm": [
+            -20,
+            55
+          ],
+          "legend_position_m": [
+            -0.05747732543945312,
+            -0.02,
+            0.08593839263916016
+          ]
+        },
+        {
+          "name": "stop",
+          "library_part": "btn_red",
+          "u_mm": 40,
+          "v_mm": 70,
+          "position_m": [
+            -0.04406091690063477,
+            0.04,
+            0.09264659881591797
+          ],
+          "quaternion_wxyz": [
+            0.6881909966468811,
+            0.1624598503112793,
+            -0.1624598503112793,
+            -0.6881909370422363
+          ],
+          "rotation_matrix": [
+            [
+              0.0,
+              0.8944271802902222,
+              -0.4472135901451111
+            ],
+            [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.4472135901451111,
+              0.8944271802902222
+            ]
+          ],
+          "press_direction": [
+            0.4472135901451111,
+            -0.0,
+            -0.8944271802902222
+          ],
+          "legend": "STOP",
+          "legend_u_v_mm": [
+            40,
+            55
+          ],
+          "legend_position_m": [
+            -0.05747732543945312,
+            0.04,
+            0.08593839263916016
+          ]
+        },
+        {
+          "name": "emergency",
+          "library_part": "estop",
+          "u_mm": 110,
+          "v_mm": 110,
+          "position_m": [
+            -0.00828382968902588,
+            0.11,
+            0.11053514099121094
+          ],
+          "quaternion_wxyz": [
+            0.6881909966468811,
+            0.1624598503112793,
+            -0.1624598503112793,
+            -0.6881909370422363
+          ],
+          "rotation_matrix": [
+            [
+              0.0,
+              0.8944271802902222,
+              -0.4472135901451111
+            ],
+            [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.4472135901451111,
+              0.8944271802902222
+            ]
+          ],
+          "press_direction": [
+            0.4472135901451111,
+            -0.0,
+            -0.8944271802902222
+          ],
+          "legend": "STOP",
+          "legend_u_v_mm": [
+            110,
+            95
+          ],
+          "legend_position_m": [
+            -0.021700237274169924,
+            0.11,
+            0.10382693481445313
+          ]
+        }
+      ],
+      "bbox_mm": [
+        211.99999749660492,
+        319.9999928474426,
+        159.9850058555603
+      ],
+      "triangles": 28488,
+      "preview": "preview.png",
+      "collision_exclusions": [
+        [
+          "mode",
+          "body"
+        ],
+        [
+          "mode",
+          "panel"
+        ],
+        [
+          "start",
+          "body"
+        ],
+        [
+          "start",
+          "panel"
+        ],
+        [
+          "start",
+          "start_bezel"
+        ],
+        [
+          "stop",
+          "body"
+        ],
+        [
+          "stop",
+          "panel"
+        ],
+        [
+          "stop",
+          "stop_bezel"
+        ],
+        [
+          "emergency",
+          "body"
+        ],
+        [
+          "emergency",
+          "panel"
+        ],
+        [
+          "emergency",
+          "emergency_plate"
+        ],
+        [
+          "mode",
+          "mode_legend"
+        ],
+        [
+          "start",
+          "start_legend"
+        ],
+        [
+          "stop",
+          "stop_legend"
+        ],
+        [
+          "emergency",
+          "emergency_legend"
+        ]
+      ],
+      "textures": {
+        "body": "body_albedo.png"
+      },
+      "colour_variants": [
+        {
+          "name": "RAL7035",
+          "textures": {
+            "body": "body_albedo.png"
+          }
+        },
+        {
+          "name": "blue",
+          "textures": {
+            "body": "body_albedo_v1.png"
+          }
+        }
+      ],
+      "recommended_world_translation_m": [
+        0.436,
+        0.055,
+        0.8
+      ]
+    },
+    {
+      "name": "B",
+      "parts": [
+        {
+          "name": "body",
+          "visual": "body_B.obj",
+          "texture": "body_B_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "body_B_col_00.obj",
+            "body_B_col_01.obj",
+            "body_B_col_02.obj",
+            "body_B_col_03.obj",
+            "body_B_col_04.obj",
+            "body_B_col_05.obj"
+          ],
+          "mass_kg": 3.535,
+          "friction": 0.5,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.3,
+            "reflectance": 0.0
+          },
+          "parent": null,
+          "joint": null
+        },
+        {
+          "name": "panel",
+          "visual": "panel_B.obj",
+          "texture": "panel_B_albedo.png",
+          "texture_px": 1024,
+          "collision": [],
+          "mass_kg": 0.3,
+          "friction": 0.5,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.3,
+            "reflectance": 0.0
+          },
+          "parent": "body",
+          "joint": null
+        },
+        {
+          "name": "gland",
+          "visual": "gland_B.obj",
+          "texture": "gland_B_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "gland_B_col_00.obj",
+            "gland_B_col_01.obj"
+          ],
+          "mass_kg": 0.02,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "body",
+          "joint": null
+        },
+        {
+          "name": "lamp_green_bezel",
+          "visual": "lamp_green_bezel_B.obj",
+          "texture": "../panel_devices/bezel_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "lamp_green_bezel_B_col_00.obj",
+            "lamp_green_bezel_B_col_01.obj",
+            "lamp_green_bezel_B_col_02.obj",
+            "lamp_green_bezel_B_col_03.obj",
+            "lamp_green_bezel_B_col_04.obj",
+            "lamp_green_bezel_B_col_05.obj",
+            "lamp_green_bezel_B_col_06.obj",
+            "lamp_green_bezel_B_col_07.obj",
+            "lamp_green_bezel_B_col_08.obj",
+            "lamp_green_bezel_B_col_09.obj",
+            "lamp_green_bezel_B_col_10.obj",
+            "lamp_green_bezel_B_col_11.obj",
+            "lamp_green_bezel_B_col_12.obj",
+            "lamp_green_bezel_B_col_13.obj",
+            "lamp_green_bezel_B_col_14.obj",
+            "lamp_green_bezel_B_col_15.obj"
+          ],
+          "mass_kg": 0.008,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.7,
+            "shininess": 0.7,
+            "reflectance": 0.05
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "diameter": 29.5,
+            "height": 3,
+            "clear_bore": 24.3
+          }
+        },
+        {
+          "name": "lamp_green",
+          "visual": "lamp_green_B.obj",
+          "texture": "../panel_devices/pilot_green_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "lamp_green_B_col_00.obj"
+          ],
+          "mass_kg": 0.008,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "lamp_green_bezel",
+          "joint": null,
+          "emission": 0.8,
+          "dimensions_mm": {
+            "lens_diameter": 24,
+            "lens_height": 6
+          },
+          "base_color": "#2ECC40"
+        },
+        {
+          "name": "lamp_green_legend",
+          "visual": "lamp_green_legend_B.obj",
+          "texture": "../panel_devices/legend_plate_albedo_v2.png",
+          "texture_px": 1024,
+          "collision": [
+            "lamp_green_legend_B_col_00.obj"
+          ],
+          "mass_kg": 0.002,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "xyz": [
+              30,
+              10,
+              1
+            ]
+          },
+          "text": "AUTO"
+        },
+        {
+          "name": "lamp_amber_bezel",
+          "visual": "lamp_amber_bezel_B.obj",
+          "texture": "../panel_devices/bezel_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "lamp_amber_bezel_B_col_00.obj",
+            "lamp_amber_bezel_B_col_01.obj",
+            "lamp_amber_bezel_B_col_02.obj",
+            "lamp_amber_bezel_B_col_03.obj",
+            "lamp_amber_bezel_B_col_04.obj",
+            "lamp_amber_bezel_B_col_05.obj",
+            "lamp_amber_bezel_B_col_06.obj",
+            "lamp_amber_bezel_B_col_07.obj",
+            "lamp_amber_bezel_B_col_08.obj",
+            "lamp_amber_bezel_B_col_09.obj",
+            "lamp_amber_bezel_B_col_10.obj",
+            "lamp_amber_bezel_B_col_11.obj",
+            "lamp_amber_bezel_B_col_12.obj",
+            "lamp_amber_bezel_B_col_13.obj",
+            "lamp_amber_bezel_B_col_14.obj",
+            "lamp_amber_bezel_B_col_15.obj"
+          ],
+          "mass_kg": 0.008,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.7,
+            "shininess": 0.7,
+            "reflectance": 0.05
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "diameter": 29.5,
+            "height": 3,
+            "clear_bore": 24.3
+          }
+        },
+        {
+          "name": "lamp_amber",
+          "visual": "lamp_amber_B.obj",
+          "texture": "../panel_devices/pilot_amber_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "lamp_amber_B_col_00.obj"
+          ],
+          "mass_kg": 0.008,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "lamp_amber_bezel",
+          "joint": null,
+          "emission": 0.8,
+          "dimensions_mm": {
+            "lens_diameter": 24,
+            "lens_height": 6
+          },
+          "base_color": "#FFB000"
+        },
+        {
+          "name": "lamp_amber_legend",
+          "visual": "lamp_amber_legend_B.obj",
+          "texture": "../panel_devices/legend_plate_albedo_v3.png",
+          "texture_px": 1024,
+          "collision": [
+            "lamp_amber_legend_B_col_00.obj"
+          ],
+          "mass_kg": 0.002,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "xyz": [
+              30,
+              10,
+              1
+            ]
+          },
+          "text": "MAN"
+        },
+        {
+          "name": "lamp_red_bezel",
+          "visual": "lamp_red_bezel_B.obj",
+          "texture": "../panel_devices/bezel_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "lamp_red_bezel_B_col_00.obj",
+            "lamp_red_bezel_B_col_01.obj",
+            "lamp_red_bezel_B_col_02.obj",
+            "lamp_red_bezel_B_col_03.obj",
+            "lamp_red_bezel_B_col_04.obj",
+            "lamp_red_bezel_B_col_05.obj",
+            "lamp_red_bezel_B_col_06.obj",
+            "lamp_red_bezel_B_col_07.obj",
+            "lamp_red_bezel_B_col_08.obj",
+            "lamp_red_bezel_B_col_09.obj",
+            "lamp_red_bezel_B_col_10.obj",
+            "lamp_red_bezel_B_col_11.obj",
+            "lamp_red_bezel_B_col_12.obj",
+            "lamp_red_bezel_B_col_13.obj",
+            "lamp_red_bezel_B_col_14.obj",
+            "lamp_red_bezel_B_col_15.obj"
+          ],
+          "mass_kg": 0.008,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.7,
+            "shininess": 0.7,
+            "reflectance": 0.05
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "diameter": 29.5,
+            "height": 3,
+            "clear_bore": 24.3
+          }
+        },
+        {
+          "name": "lamp_red",
+          "visual": "lamp_red_B.obj",
+          "texture": "../panel_devices/pilot_red_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "lamp_red_B_col_00.obj"
+          ],
+          "mass_kg": 0.008,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "lamp_red_bezel",
+          "joint": null,
+          "emission": 0.8,
+          "dimensions_mm": {
+            "lens_diameter": 24,
+            "lens_height": 6
+          },
+          "base_color": "#E53935"
+        },
+        {
+          "name": "lamp_red_legend",
+          "visual": "lamp_red_legend_B.obj",
+          "texture": "../panel_devices/legend_plate_albedo_v1.png",
+          "texture_px": 1024,
+          "collision": [
+            "lamp_red_legend_B_col_00.obj"
+          ],
+          "mass_kg": 0.002,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "xyz": [
+              30,
+              10,
+              1
+            ]
+          },
+          "text": "STOP"
+        },
+        {
+          "name": "mode",
+          "visual": "mode_B.obj",
+          "texture": "../panel_devices/selector_knob_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "mode_B_col_00.obj"
+          ],
+          "mass_kg": 0.025,
+          "friction": 0.8,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "panel",
+          "joint": {
+            "type": "hinge",
+            "parent": "panel",
+            "axis": [
+              -0.4472135901451111,
+              0.0,
+              0.8944271802902222
+            ],
+            "anchor_m": [
+              -0.04406091690063477,
+              0.09,
+              0.09264659881591797
+            ],
+            "range": [
+              -0.7853981633974483,
+              0.7853981633974483
+            ],
+            "damping": 0.02,
+            "frictionloss": 0.025,
+            "detents": {
+              "positions_rad": [
+                -0.7853981633974483,
+                0.7853981633974483
+              ],
+              "labels": [
+                "MAN",
+                "AUTO"
+              ],
+              "holding_torque_nm": 0.08,
+              "snap_stiffness_nm_per_rad": 0.4,
+              "implementation": "bistable endpoint torque in simulator"
+            }
+          },
+          "dimensions_mm": {
+            "base_diameter": 27,
+            "base_height": 6,
+            "lever_xyz": [
+              9,
+              32,
+              14
+            ]
+          }
+        },
+        {
+          "name": "mode_legend",
+          "visual": "mode_legend_B.obj",
+          "texture": "../panel_devices/legend_plate_albedo_v3.png",
+          "texture_px": 1024,
+          "collision": [
+            "mode_legend_B_col_00.obj"
+          ],
+          "mass_kg": 0.002,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "xyz": [
+              30,
+              10,
+              1
+            ]
+          },
+          "text": "MAN"
+        },
+        {
+          "name": "start_bezel",
+          "visual": "start_bezel_B.obj",
+          "texture": "../panel_devices/bezel_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "start_bezel_B_col_00.obj",
+            "start_bezel_B_col_01.obj",
+            "start_bezel_B_col_02.obj",
+            "start_bezel_B_col_03.obj",
+            "start_bezel_B_col_04.obj",
+            "start_bezel_B_col_05.obj",
+            "start_bezel_B_col_06.obj",
+            "start_bezel_B_col_07.obj",
+            "start_bezel_B_col_08.obj",
+            "start_bezel_B_col_09.obj",
+            "start_bezel_B_col_10.obj",
+            "start_bezel_B_col_11.obj",
+            "start_bezel_B_col_12.obj",
+            "start_bezel_B_col_13.obj",
+            "start_bezel_B_col_14.obj",
+            "start_bezel_B_col_15.obj"
+          ],
+          "mass_kg": 0.008,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.7,
+            "shininess": 0.7,
+            "reflectance": 0.05
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "diameter": 29.5,
+            "height": 3,
+            "clear_bore": 24.3
+          }
+        },
+        {
+          "name": "start",
+          "visual": "start_B.obj",
+          "texture": "../panel_devices/btn_green_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "start_B_col_00.obj"
+          ],
+          "mass_kg": 0.01,
+          "friction": 0.8,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "start_bezel",
+          "joint": {
+            "type": "slide",
+            "parent": "start_bezel",
+            "axis": [
+              0.4472135901451111,
+              0.0,
+              -0.8944271802902222
+            ],
+            "anchor_m": [
+              -0.04406091690063477,
+              0.02,
+              0.09264659881591797
+            ],
+            "range": [
+              0.0,
+              0.004
+            ],
+            "damping": 0.6,
+            "frictionloss": 0.08,
+            "spring": {
+              "stiffness": 400.0,
+              "reference": 0.0
+            }
+          },
+          "dimensions_mm": {
+            "cap_diameter": 24,
+            "cap_envelope_height": 8,
+            "cap_top_above_mount": 9,
+            "cap_top_above_bezel": 6,
+            "lower_skirt_diameter": 21.6,
+            "travel": 4
+          },
+          "base_color": "#2E9E44",
+          "collision_dimensions_mm": {
+            "diameter": 23.0,
+            "height": 8
+          }
+        },
+        {
+          "name": "start_legend",
+          "visual": "start_legend_B.obj",
+          "texture": "../panel_devices/legend_plate_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "start_legend_B_col_00.obj"
+          ],
+          "mass_kg": 0.002,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "xyz": [
+              30,
+              10,
+              1
+            ]
+          },
+          "text": "START"
+        },
+        {
+          "name": "stop_bezel",
+          "visual": "stop_bezel_B.obj",
+          "texture": "../panel_devices/bezel_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "stop_bezel_B_col_00.obj",
+            "stop_bezel_B_col_01.obj",
+            "stop_bezel_B_col_02.obj",
+            "stop_bezel_B_col_03.obj",
+            "stop_bezel_B_col_04.obj",
+            "stop_bezel_B_col_05.obj",
+            "stop_bezel_B_col_06.obj",
+            "stop_bezel_B_col_07.obj",
+            "stop_bezel_B_col_08.obj",
+            "stop_bezel_B_col_09.obj",
+            "stop_bezel_B_col_10.obj",
+            "stop_bezel_B_col_11.obj",
+            "stop_bezel_B_col_12.obj",
+            "stop_bezel_B_col_13.obj",
+            "stop_bezel_B_col_14.obj",
+            "stop_bezel_B_col_15.obj"
+          ],
+          "mass_kg": 0.008,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.7,
+            "shininess": 0.7,
+            "reflectance": 0.05
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "diameter": 29.5,
+            "height": 3,
+            "clear_bore": 24.3
+          }
+        },
+        {
+          "name": "stop",
+          "visual": "stop_B.obj",
+          "texture": "../panel_devices/btn_red_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "stop_B_col_00.obj"
+          ],
+          "mass_kg": 0.01,
+          "friction": 0.8,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "stop_bezel",
+          "joint": {
+            "type": "slide",
+            "parent": "stop_bezel",
+            "axis": [
+              0.4472135901451111,
+              0.0,
+              -0.8944271802902222
+            ],
+            "anchor_m": [
+              -0.04406091690063477,
+              -0.04,
+              0.09264659881591797
+            ],
+            "range": [
+              0.0,
+              0.004
+            ],
+            "damping": 0.6,
+            "frictionloss": 0.08,
+            "spring": {
+              "stiffness": 400.0,
+              "reference": 0.0
+            }
+          },
+          "dimensions_mm": {
+            "cap_diameter": 24,
+            "cap_envelope_height": 8,
+            "cap_top_above_mount": 9,
+            "cap_top_above_bezel": 6,
+            "lower_skirt_diameter": 21.6,
+            "travel": 4
+          },
+          "base_color": "#D32F2F",
+          "collision_dimensions_mm": {
+            "diameter": 23.0,
+            "height": 8
+          }
+        },
+        {
+          "name": "stop_legend",
+          "visual": "stop_legend_B.obj",
+          "texture": "../panel_devices/legend_plate_albedo_v1.png",
+          "texture_px": 1024,
+          "collision": [
+            "stop_legend_B_col_00.obj"
+          ],
+          "mass_kg": 0.002,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "xyz": [
+              30,
+              10,
+              1
+            ]
+          },
+          "text": "STOP"
+        },
+        {
+          "name": "emergency_plate",
+          "visual": "emergency_plate_B.obj",
+          "texture": "../panel_devices/estop_plate_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "emergency_plate_B_col_00.obj"
+          ],
+          "mass_kg": 0.012,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "diameter": 60,
+            "height": 1.5
+          },
+          "text": "EMERGENCY STOP"
+        },
+        {
+          "name": "emergency",
+          "visual": "emergency_B.obj",
+          "texture": "../panel_devices/estop_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "emergency_B_col_00.obj"
+          ],
+          "mass_kg": 0.01,
+          "friction": 0.8,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "emergency_plate",
+          "joint": {
+            "type": "slide",
+            "parent": "emergency_plate",
+            "axis": [
+              0.4472135901451111,
+              0.0,
+              -0.8944271802902222
+            ],
+            "anchor_m": [
+              -0.00828382968902588,
+              -0.11,
+              0.11053514099121094
+            ],
+            "range": [
+              0.0,
+              0.005
+            ],
+            "damping": 0.8,
+            "frictionloss": 0.12,
+            "latch": {
+              "engage_at_m": 0.0048,
+              "hold_at_m": 0.005,
+              "reset": "twist_to_release",
+              "release_axis": [
+                -0.4472135901451111,
+                0.0,
+                0.8944271802902222
+              ],
+              "implementation": "simulator state machine; hold qpos after threshold"
+            }
+          },
+          "dimensions_mm": {
+            "head_diameter": 40,
+            "head_height": 18,
+            "head_bottom_z": 6.5,
+            "stem_diameter": 14,
+            "travel": 5
+          },
+          "base_color": "#D32F2F",
+          "collision_dimensions_mm": {
+            "diameter": 39.6,
+            "height": 18
+          }
+        },
+        {
+          "name": "emergency_legend",
+          "visual": "emergency_legend_B.obj",
+          "texture": "../panel_devices/legend_plate_albedo_v1.png",
+          "texture_px": 1024,
+          "collision": [
+            "emergency_legend_B_col_00.obj"
+          ],
+          "mass_kg": 0.002,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "xyz": [
+              30,
+              10,
+              1
+            ]
+          },
+          "text": "STOP"
+        }
+      ],
+      "devices": [
+        {
+          "name": "lamp_green",
+          "library_part": "pilot_green",
+          "u_mm": 60,
+          "v_mm": 150,
+          "position_m": [
+            0.027493257522583008,
+            0.06,
+            0.12842367553710937
+          ],
+          "quaternion_wxyz": [
+            0.6881909966468811,
+            0.1624598503112793,
+            -0.1624598503112793,
+            -0.6881909370422363
+          ],
+          "rotation_matrix": [
+            [
+              0.0,
+              0.8944271802902222,
+              -0.4472135901451111
+            ],
+            [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.4472135901451111,
+              0.8944271802902222
+            ]
+          ],
+          "press_direction": [
+            0.4472135901451111,
+            -0.0,
+            -0.8944271802902222
+          ],
+          "legend": "AUTO",
+          "legend_u_v_mm": [
+            60,
+            135
+          ],
+          "legend_position_m": [
+            0.01407685089111328,
+            0.06,
+            0.1217154769897461
+          ]
+        },
+        {
+          "name": "lamp_amber",
+          "library_part": "pilot_amber",
+          "u_mm": 0,
+          "v_mm": 150,
+          "position_m": [
+            0.027493257522583008,
+            0.0,
+            0.12842367553710937
+          ],
+          "quaternion_wxyz": [
+            0.6881909966468811,
+            0.1624598503112793,
+            -0.1624598503112793,
+            -0.6881909370422363
+          ],
+          "rotation_matrix": [
+            [
+              0.0,
+              0.8944271802902222,
+              -0.4472135901451111
+            ],
+            [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.4472135901451111,
+              0.8944271802902222
+            ]
+          ],
+          "press_direction": [
+            0.4472135901451111,
+            -0.0,
+            -0.8944271802902222
+          ],
+          "legend": "MAN",
+          "legend_u_v_mm": [
+            0,
+            135
+          ],
+          "legend_position_m": [
+            0.01407685089111328,
+            0.0,
+            0.1217154769897461
+          ]
+        },
+        {
+          "name": "lamp_red",
+          "library_part": "pilot_red",
+          "u_mm": -60,
+          "v_mm": 150,
+          "position_m": [
+            0.027493257522583008,
+            -0.06,
+            0.12842367553710937
+          ],
+          "quaternion_wxyz": [
+            0.6881909966468811,
+            0.1624598503112793,
+            -0.1624598503112793,
+            -0.6881909370422363
+          ],
+          "rotation_matrix": [
+            [
+              0.0,
+              0.8944271802902222,
+              -0.4472135901451111
+            ],
+            [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.4472135901451111,
+              0.8944271802902222
+            ]
+          ],
+          "press_direction": [
+            0.4472135901451111,
+            -0.0,
+            -0.8944271802902222
+          ],
+          "legend": "STOP",
+          "legend_u_v_mm": [
+            -60,
+            135
+          ],
+          "legend_position_m": [
+            0.01407685089111328,
+            -0.06,
+            0.1217154769897461
+          ]
+        },
+        {
+          "name": "mode",
+          "library_part": "selector_knob",
+          "u_mm": 90,
+          "v_mm": 70,
+          "position_m": [
+            -0.04406091690063477,
+            0.09,
+            0.09264659881591797
+          ],
+          "quaternion_wxyz": [
+            0.6881909966468811,
+            0.1624598503112793,
+            -0.1624598503112793,
+            -0.6881909370422363
+          ],
+          "rotation_matrix": [
+            [
+              0.0,
+              0.8944271802902222,
+              -0.4472135901451111
+            ],
+            [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.4472135901451111,
+              0.8944271802902222
+            ]
+          ],
+          "press_direction": [
+            0.4472135901451111,
+            -0.0,
+            -0.8944271802902222
+          ],
+          "legend": "MAN",
+          "legend_u_v_mm": [
+            90,
+            55
+          ],
+          "legend_position_m": [
+            -0.05747732543945312,
+            0.09,
+            0.08593839263916016
+          ]
+        },
+        {
+          "name": "start",
+          "library_part": "btn_green",
+          "u_mm": 20,
+          "v_mm": 70,
+          "position_m": [
+            -0.04406091690063477,
+            0.02,
+            0.09264659881591797
+          ],
+          "quaternion_wxyz": [
+            0.6881909966468811,
+            0.1624598503112793,
+            -0.1624598503112793,
+            -0.6881909370422363
+          ],
+          "rotation_matrix": [
+            [
+              0.0,
+              0.8944271802902222,
+              -0.4472135901451111
+            ],
+            [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.4472135901451111,
+              0.8944271802902222
+            ]
+          ],
+          "press_direction": [
+            0.4472135901451111,
+            -0.0,
+            -0.8944271802902222
+          ],
+          "legend": "START",
+          "legend_u_v_mm": [
+            20,
+            55
+          ],
+          "legend_position_m": [
+            -0.05747732543945312,
+            0.02,
+            0.08593839263916016
+          ]
+        },
+        {
+          "name": "stop",
+          "library_part": "btn_red",
+          "u_mm": -40,
+          "v_mm": 70,
+          "position_m": [
+            -0.04406091690063477,
+            -0.04,
+            0.09264659881591797
+          ],
+          "quaternion_wxyz": [
+            0.6881909966468811,
+            0.1624598503112793,
+            -0.1624598503112793,
+            -0.6881909370422363
+          ],
+          "rotation_matrix": [
+            [
+              0.0,
+              0.8944271802902222,
+              -0.4472135901451111
+            ],
+            [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.4472135901451111,
+              0.8944271802902222
+            ]
+          ],
+          "press_direction": [
+            0.4472135901451111,
+            -0.0,
+            -0.8944271802902222
+          ],
+          "legend": "STOP",
+          "legend_u_v_mm": [
+            -40,
+            55
+          ],
+          "legend_position_m": [
+            -0.05747732543945312,
+            -0.04,
+            0.08593839263916016
+          ]
+        },
+        {
+          "name": "emergency",
+          "library_part": "estop",
+          "u_mm": -110,
+          "v_mm": 110,
+          "position_m": [
+            -0.00828382968902588,
+            -0.11,
+            0.11053514099121094
+          ],
+          "quaternion_wxyz": [
+            0.6881909966468811,
+            0.1624598503112793,
+            -0.1624598503112793,
+            -0.6881909370422363
+          ],
+          "rotation_matrix": [
+            [
+              0.0,
+              0.8944271802902222,
+              -0.4472135901451111
+            ],
+            [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.4472135901451111,
+              0.8944271802902222
+            ]
+          ],
+          "press_direction": [
+            0.4472135901451111,
+            -0.0,
+            -0.8944271802902222
+          ],
+          "legend": "STOP",
+          "legend_u_v_mm": [
+            -110,
+            95
+          ],
+          "legend_position_m": [
+            -0.021700237274169924,
+            -0.11,
+            0.10382693481445313
+          ]
+        }
+      ],
+      "bbox_mm": [
+        211.99999749660492,
+        319.9999928474426,
+        159.9780023097992
+      ],
+      "triangles": 28476,
+      "preview": "preview_B.png",
+      "collision_exclusions": [
+        [
+          "mode",
+          "body"
+        ],
+        [
+          "mode",
+          "panel"
+        ],
+        [
+          "start",
+          "body"
+        ],
+        [
+          "start",
+          "panel"
+        ],
+        [
+          "start",
+          "start_bezel"
+        ],
+        [
+          "stop",
+          "body"
+        ],
+        [
+          "stop",
+          "panel"
+        ],
+        [
+          "stop",
+          "stop_bezel"
+        ],
+        [
+          "emergency",
+          "body"
+        ],
+        [
+          "emergency",
+          "panel"
+        ],
+        [
+          "emergency",
+          "emergency_plate"
+        ],
+        [
+          "mode",
+          "mode_legend"
+        ],
+        [
+          "start",
+          "start_legend"
+        ],
+        [
+          "stop",
+          "stop_legend"
+        ],
+        [
+          "emergency",
+          "emergency_legend"
+        ]
+      ],
+      "textures": {
+        "body": "body_B_albedo.png"
+      },
+      "colour_variants": [
+        {
+          "name": "RAL7035",
+          "textures": {
+            "body": "body_B_albedo.png"
+          }
+        },
+        {
+          "name": "blue",
+          "textures": {
+            "body": "body_B_albedo_v1.png"
+          }
+        }
+      ],
+      "recommended_world_translation_m": [
+        0.436,
+        -0.055,
+        0.8
+      ]
+    },
+    {
+      "name": "C",
+      "parts": [
+        {
+          "name": "body",
+          "visual": "body_C.obj",
+          "texture": "body_C_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "body_C_col_00.obj",
+            "body_C_col_01.obj",
+            "body_C_col_02.obj",
+            "body_C_col_03.obj",
+            "body_C_col_04.obj",
+            "body_C_col_05.obj"
+          ],
+          "mass_kg": 3.535,
+          "friction": 0.5,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.3,
+            "reflectance": 0.0
+          },
+          "parent": null,
+          "joint": null
+        },
+        {
+          "name": "panel",
+          "visual": "panel_C.obj",
+          "texture": "panel_C_albedo.png",
+          "texture_px": 1024,
+          "collision": [],
+          "mass_kg": 0.3,
+          "friction": 0.5,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.3,
+            "reflectance": 0.0
+          },
+          "parent": "body",
+          "joint": null
+        },
+        {
+          "name": "gland",
+          "visual": "gland_C.obj",
+          "texture": "gland_B_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "gland_C_col_00.obj",
+            "gland_C_col_01.obj"
+          ],
+          "mass_kg": 0.02,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "body",
+          "joint": null
+        },
+        {
+          "name": "lamp_green_bezel",
+          "visual": "lamp_green_bezel_C.obj",
+          "texture": "../panel_devices/bezel_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "lamp_green_bezel_C_col_00.obj",
+            "lamp_green_bezel_C_col_01.obj",
+            "lamp_green_bezel_C_col_02.obj",
+            "lamp_green_bezel_C_col_03.obj",
+            "lamp_green_bezel_C_col_04.obj",
+            "lamp_green_bezel_C_col_05.obj",
+            "lamp_green_bezel_C_col_06.obj",
+            "lamp_green_bezel_C_col_07.obj",
+            "lamp_green_bezel_C_col_08.obj",
+            "lamp_green_bezel_C_col_09.obj",
+            "lamp_green_bezel_C_col_10.obj",
+            "lamp_green_bezel_C_col_11.obj",
+            "lamp_green_bezel_C_col_12.obj",
+            "lamp_green_bezel_C_col_13.obj",
+            "lamp_green_bezel_C_col_14.obj",
+            "lamp_green_bezel_C_col_15.obj"
+          ],
+          "mass_kg": 0.008,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.7,
+            "shininess": 0.7,
+            "reflectance": 0.05
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "diameter": 29.5,
+            "height": 3,
+            "clear_bore": 24.3
+          }
+        },
+        {
+          "name": "lamp_green",
+          "visual": "lamp_green_C.obj",
+          "texture": "../panel_devices/pilot_green_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "lamp_green_C_col_00.obj"
+          ],
+          "mass_kg": 0.008,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "lamp_green_bezel",
+          "joint": null,
+          "emission": 0.8,
+          "dimensions_mm": {
+            "lens_diameter": 24,
+            "lens_height": 6
+          },
+          "base_color": "#2ECC40"
+        },
+        {
+          "name": "lamp_green_legend",
+          "visual": "lamp_green_legend_C.obj",
+          "texture": "../panel_devices/legend_plate_albedo_v2.png",
+          "texture_px": 1024,
+          "collision": [
+            "lamp_green_legend_C_col_00.obj"
+          ],
+          "mass_kg": 0.002,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "xyz": [
+              30,
+              10,
+              1
+            ]
+          },
+          "text": "AUTO"
+        },
+        {
+          "name": "lamp_amber_bezel",
+          "visual": "lamp_amber_bezel_C.obj",
+          "texture": "../panel_devices/bezel_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "lamp_amber_bezel_C_col_00.obj",
+            "lamp_amber_bezel_C_col_01.obj",
+            "lamp_amber_bezel_C_col_02.obj",
+            "lamp_amber_bezel_C_col_03.obj",
+            "lamp_amber_bezel_C_col_04.obj",
+            "lamp_amber_bezel_C_col_05.obj",
+            "lamp_amber_bezel_C_col_06.obj",
+            "lamp_amber_bezel_C_col_07.obj",
+            "lamp_amber_bezel_C_col_08.obj",
+            "lamp_amber_bezel_C_col_09.obj",
+            "lamp_amber_bezel_C_col_10.obj",
+            "lamp_amber_bezel_C_col_11.obj",
+            "lamp_amber_bezel_C_col_12.obj",
+            "lamp_amber_bezel_C_col_13.obj",
+            "lamp_amber_bezel_C_col_14.obj",
+            "lamp_amber_bezel_C_col_15.obj"
+          ],
+          "mass_kg": 0.008,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.7,
+            "shininess": 0.7,
+            "reflectance": 0.05
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "diameter": 29.5,
+            "height": 3,
+            "clear_bore": 24.3
+          }
+        },
+        {
+          "name": "lamp_amber",
+          "visual": "lamp_amber_C.obj",
+          "texture": "../panel_devices/pilot_amber_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "lamp_amber_C_col_00.obj"
+          ],
+          "mass_kg": 0.008,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "lamp_amber_bezel",
+          "joint": null,
+          "emission": 0.8,
+          "dimensions_mm": {
+            "lens_diameter": 24,
+            "lens_height": 6
+          },
+          "base_color": "#FFB000"
+        },
+        {
+          "name": "lamp_amber_legend",
+          "visual": "lamp_amber_legend_C.obj",
+          "texture": "../panel_devices/legend_plate_albedo_v3.png",
+          "texture_px": 1024,
+          "collision": [
+            "lamp_amber_legend_C_col_00.obj"
+          ],
+          "mass_kg": 0.002,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "xyz": [
+              30,
+              10,
+              1
+            ]
+          },
+          "text": "MAN"
+        },
+        {
+          "name": "lamp_red_bezel",
+          "visual": "lamp_red_bezel_C.obj",
+          "texture": "../panel_devices/bezel_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "lamp_red_bezel_C_col_00.obj",
+            "lamp_red_bezel_C_col_01.obj",
+            "lamp_red_bezel_C_col_02.obj",
+            "lamp_red_bezel_C_col_03.obj",
+            "lamp_red_bezel_C_col_04.obj",
+            "lamp_red_bezel_C_col_05.obj",
+            "lamp_red_bezel_C_col_06.obj",
+            "lamp_red_bezel_C_col_07.obj",
+            "lamp_red_bezel_C_col_08.obj",
+            "lamp_red_bezel_C_col_09.obj",
+            "lamp_red_bezel_C_col_10.obj",
+            "lamp_red_bezel_C_col_11.obj",
+            "lamp_red_bezel_C_col_12.obj",
+            "lamp_red_bezel_C_col_13.obj",
+            "lamp_red_bezel_C_col_14.obj",
+            "lamp_red_bezel_C_col_15.obj"
+          ],
+          "mass_kg": 0.008,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.7,
+            "shininess": 0.7,
+            "reflectance": 0.05
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "diameter": 29.5,
+            "height": 3,
+            "clear_bore": 24.3
+          }
+        },
+        {
+          "name": "lamp_red",
+          "visual": "lamp_red_C.obj",
+          "texture": "../panel_devices/pilot_red_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "lamp_red_C_col_00.obj"
+          ],
+          "mass_kg": 0.008,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "lamp_red_bezel",
+          "joint": null,
+          "emission": 0.8,
+          "dimensions_mm": {
+            "lens_diameter": 24,
+            "lens_height": 6
+          },
+          "base_color": "#E53935"
+        },
+        {
+          "name": "lamp_red_legend",
+          "visual": "lamp_red_legend_C.obj",
+          "texture": "../panel_devices/legend_plate_albedo_v1.png",
+          "texture_px": 1024,
+          "collision": [
+            "lamp_red_legend_C_col_00.obj"
+          ],
+          "mass_kg": 0.002,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "xyz": [
+              30,
+              10,
+              1
+            ]
+          },
+          "text": "STOP"
+        },
+        {
+          "name": "mode",
+          "visual": "mode_C.obj",
+          "texture": "../panel_devices/selector_knob_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "mode_C_col_00.obj"
+          ],
+          "mass_kg": 0.025,
+          "friction": 0.8,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "panel",
+          "joint": {
+            "type": "hinge",
+            "parent": "panel",
+            "axis": [
+              -0.4472135901451111,
+              0.0,
+              0.8944271802902222
+            ],
+            "anchor_m": [
+              -0.00828382968902588,
+              -0.11,
+              0.11053514099121094
+            ],
+            "range": [
+              -0.7853981633974483,
+              0.7853981633974483
+            ],
+            "damping": 0.02,
+            "frictionloss": 0.025,
+            "detents": {
+              "positions_rad": [
+                -0.7853981633974483,
+                0.7853981633974483
+              ],
+              "labels": [
+                "MAN",
+                "AUTO"
+              ],
+              "holding_torque_nm": 0.08,
+              "snap_stiffness_nm_per_rad": 0.4,
+              "implementation": "bistable endpoint torque in simulator"
+            }
+          },
+          "dimensions_mm": {
+            "base_diameter": 27,
+            "base_height": 6,
+            "lever_xyz": [
+              9,
+              32,
+              14
+            ]
+          }
+        },
+        {
+          "name": "mode_legend",
+          "visual": "mode_legend_C.obj",
+          "texture": "../panel_devices/legend_plate_albedo_v3.png",
+          "texture_px": 1024,
+          "collision": [
+            "mode_legend_C_col_00.obj"
+          ],
+          "mass_kg": 0.002,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "xyz": [
+              30,
+              10,
+              1
+            ]
+          },
+          "text": "MAN"
+        },
+        {
+          "name": "start_bezel",
+          "visual": "start_bezel_C.obj",
+          "texture": "../panel_devices/bezel_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "start_bezel_C_col_00.obj",
+            "start_bezel_C_col_01.obj",
+            "start_bezel_C_col_02.obj",
+            "start_bezel_C_col_03.obj",
+            "start_bezel_C_col_04.obj",
+            "start_bezel_C_col_05.obj",
+            "start_bezel_C_col_06.obj",
+            "start_bezel_C_col_07.obj",
+            "start_bezel_C_col_08.obj",
+            "start_bezel_C_col_09.obj",
+            "start_bezel_C_col_10.obj",
+            "start_bezel_C_col_11.obj",
+            "start_bezel_C_col_12.obj",
+            "start_bezel_C_col_13.obj",
+            "start_bezel_C_col_14.obj",
+            "start_bezel_C_col_15.obj"
+          ],
+          "mass_kg": 0.008,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.7,
+            "shininess": 0.7,
+            "reflectance": 0.05
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "diameter": 29.5,
+            "height": 3,
+            "clear_bore": 24.3
+          }
+        },
+        {
+          "name": "start",
+          "visual": "start_C.obj",
+          "texture": "../panel_devices/btn_green_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "start_C_col_00.obj"
+          ],
+          "mass_kg": 0.01,
+          "friction": 0.8,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "start_bezel",
+          "joint": {
+            "type": "slide",
+            "parent": "start_bezel",
+            "axis": [
+              0.4472135901451111,
+              0.0,
+              -0.8944271802902222
+            ],
+            "anchor_m": [
+              -0.00828382968902588,
+              -0.05,
+              0.11053514099121094
+            ],
+            "range": [
+              0.0,
+              0.004
+            ],
+            "damping": 0.6,
+            "frictionloss": 0.08,
+            "spring": {
+              "stiffness": 400.0,
+              "reference": 0.0
+            }
+          },
+          "dimensions_mm": {
+            "cap_diameter": 24,
+            "cap_envelope_height": 8,
+            "cap_top_above_mount": 9,
+            "cap_top_above_bezel": 6,
+            "lower_skirt_diameter": 21.6,
+            "travel": 4
+          },
+          "base_color": "#2E9E44",
+          "collision_dimensions_mm": {
+            "diameter": 23.0,
+            "height": 8
+          }
+        },
+        {
+          "name": "start_legend",
+          "visual": "start_legend_C.obj",
+          "texture": "../panel_devices/legend_plate_albedo_v4.png",
+          "texture_px": 1024,
+          "collision": [
+            "start_legend_C_col_00.obj"
+          ],
+          "mass_kg": 0.002,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "xyz": [
+              30,
+              10,
+              1
+            ]
+          },
+          "text": "CYCLE START"
+        },
+        {
+          "name": "stop_bezel",
+          "visual": "stop_bezel_C.obj",
+          "texture": "../panel_devices/bezel_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "stop_bezel_C_col_00.obj",
+            "stop_bezel_C_col_01.obj",
+            "stop_bezel_C_col_02.obj",
+            "stop_bezel_C_col_03.obj",
+            "stop_bezel_C_col_04.obj",
+            "stop_bezel_C_col_05.obj",
+            "stop_bezel_C_col_06.obj",
+            "stop_bezel_C_col_07.obj",
+            "stop_bezel_C_col_08.obj",
+            "stop_bezel_C_col_09.obj",
+            "stop_bezel_C_col_10.obj",
+            "stop_bezel_C_col_11.obj",
+            "stop_bezel_C_col_12.obj",
+            "stop_bezel_C_col_13.obj",
+            "stop_bezel_C_col_14.obj",
+            "stop_bezel_C_col_15.obj"
+          ],
+          "mass_kg": 0.008,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.7,
+            "shininess": 0.7,
+            "reflectance": 0.05
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "diameter": 29.5,
+            "height": 3,
+            "clear_bore": 24.3
+          }
+        },
+        {
+          "name": "stop",
+          "visual": "stop_C.obj",
+          "texture": "../panel_devices/btn_red_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "stop_C_col_00.obj"
+          ],
+          "mass_kg": 0.01,
+          "friction": 0.8,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "stop_bezel",
+          "joint": {
+            "type": "slide",
+            "parent": "stop_bezel",
+            "axis": [
+              0.4472135901451111,
+              0.0,
+              -0.8944271802902222
+            ],
+            "anchor_m": [
+              -0.00828382968902588,
+              0.01,
+              0.11053514099121094
+            ],
+            "range": [
+              0.0,
+              0.004
+            ],
+            "damping": 0.6,
+            "frictionloss": 0.08,
+            "spring": {
+              "stiffness": 400.0,
+              "reference": 0.0
+            }
+          },
+          "dimensions_mm": {
+            "cap_diameter": 24,
+            "cap_envelope_height": 8,
+            "cap_top_above_mount": 9,
+            "cap_top_above_bezel": 6,
+            "lower_skirt_diameter": 21.6,
+            "travel": 4
+          },
+          "base_color": "#D32F2F",
+          "collision_dimensions_mm": {
+            "diameter": 23.0,
+            "height": 8
+          }
+        },
+        {
+          "name": "stop_legend",
+          "visual": "stop_legend_C.obj",
+          "texture": "../panel_devices/legend_plate_albedo_v5.png",
+          "texture_px": 1024,
+          "collision": [
+            "stop_legend_C_col_00.obj"
+          ],
+          "mass_kg": 0.002,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "xyz": [
+              30,
+              10,
+              1
+            ]
+          },
+          "text": "FEED HOLD"
+        },
+        {
+          "name": "emergency_plate",
+          "visual": "emergency_plate_C.obj",
+          "texture": "../panel_devices/estop_plate_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "emergency_plate_C_col_00.obj"
+          ],
+          "mass_kg": 0.012,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "diameter": 60,
+            "height": 1.5
+          },
+          "text": "EMERGENCY STOP"
+        },
+        {
+          "name": "emergency",
+          "visual": "emergency_C.obj",
+          "texture": "../panel_devices/estop_albedo.png",
+          "texture_px": 1024,
+          "collision": [
+            "emergency_C_col_00.obj"
+          ],
+          "mass_kg": 0.01,
+          "friction": 0.8,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "emergency_plate",
+          "joint": {
+            "type": "slide",
+            "parent": "emergency_plate",
+            "axis": [
+              0.4472135901451111,
+              0.0,
+              -0.8944271802902222
+            ],
+            "anchor_m": [
+              -0.00828382968902588,
+              0.1,
+              0.11053514099121094
+            ],
+            "range": [
+              0.0,
+              0.005
+            ],
+            "damping": 0.8,
+            "frictionloss": 0.12,
+            "latch": {
+              "engage_at_m": 0.0048,
+              "hold_at_m": 0.005,
+              "reset": "twist_to_release",
+              "release_axis": [
+                -0.4472135901451111,
+                0.0,
+                0.8944271802902222
+              ],
+              "implementation": "simulator state machine; hold qpos after threshold"
+            }
+          },
+          "dimensions_mm": {
+            "head_diameter": 40,
+            "head_height": 18,
+            "head_bottom_z": 6.5,
+            "stem_diameter": 14,
+            "travel": 5
+          },
+          "base_color": "#D32F2F",
+          "collision_dimensions_mm": {
+            "diameter": 39.6,
+            "height": 18
+          }
+        },
+        {
+          "name": "emergency_legend",
+          "visual": "emergency_legend_C.obj",
+          "texture": "../panel_devices/legend_plate_albedo_v1.png",
+          "texture_px": 1024,
+          "collision": [
+            "emergency_legend_C_col_00.obj"
+          ],
+          "mass_kg": 0.002,
+          "friction": 0.4,
+          "mujoco_material": {
+            "specular": 0.3,
+            "shininess": 0.4,
+            "reflectance": 0.0
+          },
+          "parent": "panel",
+          "joint": null,
+          "dimensions_mm": {
+            "xyz": [
+              30,
+              10,
+              1
+            ]
+          },
+          "text": "STOP"
+        }
+      ],
+      "devices": [
+        {
+          "name": "lamp_green",
+          "library_part": "pilot_green",
+          "u_mm": -60,
+          "v_mm": 170,
+          "position_m": [
+            0.045381801605224606,
+            -0.06,
+            0.13736795043945313
+          ],
+          "quaternion_wxyz": [
+            0.6881909966468811,
+            0.1624598503112793,
+            -0.1624598503112793,
+            -0.6881909370422363
+          ],
+          "rotation_matrix": [
+            [
+              0.0,
+              0.8944271802902222,
+              -0.4472135901451111
+            ],
+            [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.4472135901451111,
+              0.8944271802902222
+            ]
+          ],
+          "press_direction": [
+            0.4472135901451111,
+            -0.0,
+            -0.8944271802902222
+          ],
+          "legend": "AUTO",
+          "legend_u_v_mm": [
+            -60,
+            155
+          ],
+          "legend_position_m": [
+            0.03196539497375488,
+            -0.06,
+            0.1306597442626953
+          ]
+        },
+        {
+          "name": "lamp_amber",
+          "library_part": "pilot_amber",
+          "u_mm": 0,
+          "v_mm": 170,
+          "position_m": [
+            0.045381801605224606,
+            0.0,
+            0.13736795043945313
+          ],
+          "quaternion_wxyz": [
+            0.6881909966468811,
+            0.1624598503112793,
+            -0.1624598503112793,
+            -0.6881909370422363
+          ],
+          "rotation_matrix": [
+            [
+              0.0,
+              0.8944271802902222,
+              -0.4472135901451111
+            ],
+            [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.4472135901451111,
+              0.8944271802902222
+            ]
+          ],
+          "press_direction": [
+            0.4472135901451111,
+            -0.0,
+            -0.8944271802902222
+          ],
+          "legend": "MAN",
+          "legend_u_v_mm": [
+            0,
+            155
+          ],
+          "legend_position_m": [
+            0.03196539497375488,
+            0.0,
+            0.1306597442626953
+          ]
+        },
+        {
+          "name": "lamp_red",
+          "library_part": "pilot_red",
+          "u_mm": 60,
+          "v_mm": 170,
+          "position_m": [
+            0.045381801605224606,
+            0.06,
+            0.13736795043945313
+          ],
+          "quaternion_wxyz": [
+            0.6881909966468811,
+            0.1624598503112793,
+            -0.1624598503112793,
+            -0.6881909370422363
+          ],
+          "rotation_matrix": [
+            [
+              0.0,
+              0.8944271802902222,
+              -0.4472135901451111
+            ],
+            [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.4472135901451111,
+              0.8944271802902222
+            ]
+          ],
+          "press_direction": [
+            0.4472135901451111,
+            -0.0,
+            -0.8944271802902222
+          ],
+          "legend": "STOP",
+          "legend_u_v_mm": [
+            60,
+            155
+          ],
+          "legend_position_m": [
+            0.03196539497375488,
+            0.06,
+            0.1306597442626953
+          ]
+        },
+        {
+          "name": "mode",
+          "library_part": "selector_knob",
+          "u_mm": -110,
+          "v_mm": 110,
+          "position_m": [
+            -0.00828382968902588,
+            -0.11,
+            0.11053514099121094
+          ],
+          "quaternion_wxyz": [
+            0.6881909966468811,
+            0.1624598503112793,
+            -0.1624598503112793,
+            -0.6881909370422363
+          ],
+          "rotation_matrix": [
+            [
+              0.0,
+              0.8944271802902222,
+              -0.4472135901451111
+            ],
+            [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.4472135901451111,
+              0.8944271802902222
+            ]
+          ],
+          "press_direction": [
+            0.4472135901451111,
+            -0.0,
+            -0.8944271802902222
+          ],
+          "legend": "MAN",
+          "legend_u_v_mm": [
+            -110,
+            95
+          ],
+          "legend_position_m": [
+            -0.021700237274169924,
+            -0.11,
+            0.10382693481445313
+          ]
+        },
+        {
+          "name": "start",
+          "library_part": "btn_green",
+          "u_mm": -50,
+          "v_mm": 110,
+          "position_m": [
+            -0.00828382968902588,
+            -0.05,
+            0.11053514099121094
+          ],
+          "quaternion_wxyz": [
+            0.6881909966468811,
+            0.1624598503112793,
+            -0.1624598503112793,
+            -0.6881909370422363
+          ],
+          "rotation_matrix": [
+            [
+              0.0,
+              0.8944271802902222,
+              -0.4472135901451111
+            ],
+            [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.4472135901451111,
+              0.8944271802902222
+            ]
+          ],
+          "press_direction": [
+            0.4472135901451111,
+            -0.0,
+            -0.8944271802902222
+          ],
+          "legend": "CYCLE START",
+          "legend_u_v_mm": [
+            -50,
+            95
+          ],
+          "legend_position_m": [
+            -0.021700237274169924,
+            -0.05,
+            0.10382693481445313
+          ]
+        },
+        {
+          "name": "stop",
+          "library_part": "btn_red",
+          "u_mm": 10,
+          "v_mm": 110,
+          "position_m": [
+            -0.00828382968902588,
+            0.01,
+            0.11053514099121094
+          ],
+          "quaternion_wxyz": [
+            0.6881909966468811,
+            0.1624598503112793,
+            -0.1624598503112793,
+            -0.6881909370422363
+          ],
+          "rotation_matrix": [
+            [
+              0.0,
+              0.8944271802902222,
+              -0.4472135901451111
+            ],
+            [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.4472135901451111,
+              0.8944271802902222
+            ]
+          ],
+          "press_direction": [
+            0.4472135901451111,
+            -0.0,
+            -0.8944271802902222
+          ],
+          "legend": "FEED HOLD",
+          "legend_u_v_mm": [
+            10,
+            95
+          ],
+          "legend_position_m": [
+            -0.021700237274169924,
+            0.01,
+            0.10382693481445313
+          ]
+        },
+        {
+          "name": "emergency",
+          "library_part": "estop",
+          "u_mm": 100,
+          "v_mm": 110,
+          "position_m": [
+            -0.00828382968902588,
+            0.1,
+            0.11053514099121094
+          ],
+          "quaternion_wxyz": [
+            0.6881909966468811,
+            0.1624598503112793,
+            -0.1624598503112793,
+            -0.6881909370422363
+          ],
+          "rotation_matrix": [
+            [
+              0.0,
+              0.8944271802902222,
+              -0.4472135901451111
+            ],
+            [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.4472135901451111,
+              0.8944271802902222
+            ]
+          ],
+          "press_direction": [
+            0.4472135901451111,
+            -0.0,
+            -0.8944271802902222
+          ],
+          "legend": "STOP",
+          "legend_u_v_mm": [
+            100,
+            95
+          ],
+          "legend_position_m": [
+            -0.021700237274169924,
+            0.1,
+            0.10382693481445313
+          ]
+        }
+      ],
+      "bbox_mm": [
+        211.99999749660492,
+        319.9999928474426,
+        159.9780023097992
+      ],
+      "triangles": 28470,
+      "preview": "preview_C.png",
+      "collision_exclusions": [
+        [
+          "mode",
+          "body"
+        ],
+        [
+          "mode",
+          "panel"
+        ],
+        [
+          "start",
+          "body"
+        ],
+        [
+          "start",
+          "panel"
+        ],
+        [
+          "start",
+          "start_bezel"
+        ],
+        [
+          "stop",
+          "body"
+        ],
+        [
+          "stop",
+          "panel"
+        ],
+        [
+          "stop",
+          "stop_bezel"
+        ],
+        [
+          "emergency",
+          "body"
+        ],
+        [
+          "emergency",
+          "panel"
+        ],
+        [
+          "emergency",
+          "emergency_plate"
+        ],
+        [
+          "mode",
+          "mode_legend"
+        ],
+        [
+          "start",
+          "start_legend"
+        ],
+        [
+          "stop",
+          "stop_legend"
+        ],
+        [
+          "emergency",
+          "emergency_legend"
+        ]
+      ],
+      "textures": {
+        "body": "body_C_albedo.png"
+      },
+      "colour_variants": [
+        {
+          "name": "RAL7035",
+          "textures": {
+            "body": "body_C_albedo.png"
+          }
+        },
+        {
+          "name": "blue",
+          "textures": {
+            "body": "body_C_albedo_v1.png"
+          }
+        }
+      ],
+      "recommended_world_translation_m": [
+        0.436,
+        -0.045,
+        0.8
+      ]
+    },
+    {
+      "name": "blue",
+      "layout": "A",
+      "textures": {
+        "body": "body_albedo_v1.png"
+      }
+    }
+  ],
+  "mass_kg": 4.0,
+  "friction": 0.5,
+  "dimensions_mm": {
+    "base_xyz": [
+      200,
+      320,
+      0
+    ],
+    "front_height": 60,
+    "back_height": 160,
+    "sheet_thickness": 1.5,
+    "corner_radius": 3,
+    "panel_uv": [
+      280,
+      190
+    ],
+    "panel_thickness": 1.5,
+    "mounting_hole_diameter": 22.3,
+    "slope_degrees": 26.565051177077994,
+    "rear_gland_projection": 12
+  },
+  "panel_frame": {
+    "u_direction": [
+      0,
+      1,
+      0
+    ],
+    "v_direction": [
+      0.8944271909999159,
+      0,
+      0.4472135954999579
+    ],
+    "outward_normal": [
+      -0.4472135901451111,
+      0.0,
+      0.8944271802902222
+    ],
+    "slope_front_edge_m": [
+      -0.106,
+      0,
+      0.06
+    ],
+    "mounting_face_offset_m": 0.0015,
+    "position_formula_mm": "[-106 + v*2/sqrt(5), u, 60 + v/sqrt(5)] + 1.5*[-1/sqrt(5),0,2/sqrt(5)]",
+    "device_local_x": [
+      0,
+      -1,
+      0
+    ],
+    "device_local_y": [
+      0.8944271909999159,
+      0,
+      0.4472135954999579
+    ],
+    "quaternion_convention": "wxyz, active local-to-console rotation, right handed"
+  },
+  "notes": "Default is layout A. A/B/C each provide a complete parts replacement (meshes, textures, colliders, transformed joints) and actual seven diameter-22.3 bores through BOTH sheet roof and dark panel. B mirrors device centres, not lettering. C pilot u values were unspecified and retain A's -60/0/+60 at v170. Panel 280 along u x 190 along slope is centred on the roof. The nominal 200 X x 320 Y base is centred at X=-6 mm; a rear gland protrudes 12 mm, giving the combined visual bottom-centre origin at zero and bbox 212 x 320 x 160 mm. Nameplate is recessed flush on robot-right (-Y). Thin sheet edge rounding is 0.3 mm because a general 1 mm edge radius cannot fit 1.5 mm stock; plan corners retain R3. The six prescribed shell colliders intentionally fill mounting holes, and their roof is expanded outward 0.75 mm to approximate the additional 1.5 mm dark panel within 1 mm. The gland has a separate fixed collider. Actuator/support contact exclusions are explicitly supplied for these simplified colliders. At the prescribed 15 mm legend offset, 30 x 10 plates overlap 29.5 mm bezels and the 60 mm emergency disc: exact centre positions are retained; upper label edges sit under the trim, and the emergency legend is mostly obscured by its correctly printed yellow disc. This unavoidable placement conflict is not resolved by moving the mandated centres. Static trim/legend intersections are visual-only and adjacent fixed bodies should be welded or have contacts excluded by the scene importer. The selector's neutral geometry, endpoint detents, spring and latch conventions are inherited from panel_devices; simulator behaviour is metadata, not an executed dynamics demonstration. Recommended per-layout placements put all four actuation centres in x300-480 mm, |y|30-450 mm, z800-1000 mm; pilots need not be pressed. Enclosure mass absorbs the remainder so each complete layout totals exactly 4 kg. All geometry/UVs/normal exports share the console frame. Full Principled PBR and source printing images are packed in source.blend; preview_B/C show the other real layouts. 64-sample CPU Cycles DIFFUSE COLOR * (0.4 + 0.6 * AO); 8-bit sRGB; no direct/highlight bake. Collision refinement: all six shell proxies have clipped R3 plan footprints, with at most 56 vertices each; rounded wall-strip corner underfill is less than 0.63 mm. Roof is extruded along the true normal, from -1.5 to +0.75 mm, so rim overhang also remains under 1 mm. Button/head proxy diameters are 23/39.6 mm to follow their stepped/rounded boundaries. v is measured from the full roof's front edge; the centred dark insert starts at v16.8034 mm. Convex proxy topology is rebuilt from unchanged one-micrometre OBJ points after export rounding. Legend ink is enlarged vertically and placed in the lower band of each unchanged 30 x 10 mm plate, keeping text clear of the bezel at the prescribed 15 mm plate-centre offset; the emergency plate remains occluded by the mandatory 60 mm yellow disc. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder."
+}

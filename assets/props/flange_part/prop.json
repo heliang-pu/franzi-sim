@@ -1,0 +1,59 @@
+{
+  "id": "flange_part",
+  "task": "tote_transfer",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    60.0,
+    60.0,
+    20.0
+  ],
+  "budget_class": "small",
+  "triangles": 4176,
+  "source": "source.blend",
+  "preview": "preview.png",
+  "parts": [
+    {
+      "name": "body",
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "body_col_00.obj",
+        "body_col_01.obj"
+      ],
+      "mass_kg": 0.09,
+      "friction": 0.35,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": null,
+      "joint": null
+    }
+  ],
+  "variants": [],
+  "dimensions_mm": {
+    "disc_diameter": 60,
+    "disc_height": 12,
+    "hub_diameter": 32,
+    "hub_height": 8,
+    "bore_diameter": 20,
+    "bolt_hole_count": 4,
+    "bolt_hole_diameter": 6.6,
+    "bolt_pitch_circle_diameter": 45,
+    "outside_chamfer": 1,
+    "outside_chamfer_degrees": 45,
+    "hole_mouth_chamfer": 0.5
+  },
+  "recommended_placement_m": {
+    "x": 0.4,
+    "y": [
+      -0.2,
+      0.2
+    ],
+    "support_z": 0.8
+  },
+  "notes": "Integral 6061 turned aluminium flange: disc diameter 60 x 12, hub diameter 32 x 8, total height 20. A real diameter-20 through bore and four real diameter-6.6 through holes on a diameter-45 pitch circle. Disc outside top and bottom edges have exact 1 x 45-degree chamfers; every bore mouth has a 0.5 mm chamfer. Hub top has a 0.4 mm chamfer and hub-root corner a 0.3 mm two-segment blend. Concentric 0.35 mm feed face tool marks and 0.12 mm pitch side turning survive in albedo and source PBR bump. Task-prescribed collision consists of two 32-sided solid cylinders; all bores are deliberately omitted. Mass is the specified benchmark mass, not inferred from geometric aluminium density. The 60 mm grasp diameter is within the 95 mm gripper opening. All coordinates are metres with Z up, front -X, common bottom-centre origin. Visual export is triangulated with normals and a nonoverlapping Smart UV 66-degree atlas. Albedo: 64-sample CPU Cycles diffuse colour * (0.4 + 0.6 * AO), linear light to 8-bit sRGB; no direct light or highlights. Full procedural Principled PBR is retained in source.blend. Generated with Blender 5.2.0 LTS. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder."
+}
