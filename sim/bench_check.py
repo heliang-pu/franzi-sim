@@ -58,9 +58,11 @@ def check(task, output):
         for j in range(m.njnt)
         if m.jnt_type[j] == mujoco.mjtJoint.mjJNT_FREE
     ]
+    # The nominal layout's instruction: seeded scenes word it per episode.
+    instruction = scene.setup["task"]["instruction"]
     report = {
         "scene": task.NAME,
-        "instruction": task.INSTRUCTION,
+        "instruction": instruction,
         "bodies": m.nbody,
         "geoms": m.ngeom,
         "meshes": m.nmesh,
@@ -106,7 +108,7 @@ def check(task, output):
         x, y = 640 * (k % 3), 40 + 480 * (k // 3)
         sheet.paste(image, (x, y))
         draw.text((x + 8, y + 6), cam, font=font, fill="white")
-    draw.text((10, 10), f"{task.NAME}: {task.INSTRUCTION}", font=font, fill="white")
+    draw.text((10, 10), f"{task.NAME}: {instruction}", font=font, fill="white")
     sheet.save(output / "preview.png")
     (output / "report.json").write_text(
         json.dumps(report, indent=2, ensure_ascii=False)

@@ -146,7 +146,8 @@ def add(
                     holder, "body", name=names[p["name"]], pos=fmt(pos), quat=fmt(quat)
                 )
                 if free:
-                    ET.SubElement(body, "freejoint", name=f"{name}_free")
+                    # The name sim.tabletop.ObjectScene looks up.
+                    ET.SubElement(body, "freejoint", name=f"{name}_part_joint")
             bodies[p["name"]] = body
             _fill(
                 body,
