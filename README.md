@@ -17,9 +17,10 @@
 
 ## 内容
 
-- **两个任务**，各占一个目录 `scenes/<名字>/`：
+- **任务**，各占一个目录 `scenes/<名字>/`：
   - 双臂抓放 `pick_place`：两只手同时抓起蓝、橙两个物块，放到中间的目标垫上，松手撤回，约 30 s。
   - 双臂分拣装盘 `kitting`，给 VLA 训练用：每只手把供料垫上的方块、圆柱和六角柱放进料盘里同色的格子，两臂同步做 3 个回合，一集 63–110 s。布局、顺序和指令随种子变化。
+- **RoboSyn 道具长任务**（`scenes/robosyn_*`，见 [docs/tasks.md](docs/tasks.md)）：厨房（揭盖、食材下锅和装盘、盖盖、按铃，另有换菜变体）、抽屉（拉开、双手经交接垫传递、收纳或取出烧杯、关上、按铃）、双手端托盘。道具来自 RoboSynChallenge，原始文件不入库。
 - **按真机对齐的机器人模型**（`sim/`）：从未改动的源 URDF 和 MuJoCo 模型派生仿真场景。手腕和手指换成 CAD 网格碰撞体，夹爪按 CAD 连杆运动，关节限位和速度按控制器镜像收紧，腰腿和头部有重力前馈；外观按实验室和工厂视频上色。
 - **四路机载相机**：头部、躯干 D435，左右腕 D405（装在新设计的倾斜相机块上，见 `hardware/wrist_d405_mount/`）。内参是未标定的模拟针孔。
 - **共享运动学** `robot_kinematics.py`（Pinocchio）：笛卡尔目标都在主机上求解，仿真和真机都只接收关节指令。
@@ -81,9 +82,10 @@ python -m pytest tests -q
 |---|---|
 | 双臂抓放 | 成功，30.0 s。最大接触穿透 0.099 mm，关节越限最大 0.5 mrad，每侧双指离地夹持 2518 步 |
 | 分拣装盘，20 个种子 | 20/20 成功，120/120 个零件入格，一集 62.8–110.0 s。最大穿透 0.13 mm，越限最大 0.16 mrad，零件离格中心最多 0.58 mm |
+| RoboSyn 道具长任务，5 种各 20 个种子 | 厨房做饭、换菜，抽屉收纳、取出，双手端托盘：全部 20/20 成功，每集 49–127 s。最大穿透 0.34 mm，越限最大 0.90 mrad |
 | 原厂 SDK 验收，MuJoCo 两种主循环 | 通信 28/28，控制语义 37/37，运动学接口 23/23，物理表现 10/10，故障处理 5/5；经 SDK 重放的完整任务成功 |
 
-这些结果来自本机的 `outputs/expert_wrist_block/`、`outputs/kitting_check_wrist_block/` 和 `outputs/sdk_backends_v12/`（`outputs/` 不入库）。
+这些结果来自本机的 `outputs/expert_wrist_block/`、`outputs/kitting_check_wrist_block/`、RoboSyn 场景的 `outputs/*_check_*/` 和 `outputs/sdk_backends_v12/`（`outputs/` 不入库）。
 
 还没有做的：
 
@@ -95,7 +97,7 @@ python -m pytest tests -q
 ## 文档
 
 - [机器人模型](docs/robot_model.md)：源文件、派生场景和碰撞体、夹爪连杆、运动学、关节限位和伺服、相机、外观和灯光
-- [任务与专家](docs/tasks.md)：两个任务的布局、专家、成功判据、数据约定和当前结果
+- [任务与专家](docs/tasks.md)：各任务的布局、专家、成功判据、数据约定和当前结果
 - [原厂 SDK 仿真服务端](docs/sdk_bridge.md)：分层、控制语义、坐标映射、运动学接口和验收
 - [VLA 数据](docs/vla_data.md)：经原厂 SDK 录制、转换专家运行、导出 LeRobot 数据集
 - [控制器镜像离线检查](docs/controller_image.md)
