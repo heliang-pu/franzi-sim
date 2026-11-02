@@ -4,8 +4,9 @@ KitScene is sim.episode.Scene with task.py's objects: the same model
 overrides, gravity feedforward, head gaze, per-step penetration and joint-limit
 audits and recordings, plus per-part tracking, the colour-matched success test
 and episode.json beside scene.xml. The expert follows task.py's key poses
-round by round and reads part poses from the simulator (privileged): no welds,
-no object pose writes, no contact-mask changes, no robot qpos/qvel writes.
+arm by arm, round by round, and reads part poses from the simulator
+(privileged): no welds, no object pose writes, no contact-mask changes, no
+robot qpos/qvel writes.
 """
 
 from __future__ import annotations
@@ -19,10 +20,12 @@ from pathlib import Path
 import mujoco
 import numpy as np
 
+from robot_kinematics import URDF
 from scenes.kitting import task as kt
-from sim.build_task import ROOT
+from sim import tabletop as tt
+from sim.build_task import FINGERS
 from sim.camera_rig import POLICY_CAMERAS
-from sim.episode import Scene
+from sim.episode import PhysicsError, Scene
 
 
 class KitScene(Scene):
@@ -38,9 +41,7 @@ class KitScene(Scene):
         self.part_dofs = {
             n: int(self.m.joint(n + "_part_joint").dofadr[0]) for n in self.parts
         }
-        self.jaws = {
-            s: [self.m.body(f"{s}finger{i}_Link").id for i in (1, 2)] for s in kt.SIDES
-        }
+        self.jaws = {s: [self.m.body(f).id for f in FINGERS[s]] for s in kt.SIDES}
         self.rest_z = {n: float(self.d.xpos[b][2]) for n, b in self.part_ids.items()}
         self.lift_evidence = {
             n: {
@@ -80,7 +81,7 @@ class KitScene(Scene):
     def sample(self):
         pairs = self.contact_bodies()
         return {
-            "t": float(self.d.time),
+            "t": self.clock(),
             "phase": self.phase,
             "subtask": self.instruction,
             "round": self.round,
@@ -154,90 +155,90 @@ def measured(s, name):
     return xy, float((yaw + period / 2) % period - period / 2)
 
 
-def go_ready(s, spec, grips):
-    """To the ready point as task.ready_pose plans it: fingers down, as
-    the two-part expert, then the hands turned in place. Swung straight into
-    the kitting grasp from the hanging start, the fingertips brushed the table,
-    which the gripper linkage turns into a jaw driven shut."""
-    upright = {side: kt.grasp_rotation(side) for side in kt.SIDES}
-    s.move(spec["ready"], grips=grips, seconds=3.0, speed=kt.SPEED)
-    s.move(spec["ready"], grips=grips, seconds=1.5, rotations=upright, speed=kt.SPEED)
+def line(s, side, poses, key, seconds, **kw):
+    """One arm straight to its key pose, in the pose's hand rotation, at the
+    kitting speed."""
+    s.move(
+        {side: poses[key]},
+        seconds=seconds,
+        linear=True,
+        rotations={side: poses["rotation"]},
+        speed=kt.SPEED,
+        **kw,
+    )
 
 
 def expert(s):
+    """From the default posture the arms take turns, round by round: each picks
+    its next part and puts it in the cell of its colour while the other holds
+    (one arm and one object per subtask, user 2026-10-25); then each arm moves
+    back. The subtask text is the trace's subtask, the stage name its finer
+    phase."""
     spec = s.spec
-    count = len(spec["rounds"])
     upright = {side: kt.grasp_rotation(side) for side in kt.SIDES}
-    opened = {side: kt.grip_open(0.04) for side in kt.SIDES}
-    s.stage("ready", "Raise both open grippers behind the kit trays.")
-    go_ready(s, spec, opened)
+    tt.start_home(s)
+    turned = set()
     for r, pair in enumerate(spec["rounds"], 1):
         s.round = r
-        part = {side: s.parts[pair[side]] for side in kt.SIDES}
-        cell = {side: s.cells[spec["assignment"][pair[side]]] for side in kt.SIDES}
-        poses = {
-            side: kt.key_poses(part[side], cell[side], *measured(s, pair[side]))
-            for side in kt.SIDES
-        }
-        rot = {side: poses[side]["rotation"] for side in kt.SIDES}
-        width = {side: kt.TYPES[part[side]["shape"]]["width"] for side in kt.SIDES}
-        left, right = kt.describe(part["left"]), kt.describe(part["right"])
-        to = {
-            key: {side: poses[side][key] for side in kt.SIDES} for key in poses["left"]
-        }
-        s.stage(
-            "approach",
-            f"Round {r} of {count}: reach for the {left} on the left "
-            f"and the {right} on the right.",
-        )
-        # Straight in from the last retreat: a joint-space move here swept the
-        # hand through a part already in the tray (seed 2, round 3).
+        for side in kt.SIDES:
+            name = pair[side]
+            part = s.parts[name]
+            cell = s.cells[spec["assignment"][name]]
+            width = kt.TYPES[part["shape"]]["width"]
+            what = kt.describe(part)
+            pick = f"Pick up the {what} with the {side} hand."
+            if side not in turned:
+                # The hand turns into the kitting grasp in place, as the
+                # sampler plans (task.ready_pose). Swung straight into it from
+                # the hanging start, the fingertips brushed the table.
+                s.stage("turn", pick)
+                s.move(
+                    {side: spec["ready"][side]},
+                    seconds=1.5,
+                    rotations={side: upright[side]},
+                    speed=kt.SPEED,
+                )
+                turned.add(side)
+            poses = kt.key_poses(part, cell, *measured(s, name))
+            s.stage("approach", pick)
+            # Straight in from the ready point or the last retreat: a
+            # joint-space move here swept the hand through a part already in
+            # the tray (seed 2, round 3).
+            line(s, side, poses, "pregrasp", 2.0, grips={side: kt.grip_open(width)})
+            s.stage("align", pick)
+            line(s, side, poses, "grasp", 1.5)
+            s.stage("grasp", pick)
+            s.move(grips={side: kt.grip_closed(width)}, seconds=1.0)
+            s.move(seconds=0.5)
+            if s.object_info(name)["jaw_contacts"][side] != [1, 2]:
+                raise RuntimeError(f"{side}: no bilateral grasp on {name}")
+            s.stage("lift", pick)
+            line(s, side, poses, "lift", 1.5)
+            if s.object_info(name)["xyz"][2] < s.rest_z[name] + 0.06:
+                raise RuntimeError(f"{side}: lift failed for {name}")
+            put = f"Put the {what} in the {cell['color']} cell with the {side} hand."
+            s.stage("transfer", put)
+            line(s, side, poses, "above", 2.0)
+            s.stage("place", put)
+            line(s, side, poses, "place", 1.5)
+            s.stage("release", put)
+            s.move(grips={side: kt.grip_open(width)}, seconds=1.0)
+            s.stage("retract", put)
+            line(s, side, poses, "retreat", 1.5)
+    s.round = 0
+    home = 1 - tt.HOME_OPENING / tt.JAW_SPAN
+    for side in kt.SIDES:
+        back = f"Move the {side} arm back to its start pose."
+        s.stage("return", back)
         s.move(
-            to["pregrasp"],
-            grips={side: kt.grip_open(width[side]) for side in kt.SIDES},
-            seconds=2.0,
+            {side: spec["ready"][side]},
+            seconds=3.0,
             linear=True,
-            rotations=rot,
+            rotations={side: upright[side]},
             speed=kt.SPEED,
         )
-        s.stage("align", f"Lower both open grippers around the {left} and the {right}.")
-        s.move(to["grasp"], seconds=1.5, linear=True, rotations=rot, speed=kt.SPEED)
-        s.stage("grasp", "Close both grippers on the parts.")
-        s.move(
-            grips={side: kt.grip_closed(width[side]) for side in kt.SIDES}, seconds=1.0
-        )
-        s.move(seconds=0.5)
-        for side in kt.SIDES:
-            if s.object_info(pair[side])["jaw_contacts"][side] != [1, 2]:
-                raise RuntimeError(f"{side}: no bilateral grasp on {pair[side]}")
-        s.stage("lift", "Lift both parts clear of the supply mats.")
-        s.move(to["lift"], seconds=1.5, linear=True, rotations=rot, speed=kt.SPEED)
-        for side in kt.SIDES:
-            if s.object_info(pair[side])["xyz"][2] < s.rest_z[pair[side]] + 0.06:
-                raise RuntimeError(f"{side}: lift failed for {pair[side]}")
-        s.stage(
-            "transfer",
-            f"Carry the {left} and the {right} over cells of their own colors.",
-        )
-        s.move(to["above"], seconds=2.0, linear=True, rotations=rot, speed=kt.SPEED)
-        s.stage("place", "Set both parts down in their tray cells.")
-        s.move(to["place"], seconds=1.5, linear=True, rotations=rot, speed=kt.SPEED)
-        s.stage("release", "Open both grippers and leave the parts in the cells.")
-        s.move(
-            grips={side: kt.grip_open(width[side]) for side in kt.SIDES}, seconds=1.0
-        )
-        s.stage("retract", "Back both grippers away from the trays.")
-        s.move(to["retreat"], seconds=1.5, linear=True, rotations=rot, speed=kt.SPEED)
-    s.round = 0
-    s.stage("finish", "Return both arms; every part must rest in a cell of its color.")
-    s.move(
-        spec["ready"],
-        grips=opened,
-        seconds=3.0,
-        linear=True,
-        rotations=upright,
-        speed=kt.SPEED,
-    )
+        s.stage("finish", back)
+        s.move({side: spec["ready"][side]}, grips={side: home}, seconds=1.5)
     s.move(seconds=1.0)
 
 
@@ -259,13 +260,13 @@ def run(output, seed, record=False, kin=None):
     output.mkdir(parents=True, exist_ok=False)
     spec = kt.sample_episode(seed, kin)
     scene = KitScene(output, spec, record)
-    error = None
+    error, void = None, False
     start = time.monotonic()
     try:
         expert(scene)
     except (RuntimeError, ValueError) as e:
-        error = str(e)
-        print("STOP:", error, flush=True)
+        error, void = str(e), isinstance(e, PhysicsError)
+        print("VOID:" if void else "STOP:", error, flush=True)
     finally:
         scene.close()
     placed = scene.placements()
@@ -280,19 +281,21 @@ def run(output, seed, record=False, kin=None):
         and all(
             e["airborne_bilateral_steps"] >= 100 for e in scene.lift_evidence.values()
         )
+        and not scene.collisions()
     )
     result = {
         "success": bool(success),
-        "controller": "privileged IK expert (kitting v0), not FineART inference",
+        "controller": "privileged IK expert (kitting v1, single-arm subtasks), not FineART inference",
         "host": "local Mac",
         "mujoco_version": mujoco.__version__,
         "task": spec["task"],
         "seed": spec["seed"],
         "draws": spec["draws"],
         "instruction": spec["instruction"],
-        "duration_s": float(scene.d.time),
+        "duration_s": scene.clock(),
         "wall_time_s": time.monotonic() - start,
         "error": error,
+        "void": void,
         "progress": sum(c is not None for c in placed.values()),
         "placements": placed,
         "offset_from_assigned_cell_mm": offsets,
@@ -304,6 +307,7 @@ def run(output, seed, record=False, kin=None):
             "max_penetration_mm": scene.maxdepth * 1000,
             "deepest_geoms": scene.deepest,
             "max_joint_limit_error": scene.maxlimit,
+            "collisions": scene.collisions(),
         },
         "contract": {
             "action_dim": 16,
@@ -313,12 +317,11 @@ def run(output, seed, record=False, kin=None):
             "control_hz": 25,
             "physics_hz": 500,
             "language": "task = instruction; per tick: phase, subtask, round",
+            "full": scene.full_contract(),
         },
         "collision_setup": scene.setup,
         "camera_rig": scene.camera_metadata,
-        "source_urdf_sha256": hashlib.sha256(
-            (ROOT / "assets/franzi_source/wheel_robot_4.0.urdf").read_bytes()
-        ).hexdigest(),
+        "source_urdf_sha256": hashlib.sha256(URDF.read_bytes()).hexdigest(),
     }
     (output / "summary.json").write_text(json.dumps(result, indent=2))
     (output / "trace.json").write_text(json.dumps(scene.trace, indent=2))
@@ -335,7 +338,9 @@ def run(output, seed, record=False, kin=None):
             round=[x["round"] for x in scene.trace],
             progress=[x["progress"] for x in scene.trace],
             task=spec["instruction"],
+            **scene.full_arrays(),
         )
+    scene.write_full(output)
     return result
 
 

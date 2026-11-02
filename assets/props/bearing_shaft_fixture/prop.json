@@ -1,0 +1,73 @@
+{
+  "id": "bearing_shaft_fixture",
+  "task": "precision_insertion",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    70.0,
+    110.0,
+    54.0
+  ],
+  "triangles": 2432,
+  "budget_class": "small",
+  "source": "source.blend",
+  "preview": "preview.png",
+  "parts": [
+    {
+      "name": "body",
+      "source_visual_object": "body",
+      "source_collision_objects": [
+        "COL__body__000",
+        "COL__body__001",
+        "COL__body__002",
+        "COL__body__003"
+      ],
+      "mass_kg": 0.5,
+      "friction": 0.35,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "texture_px": 1024,
+      "parent": null,
+      "joint": null,
+      "bake_texture": "body_albedo.png",
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "collision": [
+        "body_col_00.obj",
+        "body_col_01.obj",
+        "body_col_02.obj",
+        "body_col_03.obj"
+      ]
+    }
+  ],
+  "variants": [],
+  "dimensions_mm": {
+    "base_xyz": [
+      70,
+      110,
+      20
+    ],
+    "shoulder_diameter": 24,
+    "shoulder_top_z": 34,
+    "shaft_diameter": 19.0,
+    "shaft_top_z": 54,
+    "lead_in_axial": 1,
+    "lead_in_angle_from_axis_deg": 30,
+    "mount_hole": 9,
+    "counterbore": 15,
+    "mount_centres_y": [
+      -42,
+      42
+    ]
+  },
+  "notes": "Static table fixture (2026-10-25) for sliding the 6204 onto a shaft: diametral clearance c=1.0 mm to the 20 mm bore. Collision: the base box, a 32-sided shoulder prism, a 32-sided shaft prism with vertices on the shaft circle, and the 32-sided lead-in frustum. The bearing seats on the shoulder at Z34 with 6 mm of shaft above it; a gripper holding its outer race keeps the fingertips more than 10 mm above the base there. Metres, Z up, front -X, bottom-centre origin, applied transforms and a shared prop frame. Triangulated visual OBJ with normals, 30-degree smoothing, nonoverlapping 66-degree Smart UVs. Albedo: CPU Cycles 64-sample DIFFUSE COLOR * (0.4 + 0.6 * AO), RGB8 sRGB, no direct light or highlights. Full Principled PBR and marking images packed in source.blend. Preview: 1024 square, CPU Cycles 64, neutral grey, three lights, front-left above. Collision coordinates retain 12 decimal places in metres. Simulation may vary instance colour by 0.97-1.03. Suggested worktable position [0.400, 0, 0.800] m; positioning and reachable grasp poses are left to the scene, not baked into these local meshes.  Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 7 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification.",
+  "build_blender_version": "5.2.0 LTS",
+  "precision_mm": 0.01,
+  "clearance_mm": 1.0,
+  "shaft_diameter_mm": 19.0,
+  "bearing_seat_z_mm": 34,
+  "fixed": true
+}

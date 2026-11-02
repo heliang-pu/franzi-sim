@@ -1,0 +1,50 @@
+{
+  "id": "accessory_box",
+  "task": "electronics_line",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    59.99999865889549,
+    50.00000074505806,
+    25.030000135302544
+  ],
+  "triangles": 576,
+  "budget_class": "small",
+  "static": false,
+  "dimensions_mm": {
+    "xyz": [
+      60,
+      50,
+      25
+    ]
+  },
+  "parts": [
+    {
+      "name": "body",
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "body_col_00.obj"
+      ],
+      "mass_kg": 0.05,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.05,
+        "shininess": 0.1,
+        "reflectance": 0.0
+      },
+      "parent": null,
+      "joint": null,
+      "source_collision_objects": [
+        "COL__body__00"
+      ]
+    }
+  ],
+  "recommended_instance_color_gain_range": [
+    0.97,
+    1.03
+  ],
+  "variants": [],
+  "notes": "Metres, Z up, front -X. Applied transforms in the shared prop frame. Cycles CPU 64-sample diffuse COLOR times (0.4 + 0.6 AO), sRGB8 albedo; PBR and artwork packed in source.blend. DejaVu Sans Bold, English only. Task 15 uses isolated finalization to protect existing props. Long accessory description wraps over two lines for readability. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification."
+}

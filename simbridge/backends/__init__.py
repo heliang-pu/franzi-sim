@@ -9,8 +9,9 @@ REGISTRY = {
         "MujocoBackend",
         "implemented",
         (
-            "verified on macOS: stock-SDK acceptance, framework and "
-            "simulator-owned loops (outputs/sdk_backends_v10)"
+            "verified on the pro6000 (Linux): stock-SDK acceptance, framework "
+            "and simulator-owned loops, wheel_robot_26.8.16_3 "
+            "(outputs/sdk_backends_urdf_v5)"
         ),
     ),
     "isaacsim": (

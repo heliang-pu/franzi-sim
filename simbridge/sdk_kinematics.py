@@ -9,10 +9,11 @@ Python client and C++ headers:
 
 - joints: SDK values, q_sdk = sign * q_urdf + offset (the active convention);
 - frames: Fk gives the flange (MDH frame A7) in the arm's MDH base frame A0, and
-  FKb gives it in base frame B = URDF base_link. A0 in torso_Link and A7 in
-  wrist_roll_Link come from check_sdk_kinematics.py
-  (config/robot/kinematic_crosscheck.json); the tool is the flange times
-  flan2tool, the identity at start-up;
+  FKb gives it in base frame B (world-aligned at the base, robot_kinematics). A0
+  in the parent link of the arm's first joint and A7 in wrist_roll_Link come
+  from check_sdk_kinematics.py (config/robot/kinematic_crosscheck.json; with
+  wheel_robot_26.8.16_3 both are those links' own frames, to 1e-6); the tool is
+  the flange times flan2tool, the identity at start-up;
 - transforms: 4x4, column-major 16-vectors, translations in m, at the float32
   precision of the controller's TransformMatrix4x4;
 - poses: [x, y, z, rz, ry, rx] with R = Rx(rx) Ry(ry) Rz(rz)
@@ -24,6 +25,7 @@ What is inferred rather than read from a controller is listed under
 
 import json
 import threading
+import xml.etree.ElementTree as ET
 
 import numpy as np
 
@@ -98,28 +100,45 @@ class SdkKinematics:
     missing (the services then report the endpoints as unsupported)."""
 
     def __init__(self, robot):
-        from robot_kinematics import Kinematics
+        from robot_kinematics import URDF, Kinematics
 
         self.robot = robot
         self.cfg = robot.raw["kinematics"]
         # The endpoints emulate the controller's IK, which knows no planning
-        # margin: solutions may sit anywhere inside the aligned limits. Host-side
-        # planning (sdk.sdk_cartesian, the experts) keeps the larger default.
-        self.kin = Kinematics(margin=0.0001)
+        # margin: solutions may sit anywhere inside the limits MoveJ accepts,
+        # which keep robot.yaml's position margin from the URDF bounds too
+        # (wheel_robot_26.8.16_3's wrist roll stops at 1.57, inside the
+        # controller's 1.5708). Host-side planning (sdk.sdk_cartesian, the
+        # experts) keeps the larger default.
+        self.kin = Kinematics(margin=robot.position_margin + 0.0001)
         self.lock = threading.Lock()  # Kinematics keeps one Pinocchio data
-        self.torso = self.kin.model.getFrameId("torso_Link")
         self.waist = robot.units["waist"]
-        tcp = robot.frames["tcp"]["position_in_wrist_roll_link_m"]
-        self.tcp = {side: np.asarray(tcp[side], float) for side in robot.arms}
+        model = self.kin.model
+        # The arm's base link (the first joint's parent: left_j0_Link) and the
+        # grasp point in the wrist_roll frame, a fixed transform through the
+        # gripper link.
+        self.parent, self.grasp_in_wrist = {}, {}
+        parents = {
+            j.get("name"): j.find("parent").get("link")
+            for j in ET.parse(URDF).getroot().findall("joint")
+        }
+        for side in robot.arms:
+            self.parent[side] = model.getFrameId(
+                parents[robot.arms[side].sim_joints[0]]
+            )
+            frame = model.frames[self.kin.frames[side]]
+            self.grasp_in_wrist[side] = homogeneous(
+                frame.placement.rotation, frame.placement.translation
+            )
         self.flan2tool = {side: np.eye(4) for side in robot.arms}
         evidence = json.loads(
             (ROOT / robot.raw["joint_convention"]["evidence"]).read_text()
         )
-        self.a0_in_torso, self.flange_in_wrist = {}, {}
+        self.a0_in_parent, self.flange_in_wrist = {}, {}
         for side in robot.arms:
             f = evidence["arms"][side]["selected"]["frames"]
             base, flange = f["mdh_base_in_parent"], f["mdh_flange_in_child_link"]
-            self.a0_in_torso[side] = homogeneous(base["R"], base["p_m"])
+            self.a0_in_parent[side] = homogeneous(base["R"], base["p_m"])
             self.flange_in_wrist[side] = homogeneous(flange["R"], flange["p_m"])
 
     def _body(self, torso_sdk):
@@ -128,21 +147,24 @@ class SdkKinematics:
         return dict(zip(self.waist.sim_joints, self.waist.to_sim(torso_sdk)))
 
     def _world(self, side, q_sdk, body):
-        """World poses of wrist_roll_Link and torso_Link at SDK joint values."""
+        """World poses of wrist_roll_Link and of the arm's base link at SDK
+        joint values."""
         q = self.robot.arms[side].to_sim(q_sdk)
         with self.lock:
             p, R = self.kin.fk(side, q, body)
-            torso = self.kin.data.oMf[self.torso]
-            torso = homogeneous(torso.rotation, torso.translation + self.kin.base)
-        return homogeneous(R, p - R @ self.tcp[side]), torso
+            base = self.kin.data.oMf[self.parent[side]]
+            base = homogeneous(base.rotation, base.translation + self.kin.base)
+        return homogeneous(R, p) @ inverse(self.grasp_in_wrist[side]), base
 
     def _solve(self, side, wrist, seed_sdk, body):
         """SDK joints putting wrist_roll_Link at wrist (4x4, world)."""
-        grasp = wrist[:3, 3] + wrist[:3, :3] @ self.tcp[side]
+        grasp = wrist @ self.grasp_in_wrist[side]
         current = self.robot.arms[side].to_sim(seed_sdk)
         try:
             with self.lock:
-                q = self.kin.ik(side, grasp, current, body, rotation=wrist[:3, :3])
+                q = self.kin.ik(
+                    side, grasp[:3, 3], current, body, rotation=grasp[:3, :3]
+                )
         except RuntimeError as exc:
             raise Rejected(Sdk.UNREACHABLE, str(exc)) from None
         return self.robot.arms[side].to_sdk(q)
@@ -155,15 +177,15 @@ class SdkKinematics:
 
     # ----- arm frame A0 (moves with the torso, so the waist does not matter) ---
     def fk(self, side, q_sdk, tool=False):
-        wrist, torso = self._world(side, q_sdk, None)
-        T = inverse(torso @ self.a0_in_torso[side]) @ wrist
+        wrist, base = self._world(side, q_sdk, None)
+        T = inverse(base @ self.a0_in_parent[side]) @ wrist
         return self._tool(side, T @ self.flange_in_wrist[side], tool)
 
     def ik(self, side, target, seed_sdk, tool=True):
         """SDK joints putting the tool (or flange) at target, a 4x4 in A0;
         robot_kinematics.ik seeded with seed_sdk."""
-        _, torso = self._world(side, seed_sdk, None)
-        flange = torso @ self.a0_in_torso[side] @ self._flange(side, target, tool)
+        _, base = self._world(side, seed_sdk, None)
+        flange = base @ self.a0_in_parent[side] @ self._flange(side, target, tool)
         wrist = flange @ inverse(self.flange_in_wrist[side])
         return self._solve(side, wrist, seed_sdk, None)
 

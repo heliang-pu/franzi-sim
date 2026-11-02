@@ -1,6 +1,6 @@
 """Load the delivered Task 07 OBJ assets in MuJoCo and check joint behaviour.
 
-Run with /Users/puheliang/miniforge3/envs/inovance-fineart/bin/python -B.
+Run with $PROP_PYTHON -B (a Python with numpy, scipy, trimesh and Pillow).
 The in-memory fixture is a geometry/joint smoke test, not a robot benchmark.
 """
 

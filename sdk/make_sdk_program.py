@@ -4,9 +4,12 @@ Like taught poses on a real controller, the program is plain data: joint
 vectors (rad, controller MDH convention from config/robot/franzi_sdk.yaml) and
 gripper positions (0 closed .. 1000 open). Built once from the MuJoCo scene:
 
-- poses: the expert's collision-free "ready" pose and small variations; every
-  programmed move is swept along its joint-space line and rejected if any
-  robot geom would touch the world or the other arm (kinematic check only);
+- poses: the expert's default posture (tabletop.start_home, where its
+  recording starts), small variations of it, and the lift pose the robot
+  passes on its way there from the SDK zero pose, as Scene.prepare does: the
+  straight joint line from zero puts the jaws into the table. Every programmed
+  move is swept along its joint-space line and rejected if any robot geom
+  would touch the world or the other arm (kinematic check only);
 - fault probe: a left-hand pose above a free spot of the table and an IK
   descent ending 5 cm below its surface, to exercise penetration/stall handling;
 - task replay: the privileged IK expert's 25 Hz joint targets from a recorded
@@ -22,6 +25,7 @@ import mujoco
 import numpy as np
 
 from scenes.pick_place.run import PickPlaceScene
+from sim import tabletop
 from sim.build_task import ROOT, TABLE_Z
 from simbridge.robot import load_robot
 
@@ -132,7 +136,7 @@ def main():
     parser.add_argument(
         "--expert-run",
         type=Path,
-        default=ROOT / "outputs/expert_wrist_block",
+        default=ROOT / "outputs/pp_seeds_rec",
     )
     parser.add_argument(
         "--output", type=Path, default=ROOT / "config/sdk_acceptance/program.json"
@@ -155,8 +159,16 @@ def main():
             for k, s in enumerate(("left", "right"))
         ]
     for phase in phases:
+        # The arms whose joints move in the phase: one, under the subtask rule.
+        points = np.asarray(phase["points"])
+        phase["arms"] = [
+            side
+            for side, columns in (("left", slice(0, 7)), ("right", slice(7, 14)))
+            if np.ptp(points[:, columns], axis=0).max() > 1e-9
+        ]
         phase["points"], phase["slowdown"] = retime(robot, phase["points"], 25)
-    ready = np.asarray(next(p for p in phases if p["name"] == "ready")["points"][-1])
+    # The default posture the recording starts in (tabletop.start_home).
+    ready = np.asarray(phases[0]["points"][0])
     pose_a = ready
     pose_b = ready.copy()
     pose_b[[0, 7]] += 0.15  # shoulder pitch
@@ -166,6 +178,8 @@ def main():
     scratch = ROOT / "outputs" / ".sdk_program_scene"
     scratch.mkdir(parents=True, exist_ok=True)
     scene = PickPlaceScene(scratch, record=False)
+    raised = scene.lift_path(tabletop.READY)[0]
+    lift_pose = np.asarray(sdk(robot, np.r_[raised["left"], raised["right"]], clamp))
     above = scene.ik("left", [0.28, 0.45, TABLE_Z + 0.12])
     # A straight descent as IK waypoints 2 cm apart, ending 5 cm below the
     # surface, so the first contact is the fingertips on the free table spot.
@@ -175,15 +189,18 @@ def main():
     sweep = Sweep(scene)
     zero = np.zeros(14)
     a, b = to_sim(robot, pose_a), to_sim(robot, pose_b)
+    lift = to_sim(robot, lift_pose)
     s1 = to_sim(robot, np.r_[single, pose_b[7:]])
     finish = to_sim(robot, phases[-1]["points"][-1])
     probe_above = np.r_[left_sim(robot, clamp, above), finish[7:]]
     for start, goal, label in [
-        (zero, a, "home -> pose_a"),
+        (zero, lift, "home -> lift"),
+        (lift, a, "lift -> pose_a"),
         (a, b, "pose_a -> pose_b"),
         (b, s1, "pose_b -> single"),
         (s1, a, "single -> pose_a"),
-        (a, zero, "pose_a -> home"),
+        (a, lift, "pose_a -> lift"),
+        (lift, zero, "lift -> home"),
         (finish, probe_above, "task finish -> probe above"),
     ]:
         sweep.check(start, goal, label)
@@ -192,6 +209,7 @@ def main():
     program = {
         "joint_convention": robot.convention,
         "robot_config_sha256": hashlib.sha256(robot.path.read_bytes()).hexdigest(),
+        "lift_pose": {"left": lift_pose[:7].tolist(), "right": lift_pose[7:].tolist()},
         "pose_a": {"left": pose_a[:7].tolist(), "right": pose_a[7:].tolist()},
         "pose_b": {"left": pose_b[:7].tolist(), "right": pose_b[7:].tolist()},
         "single_arm_target": single.tolist(),

@@ -9,8 +9,14 @@ keeps props out of Scene.robot_bodies. Visual geoms (group 2) carry the baked
 texture and neither mass nor contacts. Collision pieces (group 3, hidden) carry
 the part's friction and its mass, spread over them by convex volume; MuJoCo
 collides each piece as its convex hull. Joints take prop.json's axis, anchor,
-range, damping, frictionloss and spring; detents, latches and similar
-behaviours belong to the scene.
+range (limits as stiff as the contacts), damping, frictionloss, spring and
+frictionloss solver settings (solreffriction/solimpfriction, e.g. the lidded
+tote's static hold). A part's contact_priority makes its friction win over what
+touches it (the flow lane's slide); detents,
+latches and similar behaviours belong to the scene. A jointed part starts at
+its recommended_initial_qpos (or the value add() is given): its body is posed
+there and the joint's ref makes that pose qpos0, so ranges and springs keep the
+prop's coordinates and nothing writes qpos at run time.
 """
 
 import json
@@ -19,6 +25,7 @@ from functools import cache
 
 import numpy as np
 import trimesh
+from scipy.spatial.transform import Rotation
 
 from sim.build_task import ROOT, fmt
 
@@ -26,6 +33,10 @@ PROPS = ROOT / "assets/props"
 # The existing scenes' contact parameters for parts and surfaces.
 SOLREF, SOLIMP = "0.004 1", "0.95 0.99 0.001"
 ARMATURE = 0.0005  # keeps light jointed parts (buttons, knobs) stable at 500 Hz
+# Joint limits are as stiff as the contacts. With MuJoCo's default (0.02 s,
+# impedance 0.9-0.95), a 20 g button cap pushed with 10 N ran several times past
+# its 4-6 mm travel, and a pushed box lid past its open stop (2026-10-25).
+LIMIT_SOLREF, LIMIT_SOLIMP = SOLREF, SOLIMP
 
 
 @cache
@@ -98,12 +109,15 @@ def add(
     free=False,
     variant_name=None,
     mass=None,
+    initial=None,
 ):
     """Add instance `name` of a prop under `parent` (a body element; the world
     by default) at pos/quat. free=True gives the root part a freejoint (props
-    with one root part only). mass overrides the root part's mass. Returns
-    {part name: body name}."""
+    with one root part only). mass overrides the root part's mass. initial
+    {part name: joint value} sets where jointed parts start, over their
+    recommended_initial_qpos. Returns {part name: body name}."""
     s = spec(prop_id)
+    initial = initial or {}
     v = variant(prop_id, variant_name) if variant_name else {}
     parts = [
         p
@@ -158,6 +172,7 @@ def add(
                 textures.get(p["name"], p.get("texture")),
                 masses.get(p["name"], p.get("mass_kg", 0.0)),
                 moving=free or bool(p.get("joint")),
+                start=initial.get(p["name"], p.get("recommended_initial_qpos")),
             )
     excludes = s.get("collision_exclusions", [])
     if excludes:
@@ -190,7 +205,29 @@ def joint_anchor(prop_id, part):
     raise KeyError(f"{prop_id} has no part {part!r}")
 
 
-def _fill(body, asset, prop_id, name, part, texture, mass, moving):
+def _start_at(body, joint, value):
+    """Pose a jointed part's body at joint value `value`: turned about the
+    joint's anchor (hinge) or moved along its axis (slide), in the frame of
+    the body's own pos/quat. The anchor and axis keep their body coordinates."""
+    axis = np.asarray(joint["axis"], float)
+    axis /= np.linalg.norm(axis)
+    if joint["type"] == "hinge":
+        turn = Rotation.from_rotvec(value * axis)
+        anchor = np.asarray(joint.get("anchor_m", [0, 0, 0]), float)
+        shift = anchor - turn.apply(anchor)
+    elif joint["type"] == "slide":
+        turn, shift = Rotation.identity(), value * axis
+    else:
+        raise ValueError(f"no start value for a {joint['type']} joint")
+    pos = np.array([float(v) for v in body.get("pos", "0 0 0").split()])
+    w, x, y, z = (float(v) for v in body.get("quat", "1 0 0 0").split())
+    frame = Rotation.from_quat([x, y, z, w])
+    x, y, z, w = (frame * turn).as_quat()
+    body.set("pos", fmt(pos + frame.apply(shift)))
+    body.set("quat", fmt([w, x, y, z]))
+
+
+def _fill(body, asset, prop_id, name, part, texture, mass, moving, start=None):
     folder = PROPS / prop_id
     pname = part["name"]
     joint = part.get("joint")
@@ -204,12 +241,23 @@ def _fill(body, asset, prop_id, name, part, texture, mass, moving):
             "frictionloss": str(joint.get("frictionloss", 0)),
             "armature": str(ARMATURE),
         }
+        for key in ("solreffriction", "solimpfriction"):
+            if key in joint:
+                attrs[key] = fmt(joint[key])
+        if start:
+            _start_at(body, joint, start)
+            attrs["ref"] = str(start)
         if (
             joint.get("range") is not None
             and joint.get("limited", True)
             and not joint.get("continuous")
         ):
-            attrs.update(limited="true", range=fmt(joint["range"]))
+            attrs.update(
+                limited="true",
+                range=fmt(joint["range"]),
+                solreflimit=LIMIT_SOLREF,
+                solimplimit=LIMIT_SOLIMP,
+            )
         else:
             attrs["limited"] = "false"
         spring = joint.get("spring")
@@ -245,6 +293,10 @@ def _fill(body, asset, prop_id, name, part, texture, mass, moving):
         "solimp": SOLIMP,
         "condim": "4" if moving else "3",
     }
+    if part.get("contact_priority"):
+        # This part's friction wins over what touches it (the flow lane's low
+        # friction); MuJoCo otherwise takes the larger of the two.
+        contact["priority"] = str(part["contact_priority"])
     for k, f in enumerate(pieces):
         mesh = _ensure(
             asset, "mesh", f"col_{prop_id}_{pname}_{k:02d}", file=str(folder / f)

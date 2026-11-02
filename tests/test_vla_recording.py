@@ -20,9 +20,13 @@ from data.record_sdk_episode import STREAM, Recorder
 from data.vla_episode import (
     ARRAYS,
     CAMERAS,
+    FULL_ARRAYS,
+    FULL_NAMES,
     LEROBOT_FEATURES,
+    VIEWS,
     EpisodeWriter,
     camera_frames,
+    lerobot_features,
     read_episode,
 )
 from sdk.stock_sdk import UPPER, connect
@@ -222,6 +226,37 @@ def test_episode_round_trip(tmp_path):
     assert a["state"][2].tolist() == [2.0] * 16
     means = [f.mean() for f in camera_frames(tmp_path / "ep", "waist")]
     assert np.allclose(means, [0, 60, 120], atol=2)
+    assert loaded["full"] is False and "state_full" not in a
+
+
+def test_full_episode_round_trip_and_schema_1(tmp_path):
+    """Schema 2 keeps the full robot when every row has it, refuses a mix, and
+    a schema-1 episode (no full robot) still reads."""
+    writer = EpisodeWriter(tmp_path / "ep", encode=False)
+    for k in range(3):
+        row = {key: np.full(shape, k) for key, (_, shape) in ARRAYS.items()}
+        row |= {key: np.full(shape, k + 0.5) for key, (_, shape) in FULL_ARRAYS.items()}
+        row["subtask"] = "a"
+        writer.add(row)
+    with pytest.raises(ValueError):
+        writer.add({key: np.zeros(shape) for key, (_, shape) in ARRAYS.items()})
+    (tmp_path / "depth.mkv").write_bytes(b"x")
+    writer.copy_extra("depth_head.mkv", tmp_path / "depth.mkv")
+    writer.save_extra("eval.npz", object_pose=np.zeros((3, 1, 7)))
+    writer.close({"task": "t", "complete": True})
+    info, a = read_episode(tmp_path / "ep")
+    assert info["full"] and info["full_names"] == FULL_NAMES
+    assert info["extras"] == ["depth_head.mkv", "eval.npz"]
+    assert a["state_full"].shape == (3, 22) and a["camera_pose"].shape == (3, 4, 7)
+    assert a["eef_pose"][2, 1, 3] == 2.5
+    path = tmp_path / "ep/episode.json"
+    old = json.loads(path.read_text())
+    old["schema"] = "inovance-franzi-vla-episode/1"
+    for key in ("full", "full_names", "extras"):
+        old.pop(key)
+    path.write_text(json.dumps(old))
+    info, a = read_episode(tmp_path / "ep")
+    assert info["full"] is False and set(a) == set(ARRAYS)
 
 
 @pytest.mark.skipif(
@@ -243,13 +278,51 @@ def test_expert_conversion_matches_what_the_sdk_reports():
     assert np.array_equal(to_sdk(Kinematics(), values), expected)
 
 
+@pytest.mark.skipif(
+    importlib.util.find_spec("pinocchio") is None, reason="needs Pinocchio"
+)
+def test_full_conversion_maps_the_waist_and_head_like_the_sdk():
+    """The full robot's waist and head go through simbridge's unit maps, its
+    rates and efforts through their signs, the grippers' through -1000 and 1."""
+    from data.convert_expert_run import full_to_sdk, rates_to_sdk, to_sdk
+    from robot_kinematics import Kinematics
+
+    rng = np.random.default_rng(1)
+    values = np.c_[
+        rng.uniform(-1, 1, (20, 14)),
+        rng.uniform(0, 1, (20, 2)),
+        rng.uniform(-1, 1, (20, 6)),
+    ]
+    kin = Kinematics()
+    mapped = full_to_sdk(kin, ROBOT, values)
+    assert np.array_equal(mapped[:, :16], to_sdk(kin, values[:, :16]))
+    assert np.array_equal(
+        mapped[:, 16:20], ROBOT.units["waist"].to_sdk(values[:, 16:20])
+    )
+    assert np.array_equal(mapped[:, 20:], ROBOT.units["head"].to_sdk(values[:, 20:]))
+    rates = rates_to_sdk(ROBOT, values, -1000.0)
+    assert np.array_equal(rates[:, :7], ROBOT.arms["left"].rate_to_sdk(values[:, :7]))
+    assert np.array_equal(rates[:, 14:16], -1000.0 * values[:, 14:16])
+    assert np.array_equal(
+        rates[:, 16:20], ROBOT.units["waist"].rate_to_sdk(values[:, 16:20])
+    )
+
+
 def test_lerobot_features_keep_extras_out_of_policy_inputs():
     """LeRobot feeds every observation.* key to a policy as state and every
-    action* key as action: only the state, the cameras and the action may."""
+    action* key as action: only the state, the cameras and the action may, in
+    every view and with the full robot (robot.*) too."""
     policy = {"observation.state", "action"} | {
         f"observation.images.{c}" for c in CAMERAS
     }
-    for key in LEROBOT_FEATURES:
-        if key.startswith(("observation", "action")):
-            assert key in policy
-    assert policy <= set(LEROBOT_FEATURES)
+    assert lerobot_features() == LEROBOT_FEATURES
+    for view in VIEWS:
+        for full in (False, True):
+            features = lerobot_features(view, full)
+            for key in features:
+                if key.startswith(("observation", "action")):
+                    assert key in policy
+            assert policy <= set(features)
+            assert features["action"]["shape"] == (len(VIEWS[view]),)
+            assert any(k.startswith("robot.") for k in features) == full
+            assert not any(k.startswith(("eval", "world")) for k in features)

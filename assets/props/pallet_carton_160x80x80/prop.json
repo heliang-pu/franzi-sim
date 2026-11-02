@@ -36,7 +36,19 @@
       ]
     }
   ],
-  "variants": [],
+  "variants": [
+    {
+      "name": "imc",
+      "textures": {
+        "body": "body_albedo_imc.png"
+      },
+      "sku": "IMC-PLC-IO10",
+      "brand": "IMC Controls",
+      "contents": "PLC I/O MODULES × 10",
+      "source": "source_imc.blend",
+      "preview": "preview_imc.png"
+    }
+  ],
   "dimensions_mm": {
     "nominal_xyz": [
       80,

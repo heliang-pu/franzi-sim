@@ -22,6 +22,8 @@ QA = HERE / "_qa" / "task08"
 CARTONS = {"pallet_carton_160x80x80": (80, 160, 80, .35, "SKU-A"),
            "pallet_carton_120x80x80": (80, 120, 80, .25, "SKU-B")}
 IDS = ("mini_pallet", "scissor_lift_table", *CARTONS, "pattern_sign")
+IMC_PRESERVED_FILES = {}
+IMC_BASE_MANIFEST = None
 
 
 def stacking_plans():
@@ -44,6 +46,11 @@ def stacking_plans():
         {"name": "plan_03", "title": "CLEARANCE / SKU-B", "description": "Spaced 2 x 2 cross stack",
          "layers": [grid([-45, 45], [-70, 70], (80, 120), "SKU-B"),
                     grid([-70, 70], [-45, 45], (120, 80), "SKU-B", 5)]},
+        # 2026-10-25, for the robot's 95 mm jaws: each layer leaves 40 mm between
+        # the cartons' 80 mm faces, where the fingers go; the other faces touch.
+        {"name": "plan_04", "title": "ROBOT / SKU-B", "description": "2 x 2 cross stack, 40 mm finger gaps",
+         "layers": [grid([-60, 60], [-60, 60], (120, 80), "SKU-B"),
+                    grid([-60, 60], [-60, 60], (80, 120), "SKU-B", 5)]},
     ]
 
 
@@ -118,6 +125,41 @@ def artwork_worker():
             save(image, f"plan_{index:02d}.png")
     else:
         raise ValueError(request["kind"])
+
+
+def imc_artwork_worker() -> None:
+    """Original English IMC artwork; only bundled DejaVu Sans fonts."""
+    from PIL import Image, ImageDraw, ImageFont
+    folder = Path(json.load(sys.stdin)["folder"])
+    blue = "#1556A0"
+    def font(size, bold=True):
+        return ImageFont.truetype(str(HERE / "fonts" / ("DejaVuSans-Bold.ttf" if bold else "DejaVuSans.ttf")), size)
+    image = Image.new("RGBA", (1500, 460), (255, 255, 255, 0))
+    draw = ImageDraw.Draw(image)
+    draw.text((35, 25), "IMC Controls", font=font(118), fill=blue)
+    draw.text((35, 180), "PLC I/O MODULES × 10", font=font(70), fill=blue)
+    # Original generic up arrows and fragile glass, separate from the text.
+    for x in (1080, 1190):
+        draw.line((x, 320, x, 95), fill=blue, width=18)
+        draw.polygon([(x, 65), (x-42, 130), (x+42, 130)], fill=blue)
+    draw.line((1040, 344, 1230, 344), fill=blue, width=13)
+    draw.line((1290, 85, 1420, 85, 1406, 205, 1372, 234, 1338, 205, 1324, 85), fill=blue, width=13)
+    draw.line((1372, 234, 1372, 340), fill=blue, width=13)
+    draw.line((1328, 340, 1416, 340), fill=blue, width=13)
+    draw.line((1370, 95, 1350, 148, 1386, 165, 1361, 208), fill=blue, width=9)
+    image.save(folder / "imc_handling_source.png")
+    label = Image.new("RGB", (1504, 480), "#F4F1E7")
+    draw = ImageDraw.Draw(label)
+    draw.rectangle((12, 12, 1492, 468), outline=blue, width=5)
+    draw.text((55, 35), "IMC-PLC-IO10", font=font(128), fill=blue)
+    draw.text((60, 208), "IMC Controls / FINISHED GOODS", font=font(63), fill=blue)
+    draw.text((60, 325), "PLC I/O MODULES × 10", font=font(70), fill=blue)
+    label.save(folder / "imc_sku_source.png")
+
+
+if __name__ == "__main__" and "--imc-artwork-worker" in sys.argv:
+    imc_artwork_worker()
+    raise SystemExit(0)
 
 
 if __name__ == "__main__" and "--artwork-worker" in sys.argv:
@@ -329,7 +371,7 @@ def export_current():
         material = bpy.data.materials[data["artwork_material"]]
         node = material.node_tree.nodes["Artwork"]
         original = node.image
-        for index in (2, 3):
+        for index in range(2, len(stacking_plans()) + 1):
             node.image = bpy.data.images.load(str(folder / f"plan_{index:02d}.png"), check_existing=True)
             node.image.use_fake_user = True
             props.render_preview(visuals, folder / f"preview_plan_{index:02d}.png")
@@ -690,7 +732,8 @@ def build_sign():
     sheet = combine([sheet], "plan_sheet")
     sheet_spec = part("plan_sheet", sheet, [], .01, .5, PAPER, parent="base")
     sheet_spec["texture_variants"] = [{"material": sheet_mat.name, "source_image": f"plan_{i:02d}.png",
-                                        "texture": f"plan_sheet_albedo_v{i - 1}.png"} for i in (2, 3)]
+                                        "texture": f"plan_sheet_albedo_v{i - 1}.png"}
+                                       for i in range(2, len(stacking_plans()) + 1)]
     variants = [{"name": plan["name"], "textures": {"plan_sheet": "plan_sheet_albedo.png" if i == 0 else f"plan_sheet_albedo_v{i}.png"},
                  "stacking_plan": plan, "preview": "preview.png" if i == 0 else f"preview_plan_{i + 1:02d}.png"}
                 for i, plan in enumerate(stacking_plans())]
@@ -701,9 +744,11 @@ def build_sign():
                         "acrylic_bottom_z": 10, "insertion_depth": 10, "sheet_yz": [196, 283]},
              "A4-size 210Y x297Z x3X clear acrylic inserted 10 mm into an actual slot in the 220Y x60X x20Z base. "
              "Separate untextured acrylic part uses uniform rgba [0.85,0.90,0.95,0.25]; the opaque paper sheet "
-             "is a separate part, never an alpha texture. Three original numbered 2x2 layer-one plans and "
+             "is a separate part, never an alpha texture. Four original numbered 2x2 layer-one plans and "
              "90-degree-rotated layer-two cartons, with fictional NOVA Logistics footer. Compact SKU-B, mixed "
-             "SKU-A/B and clearance SKU-B plans have distinct packing footprints. All eight numbered cartons "
+             "SKU-A/B and clearance SKU-B plans have distinct packing footprints; plan_04 (2026-10-25) "
+             "leaves 40 mm finger gaps between the gripped 80 mm faces for the robot's 95 mm jaws. "
+             "All eight numbered cartons "
              "in each plan fit within a 300X x400Y pallet; mixed layer 2 is rearranged after rotating individual "
              "cartons because a rigid 90-degree rotation of the 320 mm long layer would overhang the 300 mm "
              "pallet. SPEC CONFLICT: one convex box cannot cover both the 60 mm deep base and 3 mm thin sign "
@@ -757,21 +802,106 @@ def render_exports(prop_id):
         print("TASK08_EXPORT_PREVIEW", prop_id, preview, flush=True)
 
 
+
+def add_imc_variant() -> None:
+    """Bake an additive variant on existing UVs without rewriting any base asset."""
+    from build_task17_parcels import render_1024
+    folder = OUTPUT / "pallet_carton_160x80x80"
+    data = json.loads((folder / "prop.json").read_text())
+    bpy.ops.wm.open_mainfile(filepath=str(folder / "source.blend"))
+    bpy.context.scene.render.threads_mode = "FIXED"
+    bpy.context.scene.render.threads = 6
+    obj = bpy.data.objects[data["parts"][0]["source_visual_object"]]
+    for other in bpy.data.objects:
+        if other.type == "MESH":
+            other.hide_render = other != obj
+    obj.hide_set(False)
+    obj.hide_render = False
+    subprocess.run([str(props.VALIDATOR_PYTHON), "-B", str(__file__), "--imc-artwork-worker"],
+                   input=json.dumps({"folder": str(folder)}), text=True, check=True)
+    replacements = {"handling_icons.png": "imc_handling_source.png", "nova_sku_label.png": "imc_sku_source.png"}
+    replaced = set()
+    for slot in obj.material_slots:
+        material = slot.material
+        if not material:
+            continue
+        for node in material.node_tree.nodes:
+            if node.type == "TEX_IMAGE" and node.image:
+                basename = Path(node.image.filepath).name
+                if basename in replacements:
+                    node.image = bpy.data.images.load(str(folder / replacements[basename]), check_existing=True)
+                    node.image.use_fake_user = True
+                    replaced.add(basename)
+    # Preserve exported UVMap and geometry, but correct the legacy side-print
+    # mirroring in an additional source-art UV layer used only by this variant.
+    layer = obj.data.uv_layers.get("IMCPrintUV") or obj.data.uv_layers.new(name="IMCPrintUV")
+    for polygon in obj.data.polygons:
+        front = polygon.normal.x < -.65
+        width = 90 if front else 68
+        for index in polygon.loop_indices:
+            p = obj.data.vertices[obj.data.loops[index].vertex_index].co * 1000
+            horizontal = -p.y if front else -p.x * (1 if polygon.normal.y > 0 else -1)
+            layer.data[index].uv = (.5 + horizontal / width, .5 + (p.z - 20) / (width * 460 / 1500))
+    for slot in obj.material_slots:
+        material = slot.material
+        if not material:
+            continue
+        tree = material.node_tree
+        for node in list(tree.nodes):
+            if node.type == "TEX_IMAGE" and node.image and Path(node.image.filepath).name == "imc_handling_source.png":
+                for uv in tree.nodes:
+                    if uv.type == "UVMAP" and uv.uv_map == "HandlingUV":
+                        uv.uv_map = "IMCPrintUV"
+                old = tree.nodes["Opaque black handling ink mask"]
+                mix = tree.nodes.new("ShaderNodeMixRGB")
+                mix.name = "Blue IMC ink over unprinted kraft"
+                tree.links.new(node.outputs["Alpha"], mix.inputs[0])
+                tree.links.new(old.inputs[1].links[0].from_socket, mix.inputs[1])
+                tree.links.new(node.outputs["Color"], mix.inputs[2])
+                tree.links.new(mix.outputs[0], tree.nodes["Principled BSDF"].inputs["Base Color"])
+    if replaced != set(replacements):
+        raise ValueError(f"Expected the existing handling and SKU source images, found {replaced}")
+    # Preserve the packed base UV layout: no unwrap, re-export or geometry edit.
+    props.bake_albedo([obj], data["parts"][0]["texture_px"], folder / "body_albedo_imc.png")
+    render_1024([obj], folder / "preview_imc.png")
+    variant = {"name": "imc", "textures": {"body": "body_albedo_imc.png"},
+               "sku": "IMC-PLC-IO10", "brand": "IMC Controls", "contents": "PLC I/O MODULES × 10",
+               "source": "source_imc.blend", "preview": "preview_imc.png"}
+    data["variants"] = [v for v in data["variants"] if v["name"] != "imc"] + [variant]
+    bpy.context.scene["task08_imc_variant"] = json.dumps(variant)
+    bpy.ops.file.pack_all()
+    bpy.ops.wm.save_as_mainfile(filepath=str(folder / "source_imc.blend"), check_existing=False)
+    props.write_prop_json(data, folder / "prop.json")
+    print("TASK08_IMC_COMPLETE", data["id"], flush=True)
+
 def main():
-    global ARGS
+    global ARGS, IMC_PRESERVED_FILES, IMC_BASE_MANIFEST
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--props", choices=IDS, nargs="+", default=list(IDS))
     modes = parser.add_mutually_exclusive_group()
     modes.add_argument("--geometry-only", action="store_true")
     modes.add_argument("--export-only", action="store_true")
     modes.add_argument("--render-exports", action="store_true")
+    modes.add_argument("--add-imc-only", action="store_true", help="Add the IMC carton texture, preserving all existing outputs")
     parser.add_argument("--reuse-bakes", action="store_true", help="Resume an export with existing valid-size PNG bakes")
     parser.add_argument("--rebake-textures", nargs="*", default=[], help="Regenerate these PNGs even with --reuse-bakes")
     ARGS = parser.parse_args(sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else [])
+    if ARGS.add_imc_only:
+        folder = OUTPUT / "pallet_carton_160x80x80"
+        IMC_BASE_MANIFEST = json.loads((folder / "prop.json").read_text())
+        # The shared compactor re-encodes all selected PNGs. Protect the bytes
+        # of base assets as well as all other Task 08 props in additive mode.
+        IMC_PRESERVED_FILES = {path: path.read_bytes() for prop_id in IDS
+                               for path in (OUTPUT / prop_id).rglob("*") if path.is_file()
+                               and not (path.parent == folder and ("imc" in path.name or path.name == "prop.json"))}
+        add_imc_variant()
+        return
     for prop_id in ARGS.props:
         if ARGS.export_only:
             bpy.ops.wm.open_mainfile(filepath=str(QA / f"{prop_id}_geometry.blend"))
             export_current()
+            if prop_id == "pallet_carton_160x80x80":
+                add_imc_variant()
         elif ARGS.render_exports:
             render_exports(prop_id)
         elif prop_id == "mini_pallet":
@@ -780,10 +910,24 @@ def main():
             build_lift()
         elif prop_id in CARTONS:
             build_carton(prop_id)
+            if prop_id == "pallet_carton_160x80x80" and not ARGS.geometry_only:
+                add_imc_variant()
         else:
             build_sign()
 
 
 if __name__ == "__main__":
     main()
-    props.finalize_assets()
+    try:
+        props.finalize_assets()
+    finally:
+        # Restore existing file encodings even if compaction fails. Only the
+        # new variant and its manifest entry may differ in --add-imc-only mode.
+        for path, original in IMC_PRESERVED_FILES.items():
+            if not path.is_file() or path.read_bytes() != original:
+                path.write_bytes(original)
+        if IMC_BASE_MANIFEST is not None:
+            path = OUTPUT / "pallet_carton_160x80x80" / "prop.json"
+            current = json.loads(path.read_text())
+            IMC_BASE_MANIFEST["variants"] = current["variants"]
+            path.write_text(json.dumps(IMC_BASE_MANIFEST, ensure_ascii=False, indent=2) + "\n")

@@ -7,7 +7,9 @@ bring-up checks pass on a Linux + NVIDIA workstation. Isaac Sim 6.x is not
 handled (new URDFImporter class, isaacsim.core.prims moved to "deprecated").
 
 Scene source: ``assets/derived/pybullet/{franzi_pybullet.urdf, scene.json}``,
-written by sdk/convert_pybullet_assets.py from the compiled MuJoCo scene: MuJoCo's
+written by sdk/convert_pybullet_assets.py from the compiled MuJoCo scene (deleted
+with the move to wheel_robot_26.8.16_3, 2026-10-25; isaac/export.py is the Isaac
+port's scene source now): MuJoCo's
 colliders (boxes, 49 convex hulls per wrist, convex finger hulls), contact-pair
 matrix, friction, actuator gains and force limits, cameras and grasp sites. The
 source URDF is NOT imported: its collisions are whole CAD meshes, which PhysX

@@ -1,0 +1,118 @@
+{
+  "id": "module_tray",
+  "task": "electronics_line",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    150.00000596046448,
+    230.00000417232513,
+    25.030000135302544
+  ],
+  "triangles": 374,
+  "budget_class": "medium",
+  "static": true,
+  "dimensions_mm": {
+    "xyz": [
+      150,
+      230,
+      25
+    ],
+    "pocket_xyz": [
+      71,
+      96,
+      15
+    ],
+    "pocket_centres_y": [
+      -56,
+      56
+    ],
+    "pocket_floor_z": 10,
+    "mouth_chamfer": 2,
+    "finger_width_y": 30,
+    "finger_extension_x": 22,
+    "finger_depth": 20,
+    "finger_floor_z": 5
+  },
+  "parts": [
+    {
+      "name": "body",
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "body_col_00.obj",
+        "body_col_01.obj",
+        "body_col_02.obj",
+        "body_col_03.obj",
+        "body_col_04.obj",
+        "body_col_05.obj",
+        "body_col_06.obj",
+        "body_col_07.obj",
+        "body_col_08.obj",
+        "body_col_09.obj",
+        "body_col_10.obj",
+        "body_col_11.obj",
+        "body_col_12.obj",
+        "body_col_13.obj",
+        "body_col_14.obj"
+      ],
+      "mass_kg": 0.3,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": null,
+      "joint": null,
+      "source_collision_objects": [
+        "COL__body__00",
+        "COL__body__01",
+        "COL__body__02",
+        "COL__body__03",
+        "COL__body__04",
+        "COL__body__05",
+        "COL__body__06",
+        "COL__body__07",
+        "COL__body__08",
+        "COL__body__09",
+        "COL__body__10",
+        "COL__body__11",
+        "COL__body__12",
+        "COL__body__13",
+        "COL__body__14"
+      ]
+    }
+  ],
+  "recommended_instance_color_gain_range": [
+    0.97,
+    1.03
+  ],
+  "variants": [
+    {
+      "name": "in",
+      "textures": {
+        "body": "body_albedo.png"
+      }
+    },
+    {
+      "name": "ok",
+      "textures": {
+        "body": "body_albedo_v1.png"
+      }
+    }
+  ],
+  "notes": "Metres, Z up, front -X. Applied transforms in the shared prop frame. Cycles CPU 64-sample diffuse COLOR times (0.4 + 0.6 AO), sRGB8 albedo; PBR and artwork packed in source.blend. DejaVu Sans Bold, English only. Task 15 uses isolated finalization to protect existing props. Open finger channels on both X sides of each pocket. 15 convex pieces preserve cavities. Pocket-floor centre between finger slots is supported; no hull spans an opening. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder.",
+  "recommended_placement_m": {
+    "in": [
+      0.4,
+      0.3,
+      0.9
+    ],
+    "ok": [
+      0.44,
+      -0.32,
+      0.9
+    ]
+  }
+}

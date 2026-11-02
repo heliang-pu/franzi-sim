@@ -1,6 +1,6 @@
-"""Derive the fixed-base dual-arm robot scene (the robot, its table and the
-lights) without modifying the source model. Each scene in scenes/ adds its own
-objects to it."""
+"""Derive the dual-arm robot scene (the robot, its table and the lights) without
+modifying the source model: the base fixed, or on planar joints (mobile=True).
+Each scene in scenes/ adds its own objects to it."""
 
 import json
 import xml.etree.ElementTree as ET
@@ -8,22 +8,66 @@ from pathlib import Path
 
 import numpy as np
 import trimesh
+import yaml
 from scipy.sparse import coo_matrix
 from scipy.sparse.csgraph import connected_components
+from scipy.spatial import Delaunay, QhullError
 from scipy.spatial.transform import Rotation
 
-from robot_kinematics import ARM_JOINTS, controller_ranges
+from robot_kinematics import ARM_JOINTS, ROBOT_CONFIG, SOURCE, URDF, controller_ranges
+from sim import franzi_model
 from sim.appearance import apply_appearance
-from sim.gripper_linkage import add_linkage, body_name, group_of, offset_in_wrist
+from sim.gripper_linkage import (
+    HAND,
+    add_linkage,
+    body_name,
+    face_table,
+    offset_in_wrist,
+)
+from sim.wrist_mount import PAD, block_pieces, sensor_pose
 from sim.wrist_mount import P as MOUNT
-from sim.wrist_mount import block_pieces, is_old_block, part_to_wrist, sensor_pose
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / "assets/franzi_source"
-__all__ = ["ARM_JOINTS"]  # re-exported: one definition, in robot_kinematics
+__all__ = ["ARM_JOINTS", "FINGERS"]  # re-exported: one definition, in robot_kinematics
 TABLE_Z = 0.80
 # Part colours shared by the scenes (scenes/pick_place, scenes/kitting).
 PART_RGBA = {"blue": "0.12 0.48 0.88 1", "orange": "0.95 0.48 0.12 1"}
+# The optional mobile base (build(mobile=True); navigation plan, user decision
+# 2026-10-24): x and y slides and a yaw hinge on base_link, in that order, so x
+# and y are world axes and the yaw turns about the base's centre. Each is a
+# position servo; the chassis SDK takes velocities (publish_vehicle_control),
+# which Scene.drive() keeps within. The base rides BASE_LIFT up, so its
+# colliders clear the floor: the servos move it, not wheel friction.
+BASE_JOINTS = ("base_x", "base_y", "base_yaw")
+BASE_LIFT = 0.002  # m
+BASE_KP = {"base_x": 30000.0, "base_y": 30000.0, "base_yaw": 3000.0}  # N/m, N m/rad
+# Each hand's fingers: the one that closes with a positive slide, then the
+# other (config/robot/franzi_sdk.yaml grippers); a grip g commands +-0.0475 g.
+FINGERS = {
+    side: tuple(unit["finger_links"])
+    for side, unit in yaml.safe_load(ROBOT_CONFIG.read_text())["grippers"].items()
+}
+FINGER_JOINTS = {
+    side: tuple(unit["sim_joints"])
+    for side, unit in yaml.safe_load(ROBOT_CONFIG.read_text())["grippers"].items()
+}
+# The space between the open jaws that no gripper collider may hold, in the
+# tool frame (m): along the jaws, across them, and from below the pads to the
+# palm.
+JAW_CLEAR = ((-0.035, 0.035), (-0.012, 0.012), (-0.02, 0.035))
+# Arm-trunk pairs left out of the self-collision (build). The shoulder roll
+# links sit in the torso's shoulder recess, which its hull fills: over random
+# arm postures their hulls overlapped in 12% by up to 35 mm, their meshes by
+# about 2 mm, at the inward roll limit. wheel_robot_26.8.16_3 adds the shoulder
+# mounts (j0) between them, whose hulls overlap the roll links' in 7% of random
+# postures by up to 13 mm while the meshes stay 10 mm apart. The upper arm's
+# overlaps with the torso are real (meshes 30-57 mm deep) and stay.
+SELF_EXCLUDES = (
+    ("left_shoulder_roll_Link", "torso_Link"),
+    ("right_shoulder_roll_Link", "torso_Link"),
+    ("left_shoulder_roll_Link", "left_j0_Link"),
+    ("right_shoulder_roll_Link", "right_j0_Link"),
+)
 
 
 def fmt(a):
@@ -43,73 +87,130 @@ def align_joint_limits(root):
     return ranges
 
 
-def restore_sensor_masses(root):
-    """Add the URDF masses that franzi.xml drops (user decision 2026-10-24): each
-    fixed sensor link (the four cameras and two lidars, 1.8 kg in all) becomes a
-    massive child body of its parent at the URDF joint origin, with the URDF
-    inertia. The wrist D405 masses stay at the URDF camera pose rather than on
-    the tilted wrist block. Returns {link: kg}."""
-    urdf = ET.parse(SOURCE / "wheel_robot_4.0.urdf").getroot()
-    links = {link.get("name"): link for link in urdf.iter("link")}
-    bodies = {body.get("name"): body for body in root.iter("body")}
-
-    def rotation(origin):
-        rpy = "0 0 0" if origin is None else origin.get("rpy", "0 0 0")
-        return Rotation.from_euler("xyz", np.fromstring(rpy, sep=" "))
-
-    added = {}
-    for joint in urdf.iter("joint"):
-        child = joint.find("child").get("link")
-        inertial = links[child].find("inertial")
-        if joint.get("type") != "fixed" or child in bodies or inertial is None:
-            continue
-        origin = joint.find("origin")
-        q = rotation(origin).as_quat()
-        body = ET.SubElement(
-            bodies[joint.find("parent").get("link")],
-            "body",
-            name=child,
-            pos="0 0 0" if origin is None else origin.get("xyz", "0 0 0"),
-            quat=fmt(np.r_[q[3], q[:3]]),
+def add_mobile_base(root, base):
+    """Give base_link the planar holonomic joints and their servos (BASE_JOINTS).
+    Joint axes are in the body's frame, which wheel_robot_26.8.16_3 turns
+    (BASE_ROT): written as 1 0 0 there, base_x ran vertically and the robot
+    sank 37 mm on its servo onto the floor."""
+    base.set("pos", fmt(np.array(base.get("pos").split(), float) + [0, 0, BASE_LIFT]))
+    world = {"base_x": [1, 0, 0], "base_y": [0, 1, 0], "base_yaw": [0, 0, 1]}
+    for k, name in enumerate(BASE_JOINTS):
+        kind = "hinge" if name == "base_yaw" else "slide"
+        axis = np.round(franzi_model.BASE_ROT.T @ world[name], 9) + 0.0
+        joint = ET.Element(
+            "joint",
+            name=name,
+            type=kind,
+            axis=fmt(axis),
+            limited="false",
+            damping="0",
+            armature="0",
+            frictionloss="0",
+            stiffness="0",
         )
-        # MuJoCo takes fullinertia only without a quat, so the URDF inertial
-        # frame's rotation goes into the tensor.
-        i = {k: float(v) for k, v in inertial.find("inertia").attrib.items()}
-        tensor = np.array(
-            [
-                [i["ixx"], i["ixy"], i["ixz"]],
-                [i["ixy"], i["iyy"], i["iyz"]],
-                [i["ixz"], i["iyz"], i["izz"]],
-            ]
-        )
-        center = inertial.find("origin")
-        r = rotation(center).as_matrix()
-        t = r @ tensor @ r.T
-        mass = float(inertial.find("mass").get("value"))
+        base.insert(k, joint)
+    actuators = root.find("actuator")
+    for name in BASE_JOINTS:
         ET.SubElement(
-            body,
-            "inertial",
-            pos="0 0 0" if center is None else center.get("xyz", "0 0 0"),
-            mass=fmt(mass),
-            fullinertia=fmt([t[0, 0], t[1, 1], t[2, 2], t[0, 1], t[0, 2], t[1, 2]]),
+            actuators,
+            "position",
+            name=name,
+            joint=name,
+            kp=str(BASE_KP[name]),
+            dampratio="1",
+            ctrllimited="false",
+            forcelimited="false",
         )
-        added[child] = mass
-    return added
 
 
-def build():
-    """Derived scene tree and report: the robot, the table and the lights. A
-    scene's task.py adds its objects (scenes/<name>/task.py)."""
-    root = ET.parse(SOURCE / "franzi.xml").getroot()
-    compiler = root.find("compiler")
-    compiler.set("meshdir", str(SOURCE / "meshes"))
-    compiler.set("texturedir", str(SOURCE / "assets"))
-    root.find("option").set("timestep", str(1 / 500))
-    root.find("option").set("iterations", "100")
-    root.find("option").set("cone", "elliptic")
-    root.remove(root.find("keyframe"))
+def part_hulls(asset, body, stl, prefix, faces=None, clear=None, shift=None):
+    """Convex colliders in body for stl (a trimesh in body's frame, less shift),
+    or for its faces: one per connected CAD part, as a single hull would fill a
+    gripper's jaw opening. A part whose hull holds any of the points clear is
+    cut in two at the median of its longest side, again until none does: the
+    gripper's linkage arms and body are one connected surface across the jaws.
+    Returns the count."""
+    if faces is not None:
+        stl = stl.submesh([faces], append=True)
+    if shift is not None:
+        stl = stl.copy()
+        stl.apply_translation(-np.asarray(shift, float))
+    edges = stl.edges_unique
+    graph = coo_matrix(
+        (np.ones(len(edges)), (edges[:, 0], edges[:, 1])),
+        shape=(len(stl.vertices),) * 2,
+    )
+    count, labels = connected_components(graph, directed=False)
+    pieces = []
+
+    def holds(vertices):
+        if clear is None:
+            return False
+        try:
+            return bool((Delaunay(vertices).find_simplex(clear) >= 0).any())
+        except QhullError:
+            return False
+
+    def cut(faces, depth=0):
+        vertices = stl.vertices[np.unique(stl.faces[faces])]
+        if len(vertices) < 4 or np.linalg.matrix_rank(vertices - vertices.mean(0)) < 3:
+            return
+        if depth < 12 and len(faces) > 1 and holds(vertices):
+            centres = stl.triangles_center[faces]
+            axis = int(np.argmax(np.ptp(vertices, axis=0)))
+            low = centres[:, axis] <= np.median(centres[:, axis])
+            if low.any() and not low.all():
+                cut(faces[low], depth + 1)
+                cut(faces[~low], depth + 1)
+                return
+        pieces.append(vertices)
+
+    by_face = labels[stl.faces[:, 0]]
+    for c in range(count):
+        cut(np.flatnonzero(by_face == c))
+    parts = 0
+    for vertices in pieces:
+        hull = trimesh.convex.convex_hull(vertices)
+        if hull.volume < 1e-12:
+            continue
+        name = f"{prefix}_{parts:03d}"
+        ET.SubElement(
+            asset, "mesh", name=name, vertex=fmt(hull.vertices), face=fmt(hull.faces)
+        )
+        ET.SubElement(
+            body, "geom", name=name, type="mesh", mesh=name, **{"class": "collision"}
+        )
+        parts += 1
+    return parts
+
+
+def load_stl(name):
+    return trimesh.load(SOURCE / "meshes" / name, process=True, force="mesh")
+
+
+def jaw_clearance(position, rotation):
+    """Grid points of the space the open jaws close on (JAW_CLEAR, the tool
+    frame), in the gripper link frame where the tool point sits at position
+    with rotation."""
+    axes = [np.linspace(lo, hi, n) for (lo, hi), n in zip(JAW_CLEAR, (15, 7, 12))]
+    grid = np.array(np.meshgrid(*axes, indexing="ij")).reshape(3, -1).T
+    with np.errstate(all="ignore"):  # macOS Accelerate's matmul warns spuriously
+        return np.asarray(position) + grid @ np.asarray(rotation).T
+
+
+def build(mobile=False):
+    """Derived scene tree and report: the robot (sim/franzi_model.py), the
+    table and the lights. A scene's task.py adds its objects
+    (scenes/<name>/task.py). mobile=True gives the base its planar joints
+    (add_mobile_base); the default keeps it fixed."""
+    root, model = franzi_model.model()
+    option = root.find("option")
+    option.set("timestep", str(1 / 500))
+    option.set("iterations", "100")
+    option.set("cone", "elliptic")
     base = root.find(".//body[@name='base_link']")
-    base.remove(base.find("freejoint"))
+    if mobile:
+        add_mobile_base(root, base)
     asset = root.find("asset")
     ET.SubElement(
         asset,
@@ -123,87 +224,103 @@ def build():
         height="1536",
     )
     report = {
-        "source": "wheel_robot_4.0.urdf",
-        "base": "fixed to floor for arm-only experiment",
+        "source": URDF.name,
+        "base": (
+            "planar holonomic base: x, y slides and yaw hinge, position servos, "
+            f"{BASE_LIFT * 1000:g} mm above the floor"
+            if mobile
+            else "fixed to floor for arm-only experiment"
+        ),
         "objects_pose_written_during_episode": False,
         "attachment_constraints": False,
+        "link_collision": model["link_collision"],
         "wrist_collision": {},
         "finger_collision": {},
     }
     report["joint_limits"] = align_joint_limits(root)
-    report["sensor_masses"] = restore_sensor_masses(root)
     # Before the appearance and the colliders, which put the links and jaw
     # blocks into the bodies this adds.
     report["gripper_linkage"] = add_linkage(root, fmt)
     report["appearance"] = apply_appearance(root, SOURCE)
+    tcp = yaml.safe_load(ROBOT_CONFIG.read_text())["frames"]["tcp"]
     for side in ["left", "right"]:
-        # A single wrist AABB fills the real gripper opening. Each disconnected
-        # CAD part gets its own convex collider, preserving the free jaw space.
-        name = side + "_wrist_roll_Link"
-        body = root.find(f".//body[@name='{name}']")
-        body.remove(body.find(f"geom[@name='{name}']"))
-        mesh = trimesh.load(
-            SOURCE / "meshes" / (name + ".STL"), process=True, force="mesh"
+        gripper = tcp["parent_link"][side]
+        # The wrist flange and the gripper: one convex collider per CAD part,
+        # which keeps the jaw opening clear. The gripper's links and jaw blocks
+        # collide in the bodies that move them (gripper_linkage.face_table),
+        # the rest in its hand body, in wheel_robot_4.0's wrist frame.
+        wrist = root.find(f".//body[@name='{side}_wrist_roll_Link']")
+        hand_name = HAND.format(side=side)
+        hand = root.find(f".//body[@name='{hand_name}']")
+        stl = load_stl(f"{gripper}.STL")
+        stl.apply_transform(franzi_model.to_previous(gripper))
+        moving = face_table(SOURCE / "meshes" / f"{gripper}.STL")[0]
+        assert len(moving) == len(stl.faces), gripper
+        Rg, tg = franzi_model.GRIPPERS[gripper]
+        clear = jaw_clearance(
+            Rg @ tcp["position_m"][side] + tg, Rg @ np.array(tcp["rotation"][side])
         )
-        edges = mesh.edges_unique
-        graph = coo_matrix(
-            (np.ones(len(edges)), (edges[:, 0], edges[:, 1])),
-            shape=(len(mesh.vertices),) * 2,
-        )
-        count, labels = connected_components(graph, directed=False)
-        # The original D405 block and its two screws, picked as face-connected
-        # parts: by shared vertices the block is one component with the L
-        # bracket, whose hull it would otherwise swell.
-        old = np.zeros(len(mesh.vertices), bool)
-        replaced = 0
-        for faces in trimesh.graph.connected_components(mesh.face_adjacency):
-            corners = mesh.faces[faces].ravel()
-            v = mesh.vertices[corners]
-            if is_old_block([v.min(0), v.max(0)], side):
-                old[corners] = True
-                replaced += 1
-        parts = moving = 0
-        for c in range(count):
-            vertices = mesh.vertices[(labels == c) & ~old]
-            if (
-                len(vertices) < 4
-                or np.linalg.matrix_rank(vertices - vertices.mean(0)) < 3
-            ):
-                continue
-            hull = trimesh.convex.convex_hull(vertices)
-            if hull.volume < 1e-12:
-                continue
-            part = f"{side}_wrist_part_{parts:03d}"
-            # Links and jaw blocks collide where they move (gripper_linkage).
-            owner, shift = body, np.zeros(3)
-            group = group_of(hull.bounds)
-            if group:
-                target = body_name(side, group)
-                owner = root.find(f".//body[@name='{target}']")
-                shift = offset_in_wrist(root, side, target)
-                moving += 1
-            ET.SubElement(
+        parts = {
+            "wrist_parts": part_hulls(
                 asset,
-                "mesh",
-                name=part,
-                vertex=fmt(hull.vertices - shift),
-                face=fmt(hull.faces),
+                wrist,
+                load_stl(f"{side}_wrist_roll_Link.STL"),
+                f"{side}_wrist_part",
+            ),
+            "gripper_parts": part_hulls(
+                asset,
+                hand,
+                stl,
+                f"{side}_gripper_part",
+                faces=np.flatnonzero(moving == None),
+                clear=clear,
+            ),
+            "on_moving_links_and_jaws": 0,
+        }
+        for group in sorted(set(moving) - {None}):
+            target = body_name(side, group)
+            parts["on_moving_links_and_jaws"] += part_hulls(
+                asset,
+                root.find(f".//body[@name='{target}']"),
+                stl,
+                f"{side}_gripper_{group}_part",
+                faces=np.flatnonzero(moving == group),
+                shift=offset_in_wrist(root, side, target),
             )
+        report["wrist_collision"][side] = parts
+        for finger in FINGERS[side]:
+            body = root.find(f".//body[@name='{finger}']")
+            # The finger body is in its wheel_robot_4.0 frame, as the mesh asset
+            # (sim/franzi_model.py).
             ET.SubElement(
-                owner,
+                body,
                 "geom",
-                name=part,
+                name=finger,
                 type="mesh",
-                mesh=part,
+                mesh=finger,
+                friction="1.2 0.01 0.0001",
+                condim="4",
+                solref="0.004 1",
+                solimp="0.95 0.99 0.001",
                 **{"class": "collision"},
             )
-            parts += 1
-        # The tilted D405 block (sim/wrist_mount.py) replaces the original block
-        # and its two screws: three convex pieces, and a box for the D405 it
-        # holds, where the camera and the D405 mesh are (camera_rig, appearance).
-        R, t = part_to_wrist(side)
+            mesh = trimesh.load(
+                SOURCE / "meshes" / f"{finger}.STL", process=True, force="mesh"
+            )
+            report["finger_collision"][finger] = {
+                "method": "convex hull of the finger STL; flat grasp face preserved",
+                "bounds_m": mesh.bounds.tolist(),
+                "vertices": len(mesh.vertices),
+                "hull_to_mesh_volume_ratio": float(
+                    mesh.convex_hull.volume / abs(mesh.volume)
+                ),
+            }
+        # The wrist D405 adapter (sim/wrist_mount.py) on the gripper's camera
+        # strip: three convex pieces, and a box for the D405 it holds, where the
+        # camera and the D405 mesh are (camera_rig, appearance).
+        body = root.find(f".//body[@name='{gripper}']")
         for k, piece in enumerate(block_pieces()):
-            hull = trimesh.convex.convex_hull((piece @ R.T + t) / 1000)
+            hull = trimesh.convex.convex_hull((piece + PAD) / 1000)
             block = f"{side}_wrist_d405_block_{k}"
             ET.SubElement(
                 asset,
@@ -220,13 +337,9 @@ def build():
                 mesh=block,
                 **{"class": "collision"},
             )
-        site = body.find(f"site[@name='{side}_wrist_d405']")
+        site = body.find(f".//site[@name='{side}_wrist_d405']")
         w, x, y, z = map(float, site.get("quat").split())
-        at, turned = sensor_pose(
-            side,
-            np.array(site.get("pos").split(), float),
-            Rotation.from_quat([x, y, z, w]).as_matrix(),
-        )
+        at, turned = sensor_pose(side, Rotation.from_quat([x, y, z, w]).as_matrix())
         half = np.array(MOUNT["d405"]["housing_mm"]) / 2000
         x, y, z, w = Rotation.from_matrix(turned).as_quat()
         ET.SubElement(
@@ -239,67 +352,56 @@ def build():
             quat=fmt([w, x, y, z]),
             **{"class": "collision"},
         )
-        report["wrist_collision"][side] = {
-            "cad_components": int(count),
-            "convex_colliders": parts,
-            "on_moving_links_and_jaws": moving,
-            "original_d405_block_parts_removed": replaced,
-            "d405_block_pieces": len(block_pieces()),
-            "d405_housing_box": True,
-        }
-        for finger in [1, 2]:
-            name = f"{side}finger{finger}_Link"
-            body = root.find(f".//body[@name='{name}']")
-            geom = body.find(f"geom[@name='{name}']")
-            geom.attrib.clear()
-            geom.attrib.update(
-                name=name,
-                type="mesh",
-                mesh=name,
-                friction="1.2 0.01 0.0001",
-                condim="4",
-                solref="0.004 1",
-                solimp="0.95 0.99 0.001",
-                **{"class": "collision"},
-            )
-            mesh = trimesh.load(
-                SOURCE / "meshes" / (name + ".STL"), process=True, force="mesh"
-            )
-            report["finger_collision"][name] = {
-                "method": "convex hull of original finger STL; flat grasp face preserved",
-                "bounds_m": mesh.bounds.tolist(),
-                "vertices": len(mesh.vertices),
-                "hull_to_mesh_volume_ratio": float(
-                    mesh.convex_hull.volume / abs(mesh.volume)
-                ),
-            }
-        # Grasp center is midway between the two prismatic finger origins, at
-        # the open pads' height: the pads drop as they close (gripper_linkage).
-        body = root.find(f".//body[@name='{side}_wrist_roll_Link']")
+        parts["d405_adapter_pieces"] = len(block_pieces())
+        # The tool point: the open pads' centre, x along the jaws' closing, z
+        # toward the wrist (config/robot/franzi_sdk.yaml, as robot_kinematics).
+        R = np.array(tcp["rotation"][side], float)
+        x, y, z, w = Rotation.from_matrix(R).as_quat()
         ET.SubElement(
-            body,
+            root.find(f".//body[@name='{gripper}']"),
             "site",
             name=f"{side}_grasp",
-            pos=f"-0.03045 {'-0.00175' if side == 'left' else '0.00175'} -0.245",
+            pos=fmt(tcp["position_m"][side]),
+            quat=fmt([w, x, y, z]),
             size="0.004",
             group="4",
         )
-    # Preserve robot-world contact, additionally enable left-vs-right arm
-    # contacts. Adjacent links within an arm keep the source model's exclusions.
+    # Contact bits: the world collides with everything (contype and conaffinity
+    # 1); each arm with the other arm (bits 2 and 3: left 5/10, right 9/6) and,
+    # since 2026-10-25 (self-collision, as RoboDojo's enabled_self_collisions),
+    # with the trunk: base, legs, waist, torso and its shoulder mounts (j0), head
+    # and wheel units, whose conaffinity takes both arm bits (14). Contacts within
+    # one arm and within the trunk stay off; SELF_EXCLUDES drops the pairs that
+    # meet at the joints. The wheels never touch the world: the fixed base is
+    # welded, and the mobile one rides BASE_LIFT up.
     for body in root.findall(".//body"):
         name = body.get("name", "")
-        side = (
-            "left"
-            if name.startswith("left") and "front" not in name
-            else "right"
-            if name.startswith("right") and "front" not in name
-            else None
-        )
-        if side:
-            for geom in body.findall("geom"):
-                if geom.get("class") == "collision":
-                    geom.set("contype", "5" if side == "left" else "9")
-                    geom.set("conaffinity", "10" if side == "left" else "6")
+        side = None
+        if "front" not in name and "j0" not in name:
+            side = (
+                "left"
+                if name.startswith("left")
+                else "right"
+                if name.startswith("right")
+                else None
+            )
+        for geom in body.findall("geom"):
+            if geom.get("class") not in ("collision", "wheel"):
+                continue
+            if side:
+                geom.set("contype", "5" if side == "left" else "9")
+                geom.set("conaffinity", "10" if side == "left" else "6")
+            else:
+                geom.set("conaffinity", "14")
+                if geom.get("class") == "wheel":
+                    geom.set("contype", "0")
+    contact = ET.SubElement(root, "contact")
+    for a, b in SELF_EXCLUDES:
+        ET.SubElement(contact, "exclude", body1=a, body2=b)
+    report["self_collision"] = {
+        "pairs": "left arm-right arm, each arm-trunk; none within an arm or the trunk",
+        "excluded": [list(pair) for pair in SELF_EXCLUDES],
+    }
     world = root.find("worldbody")
     # MuJoCo centres a directional light's shadow box on the beam through its pos,
     # so the key's pos puts that axis on the robot and table (its direction, and so

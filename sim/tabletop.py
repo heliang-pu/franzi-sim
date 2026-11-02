@@ -12,15 +12,16 @@ from __future__ import annotations
 
 import hashlib
 import json
+import socket
 import time
 
 import mujoco
 import numpy as np
 
-from robot_kinematics import Kinematics
-from sim.build_task import ROOT
+from robot_kinematics import URDF, Kinematics
+from sim.build_task import FINGERS
 from sim.camera_rig import POLICY_CAMERAS
-from sim.episode import Scene
+from sim.episode import PhysicsError, Scene
 from sim.gripper_linkage import contact_drop
 
 SIDES = ("left", "right")
@@ -31,12 +32,20 @@ CLEAR = 0.012  # finger clearance per side while open
 # finger servos' 6 N).
 SQUEEZE = 0.004
 PRE = 0.08  # pre-grasp and retreat distance along the approach axis
-TIP = 0.017  # fingertip beyond the grasp site along the fingers, jaws open
+# The fingertips beyond the pads' centre along the fingers, open or closed
+# (the finger moves as one piece): beyond the grasp site with the jaws open,
+# TIP + contact_drop(width) closed. Measured on wheel_robot_26.8.16_3's finger
+# meshes: 13.4 mm at every opening (the 17 mm before was wheel_robot_4.0's).
+TIP = 0.0134
 SET_GAP = 0.003  # objects are let go this far above their support
 # The two-part expert's ready point, reached fingers down and then turned into
 # the 45-degree grasp in place (swung straight there, a fingertip brushed the
 # table, which the gripper linkage turned into a jaw driven shut).
 READY = {"left": [0.15, 0.37, 0.99], "right": [0.15, -0.37, 0.99]}
+# The jaws in the default posture (start_home): open, 5 mm per finger off the
+# open limit. Raised from hanging with the fingers on that limit, a finger
+# overshot it by 2.3 mm (the 2 mm audit stops the episode).
+HOME_OPENING = 0.085
 # The expert keeps 10 mrad inside the joint limits and the samplers 20 mrad,
 # so measured object poses that differ a little from the sampled ones plan.
 LIMIT_MARGIN = 0.01
@@ -140,11 +149,14 @@ class ObjectScene(Scene):
     grasp evidence for the objects the hands lift, and the task's milestones,
     each reached once its condition held. A scene sets OBJECTS (free bodies
     <name>_part with freejoints <name>_part_joint), HELD (the lifted ones) and
-    MILESTONES, and defines conditions() and complete()."""
+    MILESTONES, and defines conditions() and complete(). In the phases named
+    in CARRY_PHASES, a held object (both jaws of a hand on it) that touches
+    anything but the robot is logged as a collision too (carried_collisions)."""
 
     OBJECTS: tuple = ()
     HELD: tuple = ()
     MILESTONES: tuple = ()
+    CARRY_PHASES: tuple = ()
 
     def __init__(self, output, spec, record=False):
         self.spec = spec
@@ -156,9 +168,7 @@ class ObjectScene(Scene):
         self.free = {
             n: int(self.m.joint(n + "_part_joint").dofadr[0]) for n in self.OBJECTS
         }
-        self.jaws = {
-            s: [self.m.body(f"{s}finger{i}_Link").id for i in (1, 2)] for s in SIDES
-        }
+        self.jaws = {s: [self.m.body(f).id for f in FINGERS[s]] for s in SIDES}
         self.rest_z = {n: float(self.d.xpos[b][2]) for n, b in self.ids.items()}
         self.lift_evidence = {
             n: {
@@ -168,6 +178,7 @@ class ObjectScene(Scene):
             }
             for n in self.HELD
         }
+        self.carried_log = {}
 
     def conditions(self, pairs):
         """The task's conditions now, {milestone: bool}."""
@@ -222,7 +233,7 @@ class ObjectScene(Scene):
     def sample(self):
         pairs = self.contact_bodies()
         return {
-            "t": float(self.d.time),
+            "t": self.clock(),
             "phase": self.phase,
             "subtask": self.instruction,
             "state": self.state().tolist(),
@@ -244,6 +255,37 @@ class ObjectScene(Scene):
                 e["bilateral_physics_steps"] += 1
                 if z > self.rest_z[name] + 0.03:
                     e["airborne_bilateral_steps"] += 1
+                if self.phase in self.CARRY_PHASES:
+                    for other in others - self.robot_bodies:
+                        key = (name, self.body_names[other] or "world")
+                        hit = self.carried_log.setdefault(
+                            key,
+                            {
+                                "object": name,
+                                "touched": key[1],
+                                "first_s": round(self.clock(), 3),
+                                "phase": self.phase,
+                                "physics_steps": 0,
+                            },
+                        )
+                        hit["physics_steps"] += 1
+
+    def carried_collisions(self):
+        """Held objects touching anything but the robot while carried."""
+        return sorted(self.carried_log.values(), key=lambda h: h["first_s"])
+
+
+def start_home(s):
+    """The robot's default posture, which a recorded episode starts in (user,
+    2026-10-25: both grippers held up in front, the head down): both hands at
+    READY, fingers down, jaws HOME_OPENING apart, the head at the workstation
+    gaze. It is reached before the recording (Scene.prepare), the hands raised
+    straight up first: swung there in joint space, both fingertips brushed
+    tote_transfer's bench (0.17 mm, the contact audit). The arms end on the
+    IK's joints from the hanging arm, the posture samplers plan from."""
+    s.stage("home", "Take the default posture: grippers held up, head down.")
+    grip = 1 - HOME_OPENING / JAW_SPAN
+    s.prepare(READY, grips={side: grip for side in SIDES}, seconds=3.0, lift=True)
 
 
 def go_ready(s, grips):
@@ -300,24 +342,33 @@ def press(s, move, side, poses, depth, target, pressed):
         raise RuntimeError("the button did not go down")
 
 
-def run_episode(scene_cls, expert, spec, output, record=False, extra=None):
+def run_episode(scene_cls, expert, spec, output, record=False, extra=None, engine=None):
     """One expert episode for spec into output (must not exist): writes the
     run files and returns the summary. Success needs no error, the scene's
-    complete() held for 15 control ticks at the end, and 100 airborne steps of
-    bilateral grasp on every held object. extra(scene) adds summary fields."""
+    complete() held for 15 control ticks at the end, 100 airborne steps of
+    bilateral grasp on every held object, and no collision (the contact audit)
+    or violation (Scene.violation, logged instead of ending the episode only
+    with stop_on_violation off). "completed" is the same test without the
+    collisions and violations: the task done, whatever it touched (a policy
+    evaluation's lenient count). A run whose simulation broke down
+    (PhysicsError) is marked void: redraw it rather than count it.
+    extra(scene) adds summary fields. engine(scene_cls) runs the scene on
+    another simulator (isaac.episode)."""
     output.mkdir(parents=True, exist_ok=False)
-    scene = scene_cls(output, spec, record)
-    error = None
+    scene = (engine(scene_cls) if engine else scene_cls)(output, spec, record)
+    error, void = None, False
     start = time.monotonic()
     try:
         expert(scene)
     except (RuntimeError, ValueError) as e:
-        error = str(e)
-        print("STOP:", error, flush=True)
+        error, void = str(e), isinstance(e, PhysicsError)
+        print("VOID:" if void else "STOP:", error, flush=True)
     finally:
         scene.close()
     final = scene.status()
-    success = (
+    collisions, carried = scene.collisions(), scene.carried_collisions()
+    violations = scene.violations()
+    completed = (
         error is None
         and scene.complete()
         and scene.stable_frames >= 15
@@ -325,19 +376,25 @@ def run_episode(scene_cls, expert, spec, output, record=False, extra=None):
             e["airborne_bilateral_steps"] >= 100 for e in scene.lift_evidence.values()
         )
     )
+    success = completed and not collisions and not carried and not violations
     result = {
         "success": bool(success),
+        "completed": bool(completed),
         "controller": f"privileged IK expert ({spec['task']} v{spec['version']}), "
         "not FineART inference",
-        "host": "local Mac",
+        "host": socket.gethostname(),
+        "simulator": scene.SIMULATOR,
         "mujoco_version": mujoco.__version__,
         "task": spec["task"],
         "seed": spec["seed"],
         "draws": spec["draws"],
         "instruction": spec["instruction"],
-        "duration_s": float(scene.d.time),
+        "duration_s": scene.clock(),
+        # Simulated before the recording (Scene.prepare), not in the trace.
+        "prepare_s": scene.t0,
         "wall_time_s": time.monotonic() - start,
         "error": error,
+        "void": void,
         "progress": scene.progress(),
         "milestones": scene.reached,
         "final_conditions": final,
@@ -349,6 +406,13 @@ def run_episode(scene_cls, expert, spec, output, record=False, extra=None):
             "max_penetration_mm": scene.maxdepth * 1000,
             "deepest_geoms": scene.deepest,
             "max_joint_limit_error": scene.maxlimit,
+            # The contact audit (Scene.audit_contact, CARRY_PHASES): a run
+            # with any collision is not a success.
+            "collisions": collisions,
+            "carried_collisions": carried,
+            # Penetrations and limit errors that didn't end the episode
+            # (stop_on_violation off); any is a failure too.
+            "violations": violations,
         },
         "contract": {
             "action_dim": 16,
@@ -358,12 +422,11 @@ def run_episode(scene_cls, expert, spec, output, record=False, extra=None):
             "control_hz": 25,
             "physics_hz": 500,
             "language": "task = instruction; per tick: phase, subtask",
+            "full": scene.full_contract(),
         },
         "collision_setup": scene.setup,
         "camera_rig": scene.camera_metadata,
-        "source_urdf_sha256": hashlib.sha256(
-            (ROOT / "assets/franzi_source/wheel_robot_4.0.urdf").read_bytes()
-        ).hexdigest(),
+        "source_urdf_sha256": hashlib.sha256(URDF.read_bytes()).hexdigest(),
     }
     (output / "summary.json").write_text(json.dumps(result, indent=2))
     (output / "trace.json").write_text(json.dumps(scene.trace, indent=2))
@@ -379,5 +442,7 @@ def run_episode(scene_cls, expert, spec, output, record=False, extra=None):
             instruction=[x["subtask"] for x in scene.trace],
             progress=[x["progress"] for x in scene.trace],
             task=spec["instruction"],
+            **scene.full_arrays(),
         )
+    scene.write_full(output)
     return result

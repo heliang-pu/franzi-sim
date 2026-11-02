@@ -1,0 +1,2312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="wheel_robot_26.8.16_3">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="-0.19869 -0.042275 0.0026893"
+        rpy="0 0 0" />
+      <mass
+        value="61.5" />
+      <inertia
+        ixx="0.66713"
+        ixy="-0.030684"
+        ixz="0.0010817"
+        iyy="0.45911"
+        iyz="-0.00095978"
+        izz="0.28801" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="calf_Link">
+    <inertial>
+      <origin
+        xyz="0.15089 -6.3254E-06 0.0012888"
+        rpy="0 0 0" />
+      <mass
+        value="16" />
+      <inertia
+        ixx="0.0049624"
+        ixy="-2.0816E-05"
+        ixz="7.6927E-07"
+        iyy="0.022537"
+        iyz="1.5354E-07"
+        izz="0.026442" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/calf_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/calf_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="calf_pitch_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="calf_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-1.2566"
+      upper="0.52"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="thigh_Link">
+    <inertial>
+      <origin
+        xyz="0.18956 -0.0088997 0.00187"
+        rpy="0 0 0" />
+      <mass
+        value="11" />
+      <inertia
+        ixx="0.22318"
+        ixy="-0.014365"
+        ixz="-0.0056146"
+        iyy="0.46318"
+        iyz="-0.00041005"
+        izz="0.35897" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/thigh_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/thigh_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="thigh_pitch_joint"
+    type="revolute">
+    <origin
+      xyz="0.3 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="calf_Link" />
+    <child
+      link="thigh_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="2.56"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="waist_Link">
+    <inertial>
+      <origin
+        xyz="2.9662E-05 0.0098953 -0.0027717"
+        rpy="0 0 0" />
+      <mass
+        value="5" />
+      <inertia
+        ixx="0.07633"
+        ixy="3.7224E-05"
+        ixz="-1.8709E-06"
+        iyy="0.089778"
+        iyz="-0.00057105"
+        izz="0.097713" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/waist_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/waist_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="waist_pitch_joint"
+    type="revolute">
+    <origin
+      xyz="0.35 0 0"
+      rpy="0 0 1.5708" />
+    <parent
+      link="thigh_Link" />
+    <child
+      link="waist_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-1.31"
+      upper="0.5235"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="torso_Link">
+    <inertial>
+      <origin
+        xyz="0.01102 -2.3722E-05 0.26952"
+        rpy="0 0 0" />
+      <mass
+        value="18.35" />
+      <inertia
+        ixx="0.37614"
+        ixy="1.6502E-05"
+        ixz="0.0079687"
+        iyy="0.17393"
+        iyz="-3.5374E-05"
+        izz="0.25035" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/torso_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/torso_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="waist_yaw_joint"
+    type="revolute">
+    <origin
+      xyz="0 -0.065 0"
+      rpy="1.5708 0 0" />
+    <parent
+      link="waist_Link" />
+    <child
+      link="torso_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="head_yaw_Link">
+    <inertial>
+      <origin
+        xyz="0.00036239 -0.0041487 0.043435"
+        rpy="0 0 0" />
+      <mass
+        value="0.35" />
+      <inertia
+        ixx="0.00011035"
+        ixy="-8.4241E-08"
+        ixz="1.4605E-06"
+        iyy="7.2715E-05"
+        iyz="-1.16E-06"
+        izz="0.00010722" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/head_yaw_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/head_yaw_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="head_yaw_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0.4767"
+      rpy="0 0 3.14" />
+    <parent
+      link="torso_Link" />
+    <child
+      link="head_yaw_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="head_pitch_Link">
+    <inertial>
+      <origin
+        xyz="0.11286 0.019983 -0.00029554"
+        rpy="0 0 0" />
+      <mass
+        value="1.3" />
+      <inertia
+        ixx="5.5911E-06"
+        ixy="2.2958E-06"
+        ixz="-2.1826E-09"
+        iyy="7.3036E-06"
+        iyz="4.9018E-10"
+        izz="6.6734E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/head_pitch_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/head_pitch_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="head_pitch_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0.063"
+      rpy="1.5708 -1.5708 0" />
+    <parent
+      link="head_yaw_Link" />
+    <child
+      link="head_pitch_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-0.5235"
+      upper="0.5235"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="head_d435_Link">
+    <inertial>
+      <origin
+        xyz="-0.016645 -0.058585 -0.022112"
+        rpy="0 0 0" />
+      <mass
+        value="0.1" />
+      <inertia
+        ixx="0.00051358"
+        ixy="-2.5646E-06"
+        ixz="-5.4758E-07"
+        iyy="0.00014601"
+        iyz="-8.7061E-05"
+        izz="0.00049647" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/head_d435_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/head_d435_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="head_d435_joint"
+    type="fixed">
+    <origin
+      xyz="0.15141 0.092208 0.0175"
+      rpy="-2.7925 -1.5708 1.5708" />
+    <parent
+      link="head_pitch_Link" />
+    <child
+      link="head_d435_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="body_d435_Link">
+    <inertial>
+      <origin
+        xyz="-0.016445 4.5863E-06 -0.0079779"
+        rpy="0 0 0" />
+      <mass
+        value="0.1" />
+      <inertia
+        ixx="4.9998E-06"
+        ixy="2.5501E-10"
+        ixz="4.1936E-07"
+        iyy="3.1607E-05"
+        iyz="1.491E-09"
+        izz="3.1548E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/body_d435_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/body_d435_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="body_d435_joint"
+    type="fixed">
+    <origin
+      xyz="0.10174 0.0175 0.25077"
+      rpy="2.2703 0 1.5708" />
+    <parent
+      link="torso_Link" />
+    <child
+      link="body_d435_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="left_j0_Link">
+    <inertial>
+      <origin
+        xyz="-2.9213E-06 5.2653E-05 0.11659"
+        rpy="0 0 0" />
+      <mass
+        value="0.3" />
+      <inertia
+        ixx="0.00050755"
+        ixy="-8.62E-09"
+        ixz="6.2346E-08"
+        iyy="0.00050802"
+        iyz="-8.6522E-07"
+        izz="0.00023286" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/left_j0_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/left_j0_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_j0_joint"
+    type="fixed">
+    <origin
+      xyz="0 0.2385 0.3897"
+      rpy="1.5708 1.5708 0" />
+    <parent
+      link="torso_Link" />
+    <child
+      link="left_j0_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="left_shoulder_pitch_Link">
+    <inertial>
+      <origin
+        xyz="-1.5281E-06 0.0012801 0.010037"
+        rpy="0 0 0" />
+      <mass
+        value="1.56" />
+      <inertia
+        ixx="0.00077192"
+        ixy="9.0134E-10"
+        ixz="1.0433E-08"
+        iyy="0.00076311"
+        iyz="8.0042E-06"
+        izz="0.00057782" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/left_shoulder_pitch_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/left_shoulder_pitch_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_shoulder_pitch_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="left_j0_Link" />
+    <child
+      link="left_shoulder_pitch_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-2.617"
+      upper="3.489"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="left_shoulder_roll_Link">
+    <inertial>
+      <origin
+        xyz="-0.00556 0.0599 0.0066588"
+        rpy="0 0 0" />
+      <mass
+        value="1.6" />
+      <inertia
+        ixx="0.0010035"
+        ixy="2.3841E-05"
+        ixz="-1.0274E-05"
+        iyy="0.00055872"
+        iyz="0.00014007"
+        izz="0.0007246" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/left_shoulder_roll_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/left_shoulder_roll_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_shoulder_roll_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="-1.5708 -1.5708 0" />
+    <parent
+      link="left_shoulder_pitch_Link" />
+    <child
+      link="left_shoulder_roll_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-0.52"
+      upper="3.14"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="left_shoulder_yaw_Link">
+    <inertial>
+      <origin
+        xyz="-0.0052548 2.5172E-06 -0.058521"
+        rpy="0 0 0" />
+      <mass
+        value="1.43" />
+      <inertia
+        ixx="0.0033775"
+        ixy="-4.6541E-08"
+        ixz="0.00040068"
+        iyy="0.0034959"
+        iyz="-5.8781E-07"
+        izz="0.00095839" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/left_shoulder_yaw_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/left_shoulder_yaw_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_shoulder_yaw_joint"
+    type="revolute">
+    <origin
+      xyz="0 0.263 0"
+      rpy="-1.5708 1.5708 0" />
+    <parent
+      link="left_shoulder_roll_Link" />
+    <child
+      link="left_shoulder_yaw_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-2.97"
+      upper="2.97"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="left_elbow_pitch_Link">
+    <inertial>
+      <origin
+        xyz="0.01882 0.06158 -0.0031393"
+        rpy="0 0 0" />
+      <mass
+        value="1.54" />
+      <inertia
+        ixx="0.00096589"
+        ixy="-2.8213E-05"
+        ixz="-3.0991E-05"
+        iyy="0.00057825"
+        iyz="-9.4763E-05"
+        izz="0.00086553" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/left_elbow_pitch_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/left_elbow_pitch_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_elbow_pitch_joint"
+    type="revolute">
+    <origin
+      xyz="-0.017 0 0"
+      rpy="1.5708 0 0" />
+    <parent
+      link="left_shoulder_yaw_Link" />
+    <child
+      link="left_elbow_pitch_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-0.26"
+      upper="2.62"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="left_wrist_yaw_Link">
+    <inertial>
+      <origin
+        xyz="2.1303E-06 -3.3632E-05 -0.10933"
+        rpy="0 0 0" />
+      <mass
+        value="1" />
+      <inertia
+        ixx="0.0019601"
+        ixy="-4.5686E-08"
+        ixz="6.9422E-07"
+        iyy="0.0018266"
+        iyz="-7.1661E-06"
+        izz="0.00073908" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/left_wrist_yaw_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/left_wrist_yaw_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_wrist_yaw_joint"
+    type="revolute">
+    <origin
+      xyz="0.017 0.292 0"
+      rpy="-1.5708 0 0" />
+    <parent
+      link="left_elbow_pitch_Link" />
+    <child
+      link="left_wrist_yaw_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-2.97"
+      upper="2.97"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="left_wrist_pitch_Link">
+    <inertial>
+      <origin
+        xyz="-0.011382 -0.0010026 0.0011829"
+        rpy="0 0 0" />
+      <mass
+        value="0.76" />
+      <inertia
+        ixx="0.00019501"
+        ixy="3.4698E-06"
+        ixz="1.0237E-06"
+        iyy="0.00028123"
+        iyz="-4.1873E-08"
+        izz="0.00028521" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/left_wrist_pitch_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/left_wrist_pitch_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_wrist_pitch_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="1.5708 -1.5708 0" />
+    <parent
+      link="left_wrist_yaw_Link" />
+    <child
+      link="left_wrist_pitch_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-1.05"
+      upper="1.05"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="left_wrist_roll_Link">
+    <inertial>
+      <origin
+        xyz="0.051582 0.00093772 0.013171"
+        rpy="0 0 0" />
+      <mass
+        value="1" />
+      <inertia
+        ixx="6.93E-05"
+        ixy="-1.2765E-06"
+        ixz="1.5894E-05"
+        iyy="8.3806E-05"
+        iyz="1.9625E-06"
+        izz="7.456E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/left_wrist_roll_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/left_wrist_roll_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_wrist_roll_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="-1.5708 0 0" />
+    <parent
+      link="left_wrist_pitch_Link" />
+    <child
+      link="left_wrist_roll_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-1.57"
+      upper="1.57"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="left_gripper_link">
+    <inertial>
+      <origin
+        xyz="0.00040153 3.4202E-05 0.066561"
+        rpy="0 0 0" />
+      <mass
+        value="0.5" />
+      <inertia
+        ixx="0.00084915"
+        ixy="1.0618E-07"
+        ixz="-1.2716E-06"
+        iyy="0.00058135"
+        iyz="1.5563E-07"
+        izz="0.00044074" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/left_gripper_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.9 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/left_gripper_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_gripper_joint"
+    type="fixed">
+    <origin
+      xyz="0.0825 0 0"
+      rpy="0 -1.5708 -3.14" />
+    <parent
+      link="left_wrist_roll_Link" />
+    <child
+      link="left_gripper_link" />
+    <axis
+      xyz="0 0 0" />
+    <limit
+      lower="0"
+      upper="0.0475"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="left_D405_Link">
+    <inertial>
+      <origin
+        xyz="1.3878E-17 -3.0809E-15 0.016231"
+        rpy="0 0 0" />
+      <mass
+        value="0.1" />
+      <inertia
+        ixx="1.2746E-05"
+        ixy="3.8562E-22"
+        ixz="5.1496E-22"
+        iyy="1.2765E-05"
+        iyz="-1.3956E-21"
+        izz="1.6033E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/left_D405_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/left_D405_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_D405_joint"
+    type="fixed">
+    <origin
+      xyz="0.062698 0 0.0248"
+      rpy="0 0 0" />
+    <parent
+      link="left_gripper_link" />
+    <child
+      link="left_D405_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="left_finger01_Link">
+    <inertial>
+      <origin
+        xyz="-1.6448E-13 -9.518E-05 0.0047305"
+        rpy="0 0 0" />
+      <mass
+        value="0.1" />
+      <inertia
+        ixx="5.2736E-07"
+        ixy="6.6885E-19"
+        ixz="9.6175E-19"
+        iyy="2.5707E-07"
+        iyz="-2.8382E-09"
+        izz="6.728E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/left_finger01_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/left_finger01_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_finger01_joint"
+    type="prismatic">
+    <origin
+      xyz="-0.00175 0.0476 0.17004"
+      rpy="-1.5708 0 0" />
+    <parent
+      link="left_gripper_link" />
+    <child
+      link="left_finger01_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-0.0475"
+      upper="0"
+      effort="100"
+      velocity="0.1" />
+  </joint>
+  <link
+    name="left_finger02_Link">
+    <inertial>
+      <origin
+        xyz="1.6488E-13 -9.518E-05 -0.0047305"
+        rpy="0 0 0" />
+      <mass
+        value="0.1" />
+      <inertia
+        ixx="5.2736E-07"
+        ixy="-6.5571E-19"
+        ixz="9.7493E-19"
+        iyy="2.5707E-07"
+        iyz="2.8382E-09"
+        izz="6.728E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/left_finger02_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/left_finger02_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_finger02_joint"
+    type="prismatic">
+    <origin
+      xyz="-0.00175 -0.0474 0.17004"
+      rpy="-1.5708 0 0" />
+    <parent
+      link="left_gripper_link" />
+    <child
+      link="left_finger02_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0.0475"
+      effort="100"
+      velocity="0.1" />
+  </joint>
+  <link
+    name="right_j0_Link">
+    <inertial>
+      <origin
+        xyz="-2.7744E-05 -4.4867E-05 -0.11659"
+        rpy="0 0 0" />
+      <mass
+        value="0.3" />
+      <inertia
+        ixx="0.00050767"
+        ixy="2.0137E-07"
+        ixz="-4.6707E-07"
+        iyy="0.00050791"
+        iyz="-7.3046E-07"
+        izz="0.00023286" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/right_j0_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/right_j0_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_j0_joint"
+    type="fixed">
+    <origin
+      xyz="0 -0.2385 0.3897"
+      rpy="1.5708 1.5708 0" />
+    <parent
+      link="torso_Link" />
+    <child
+      link="right_j0_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="right_shoulder_pitch_Link">
+    <inertial>
+      <origin
+        xyz="-8.2772E-07 0.0012797 -0.010038"
+        rpy="0 0 0" />
+      <mass
+        value="1.56" />
+      <inertia
+        ixx="0.00077195"
+        ixy="6.8228E-09"
+        ixz="2.4063E-09"
+        iyy="0.00076314"
+        iyz="-8.0164E-06"
+        izz="0.00057784" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/right_shoulder_pitch_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/right_shoulder_pitch_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_shoulder_pitch_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="right_j0_Link" />
+    <child
+      link="right_shoulder_pitch_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-2.617"
+      upper="3.489"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="right_shoulder_roll_Link">
+    <inertial>
+      <origin
+        xyz="0.0055601 0.059897 0.0066624"
+        rpy="0 0 0" />
+      <mass
+        value="1.6" />
+      <inertia
+        ixx="0.0010036"
+        ixy="-2.3862E-05"
+        ixz="1.0224E-05"
+        iyy="0.00055879"
+        iyz="0.00014012"
+        izz="0.00072463" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/right_shoulder_roll_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/right_shoulder_roll_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_shoulder_roll_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="-1.5708 -1.5708 0" />
+    <parent
+      link="right_shoulder_pitch_Link" />
+    <child
+      link="right_shoulder_roll_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-3.14"
+      upper="0.52"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="right_shoulder_yaw_Link">
+    <inertial>
+      <origin
+        xyz="-0.0052547 -2.5343E-06 -0.058521"
+        rpy="0 0 0" />
+      <mass
+        value="1.43" />
+      <inertia
+        ixx="0.0033775"
+        ixy="3.6295E-08"
+        ixz="0.00040068"
+        iyy="0.0034959"
+        iyz="5.783E-07"
+        izz="0.00095839" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/right_shoulder_yaw_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/right_shoulder_yaw_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_shoulder_yaw_joint"
+    type="revolute">
+    <origin
+      xyz="0 0.263 0"
+      rpy="-1.5708 1.5708 0" />
+    <parent
+      link="right_shoulder_roll_Link" />
+    <child
+      link="right_shoulder_yaw_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-2.97"
+      upper="2.97"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="right_elbow_pitch_Link">
+    <inertial>
+      <origin
+        xyz="0.018819 0.061581 0.0031387"
+        rpy="0 0 0" />
+      <mass
+        value="1.54" />
+      <inertia
+        ixx="0.00096592"
+        ixy="-2.821E-05"
+        ixz="3.099E-05"
+        iyy="0.00057825"
+        iyz="9.4752E-05"
+        izz="0.00086555" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/right_elbow_pitch_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/right_elbow_pitch_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_elbow_pitch_joint"
+    type="revolute">
+    <origin
+      xyz="-0.017 0 0"
+      rpy="1.5708 0 0" />
+    <parent
+      link="right_shoulder_yaw_Link" />
+    <child
+      link="right_elbow_pitch_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-0.26"
+      upper="2.62"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="right_wrist_yaw_Link">
+    <inertial>
+      <origin
+        xyz="2.4025E-06 3.37E-05 -0.10934"
+        rpy="0 0 0" />
+      <mass
+        value="1" />
+      <inertia
+        ixx="0.00196"
+        ixy="3.6658E-08"
+        ixz="7.0417E-07"
+        iyy="0.0018265"
+        iyz="7.1626E-06"
+        izz="0.00073908" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/right_wrist_yaw_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/right_wrist_yaw_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_wrist_yaw_joint"
+    type="revolute">
+    <origin
+      xyz="0.017 0.292 0"
+      rpy="-1.5708 0 0" />
+    <parent
+      link="right_elbow_pitch_Link" />
+    <child
+      link="right_wrist_yaw_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-2.97"
+      upper="2.97"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="right_wrist_pitch_Link">
+    <inertial>
+      <origin
+        xyz="-0.011382 -0.0010025 -0.0011828"
+        rpy="0 0 0" />
+      <mass
+        value="0.76" />
+      <inertia
+        ixx="0.00019501"
+        ixy="3.4699E-06"
+        ixz="-1.0213E-06"
+        iyy="0.00028124"
+        iyz="4.1324E-08"
+        izz="0.00028521" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/right_wrist_pitch_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/right_wrist_pitch_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_wrist_pitch_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="1.5708 -1.5708 0" />
+    <parent
+      link="right_wrist_yaw_Link" />
+    <child
+      link="right_wrist_pitch_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-1.05"
+      upper="1.05"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="right_wrist_roll_Link">
+    <inertial>
+      <origin
+        xyz="0.051482 0.00093772 0.013171"
+        rpy="0 0 0" />
+      <mass
+        value="1" />
+      <inertia
+        ixx="6.93E-05"
+        ixy="-1.2765E-06"
+        ixz="1.5894E-05"
+        iyy="8.3806E-05"
+        iyz="1.9625E-06"
+        izz="7.456E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/right_wrist_roll_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/right_wrist_roll_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_wrist_roll_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="-1.5708 0 0" />
+    <parent
+      link="right_wrist_pitch_Link" />
+    <child
+      link="right_wrist_roll_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-1.57"
+      upper="1.57"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="right_gripper_Link">
+    <inertial>
+      <origin
+        xyz="0.00040153 3.4202E-05 0.066561"
+        rpy="0 0 0" />
+      <mass
+        value="0.5" />
+      <inertia
+        ixx="0.00084915"
+        ixy="1.0618E-07"
+        ixz="-1.2716E-06"
+        iyy="0.00058135"
+        iyz="1.5563E-07"
+        izz="0.00044074" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/right_gripper_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.9 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/right_gripper_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_gripper_joint"
+    type="fixed">
+    <origin
+      xyz="0.0824 0 0"
+      rpy="0 -1.5708 3.14" />
+    <parent
+      link="right_wrist_roll_Link" />
+    <child
+      link="right_gripper_Link" />
+    <axis
+      xyz="0 0 0" />
+    <limit
+      lower="0"
+      upper="0.0475"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="right_D405_Link">
+    <inertial>
+      <origin
+        xyz="0 0 0.016031"
+        rpy="0 0 0" />
+      <mass
+        value="0.1" />
+      <inertia
+        ixx="1.2746E-05"
+        ixy="-1.1374E-21"
+        ixz="4.378E-22"
+        iyy="1.2765E-05"
+        iyz="9.6459E-22"
+        izz="1.6033E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/right_D405_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/right_D405_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_D405_joint"
+    type="fixed">
+    <origin
+      xyz="0.062698 0 0.025"
+      rpy="0 0 0" />
+    <parent
+      link="right_gripper_Link" />
+    <child
+      link="right_D405_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="right_finger01_Link">
+    <inertial>
+      <origin
+        xyz="1.6505E-13 -9.518E-05 -0.0047305"
+        rpy="0 0 0" />
+      <mass
+        value="0.1" />
+      <inertia
+        ixx="5.2736E-07"
+        ixy="-6.499E-19"
+        ixz="9.8038E-19"
+        iyy="2.5707E-07"
+        iyz="2.8382E-09"
+        izz="6.728E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/right_finger01_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/right_finger01_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_finger01_joint"
+    type="prismatic">
+    <origin
+      xyz="-0.00175 -0.0474 0.16994"
+      rpy="-1.5708 0 0" />
+    <parent
+      link="right_gripper_Link" />
+    <child
+      link="right_finger01_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0.0475"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="right_finger02_Link">
+    <inertial>
+      <origin
+        xyz="-1.6432E-13 -9.518E-05 0.0047305"
+        rpy="0 0 0" />
+      <mass
+        value="0.1" />
+      <inertia
+        ixx="5.2736E-07"
+        ixy="6.7442E-19"
+        ixz="9.5656E-19"
+        iyy="2.5707E-07"
+        iyz="-2.8382E-09"
+        izz="6.728E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/right_finger02_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/right_finger02_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_finger02_joint"
+    type="prismatic">
+    <origin
+      xyz="-0.00175 0.0476 0.16994"
+      rpy="-1.5708 0 0" />
+    <parent
+      link="right_gripper_Link" />
+    <child
+      link="right_finger02_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-0.0475"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_front_steering_Link">
+    <inertial>
+      <origin
+        xyz="2.0729E-08 0.024717 -0.037742"
+        rpy="0 0 0" />
+      <mass
+        value="1.32" />
+      <inertia
+        ixx="0.00044983"
+        ixy="-4.2274E-11"
+        ixz="1.5212E-10"
+        iyy="0.0004002"
+        iyz="0.00013809"
+        izz="0.00028025" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/left_front_steering_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79608 0.82353 0.93725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/left_front_steering_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_front_steering_joint"
+    type="revolute">
+    <origin
+      xyz="-0.13645 0.13 0.213"
+      rpy="1.5708 0 1.5708" />
+    <parent
+      link="base_link" />
+    <child
+      link="left_front_steering_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="left_front_wheel_Link">
+    <inertial>
+      <origin
+        xyz="4.698E-06 -0.0012211 1.1115E-06"
+        rpy="0 0 0" />
+      <mass
+        value="4.85" />
+      <inertia
+        ixx="0.0021653"
+        ixy="-1.6464E-07"
+        ixz="5.3663E-09"
+        iyy="0.0032009"
+        iyz="-3.8842E-08"
+        izz="0.0021653" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/left_front_wheel_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/left_front_wheel_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_front_wheel_joint"
+    type="continuous">
+    <origin
+      xyz="0 0 -0.116"
+      rpy="0 0 0" />
+    <parent
+      link="left_front_steering_Link" />
+    <child
+      link="left_front_wheel_Link" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  <link
+    name="right_front_steering_Link">
+    <inertial>
+      <origin
+        xyz="-2.0729E-08 -0.024717 -0.037742"
+        rpy="0 0 0" />
+      <mass
+        value="1.32" />
+      <inertia
+        ixx="0.00044983"
+        ixy="-4.2274E-11"
+        ixz="-1.5212E-10"
+        iyy="0.0004002"
+        iyz="-0.00013809"
+        izz="0.00028025" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/right_front_steering_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79608 0.82353 0.93725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/right_front_steering_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_front_steering_joint"
+    type="revolute">
+    <origin
+      xyz="-0.13645 0.13 -0.213"
+      rpy="1.5708 0 1.5708" />
+    <parent
+      link="base_link" />
+    <child
+      link="right_front_steering_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="right_front_wheel_Link">
+    <inertial>
+      <origin
+        xyz="8.9304E-08 0.0012211 4.8271E-06"
+        rpy="0 0 0" />
+      <mass
+        value="4.85" />
+      <inertia
+        ixx="0.0021653"
+        ixy="2.9914E-09"
+        ixz="5.5571E-09"
+        iyy="0.0032009"
+        iyz="1.6913E-07"
+        izz="0.0021653" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/right_front_wheel_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/right_front_wheel_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_front_wheel_joint"
+    type="continuous">
+    <origin
+      xyz="0 0 -0.116"
+      rpy="0 0 0" />
+    <parent
+      link="right_front_steering_Link" />
+    <child
+      link="right_front_wheel_Link" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  <link
+    name="rear_steering_Link">
+    <inertial>
+      <origin
+        xyz="6.6536E-09 0.024108 -0.035583"
+        rpy="0 0 0" />
+      <mass
+        value="1.32" />
+      <inertia
+        ixx="0.00041436"
+        ixy="4.4631E-12"
+        ixz="-4.1278E-11"
+        iyy="0.00036519"
+        iyz="0.00012874"
+        izz="0.0002773" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/rear_steering_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79608 0.82353 0.93725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/rear_steering_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="rear_steering_joint"
+    type="revolute">
+    <origin
+      xyz="-0.14245 -0.255 0"
+      rpy="1.5708 0 1.5708" />
+    <parent
+      link="base_link" />
+    <child
+      link="rear_steering_Link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="100"
+      velocity="3.14" />
+  </joint>
+  <link
+    name="rear_wheel_Link">
+    <inertial>
+      <origin
+        xyz="4.8278E-06 -0.0012211 -3.516E-08"
+        rpy="0 0 0" />
+      <mass
+        value="4.85" />
+      <inertia
+        ixx="0.0021653"
+        ixy="-1.6915E-07"
+        ixz="5.5104E-09"
+        iyy="0.0032009"
+        iyz="1.3695E-09"
+        izz="0.0021653" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/rear_wheel_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/rear_wheel_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="rear_wheel_joint"
+    type="continuous">
+    <origin
+      xyz="0 0 -0.11"
+      rpy="0 0 0" />
+    <parent
+      link="rear_steering_Link" />
+    <child
+      link="rear_wheel_Link" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  <link
+    name="MID360_Link">
+    <inertial>
+      <origin
+        xyz="-0.00013968 -0.00014905 -0.012336"
+        rpy="0 0 0" />
+      <mass
+        value="0.5" />
+      <inertia
+        ixx="6.6772E-05"
+        ixy="-2.5262E-06"
+        ixz="2.0998E-08"
+        iyy="6.6759E-05"
+        iyz="-4.0182E-09"
+        izz="6.8807E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/MID360_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/MID360_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="MID360_joint"
+    type="fixed">
+    <origin
+      xyz="-0.0016259 0.0765 0.1954"
+      rpy="1.5708 0 1.5708" />
+    <parent
+      link="base_link" />
+    <child
+      link="MID360_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="2Dlidar_Link">
+    <inertial>
+      <origin
+        xyz="-0.00052689 0.00052689 -0.012273"
+        rpy="0 0 0" />
+      <mass
+        value="0.5" />
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/2Dlidar_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wheel_robot_26.8.16_3/meshes/2Dlidar_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="2Dlidar_joint"
+    type="fixed">
+    <origin
+      xyz="-0.00045298 -0.22 -0.19"
+      rpy="1.5708 0 1.5708" />
+    <parent
+      link="base_link" />
+    <child
+      link="2Dlidar_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+</robot>

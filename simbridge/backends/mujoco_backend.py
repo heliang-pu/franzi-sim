@@ -12,7 +12,7 @@ import mujoco
 import numpy as np
 
 from scenes.pick_place.run import PickPlaceScene
-from sim.build_task import ARM_JOINTS
+from sim.build_task import ARM_JOINTS, FINGER_JOINTS
 from simbridge.backends.base import (
     EFFORT_SIMULATED,
     BackendState,
@@ -86,7 +86,7 @@ class MujocoBackend(SimBackend):
             expected = tuple(f"{side}_{j}_joint" for j in ARM_JOINTS)
             if robot.arms[side].sim_joints != expected:
                 raise ValueError(f"{side}: robot config joint order differs from Scene")
-            fingers = tuple(f"{side}finger{i}_joint" for i in (1, 2))
+            fingers = FINGER_JOINTS[side]
             if robot.grippers[side].sim_joints != fingers:
                 raise ValueError(f"{side}: gripper joints differ from Scene")
         joints = {j for u in robot.units.values() for j in u.sim_joints}

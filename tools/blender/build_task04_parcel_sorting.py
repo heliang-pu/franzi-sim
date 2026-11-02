@@ -17,7 +17,10 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 OUTPUT = HERE.parents[1] / "assets" / "props"
 IDS = ("belt_conveyor", "sort_bin", "parcel_box_s", "parcel_box_m", "parcel_pouch")
-ZONES = (("A", "#D32F2F"), ("B", "#1976D2"), ("C", "#388E3C"))
+BIN_Y, BIN_Z, SIGN_Z = 240, 100, 150  # sort_bin body width and height, sign centre (mm)
+# D since 2026-10-25: the scene has four bins, two per arm, as a bin shared at
+# the midline had its centre out of both arms' reach.
+ZONES = (("A", "#D32F2F"), ("B", "#1976D2"), ("C", "#388E3C"), ("D", "#7B1FA2"))
 
 
 def artwork_worker():
@@ -546,51 +549,62 @@ def build_sort_bin():
     folder = start("sort_bin")
     zinc = galvanised_material()
     steel = props.pbr_material("Sign post brushed steel", "#BFC3C7", .3, 1, grime=.12, machining="brushed")
+    # 200 X x 240 Y x 100 Z since 2026-10-25 (was 200 x 160 x 150): the robot's
+    # gripper housing needs the width, its wrist camera block the shallower rim,
+    # and the sign, lowered from 300 mm, keeps out of the parcels' path.
+    width, height, sign_z = BIN_Y, BIN_Z, SIGN_Z
     # A single closed shell has neither overlapping wall faces nor a filled cavity.
-    shell = props.box("200x160x150 open 1 mm bin shell", (200, 160, 150), (0, 0, 75),
+    shell = props.box(f"200x{width}x{height} open 1 mm bin shell", (200, width, height), (0, 0, height / 2),
                       bevel_mm=0, material=zinc)
-    difference(shell, props.box("Bin interior cutter", (198, 158, 152), (0, 0, 77), bevel_mm=0))
+    difference(shell, props.box("Bin interior cutter", (198, width - 2, height + 2), (0, 0, height / 2 + 2),
+                                bevel_mm=0))
     bevel(shell, .28)
-    lip_center = (-100 - 15 * math.cos(math.pi / 6), 0, 157.5)
-    lip = props.box("30 mm entry ramp, rising outward 30 degrees", (30, 160, 1), lip_center,
+    lip_center = (-100 - 15 * math.cos(math.pi / 6), 0, height + 7.5)
+    lip = props.box("30 mm entry ramp, rising outward 30 degrees", (30, width, 1), lip_center,
                     bevel_mm=.18, material=zinc, rotation_deg=(0, 30, 0))
+    post_top = sign_z + 40
+    clamps = (sign_z - 26, sign_z - 5)  # the two clamps, as on the 300 mm post
     objects = [shell, lip,
-               props.cylinder("D20 sign post, height300", 10, 299, (88, 55, 150.5),
-                              bevel_mm=1, material=steel),
-               props.box("Sign attachment lower", (32, 3, 12), (98, 55, 274),
+               props.cylinder(f"D20 sign post, height{post_top}", 10, post_top - 1,
+                              (88, 55, (post_top + 1) / 2), bevel_mm=1, material=steel),
+               props.box("Sign attachment lower", (32, 3, 12), (98, 55, clamps[0]),
                          bevel_mm=.7, material=steel),
-               props.box("Sign attachment upper", (32, 3, 12), (98, 55, 295),
+               props.box("Sign attachment upper", (32, 3, 12), (98, 55, clamps[1]),
                          bevel_mm=.7, material=steel)]
-    for z in (274, 295):
+    for z in clamps:
         objects.append(bolt("Sign post clamp screw", (109, 55, z), steel, "X"))
     sign_files = make_signs(folder)
     ink, image_node = image_material("Zone sign painted front, variant A", folder / sign_files["A"], .60)
-    sign = props.box("120x80 zone sign panel", (3, 120, 80), (112.5, 0, 300),
+    sign = props.box("120x80 zone sign panel", (3, 120, 80), (112.5, 0, sign_z),
                      bevel_mm=.6, material=steel)
     sign.data.materials.append(ink)
     for face in sign.data.polygons:
         if face.normal.x < -.9:
             face.material_index = 1
-    apply_label_uv(sign, 120, 80, (112.5, 0, 300), sign=True)
+    apply_label_uv(sign, 120, 80, (112.5, 0, sign_z), sign=True)
     body, sign = combine(objects, "body"), combine([sign], "sign")
-    collisions = [props.box("COL bin bottom", (200, 160, 1), (0, 0, .5), bevel_mm=0),
-                  props.box("COL bin -X wall", (1, 160, 149), (-99.5, 0, 75.5), bevel_mm=0),
-                  props.box("COL bin +X wall", (1, 160, 149), (99.5, 0, 75.5), bevel_mm=0),
-                  props.box("COL bin -Y wall", (198, 1, 149), (0, -79.5, 75.5), bevel_mm=0),
-                  props.box("COL bin +Y wall", (198, 1, 149), (0, 79.5, 75.5), bevel_mm=0),
-                  props.box("COL 30-degree entry lip", (30, 160, 1), lip_center,
+    half, wall = width / 2 - .5, height - 1
+    collisions = [props.box("COL bin bottom", (200, width, 1), (0, 0, .5), bevel_mm=0),
+                  props.box("COL bin -X wall", (1, width, wall), (-99.5, 0, 1 + wall / 2), bevel_mm=0),
+                  props.box("COL bin +X wall", (1, width, wall), (99.5, 0, 1 + wall / 2), bevel_mm=0),
+                  props.box("COL bin -Y wall", (198, 1, wall), (0, -half, 1 + wall / 2), bevel_mm=0),
+                  props.box("COL bin +Y wall", (198, 1, wall), (0, half, 1 + wall / 2), bevel_mm=0),
+                  props.box("COL 30-degree entry lip", (30, width, 1), lip_center,
                             bevel_mm=0, rotation_deg=(0, 30, 0))]
     offset = recenter([body, sign], collisions)
     return finish_asset(folder, [
         ("body", body, collisions, 2048, .77, .30, METAL, None),
         ("sign", sign, [], 2048, .03, .30, METAL, "body"),
     ], [("sign", image_node, sign_files)], {
-        "bin_body_xyz": [200, 160, 150], "wall": 1, "entry_lip_width": 30,
-        "entry_lip_angle_from_horizontal_deg": 30, "post_diameter": 20, "post_top_z": 300,
-        "sign_yz": [120, 80], "sign_center_z": 300,
+        "bin_body_xyz": [200, width, height], "wall": 1, "entry_lip_width": 30,
+        "entry_lip_angle_from_horizontal_deg": 30, "post_diameter": 20, "post_top_z": post_top,
+        "sign_yz": [120, 80], "sign_center_z": sign_z,
     }, (
         "A/B/C differ only in the sign texture (A red, B blue, C green); the body, post, geometry and "
-        "mass stay identical. The 200x160x150 dimensions refer to the open bin body; the entry lip, "
+        f"mass stay identical. The 200x{width}x{height} dimensions refer to the open bin body (200 x 160 x "
+        "150 with the sign centred 300 mm up until 2026-10-25: too narrow for the robot's gripper "
+        "housing, too deep for its wrist camera block, and the sign stood in the carried parcels' "
+        "path); the entry lip, "
         "post and 120x80 sign enlarge its total bbox. Lip width is measured along the 30 mm sloping "
         "sheet, rising 30 degrees above horizontal toward -X to guide a parcel into the bin. All "
         "parts are recentered together to the complete bottom-bbox centre, not independently. "
@@ -599,8 +613,8 @@ def build_sort_bin():
         "budget. The 0.8 kg total is the specified static effective mass."
     ), {"functional_frame_offset_m": offset, "source_artwork": sign_files,
         "simulation": {"fixed_base": True},
-        "recommended_placement_m": {"origin_x": .40, "origin_y_options": [-.30, 0, .30],
-                                     "support_z": .8}})
+        "recommended_placement_m": {"origin_x": .30, "origin_y_options": [-.25, 0, .25],
+                                     "support_z": .70}})
 
 
 def tape_ribbon(width, length, height, material):

@@ -1,0 +1,236 @@
+{
+  "id": "test_fixture",
+  "task": "electronics_line",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    239.99999463558197,
+    300.00001192092896,
+    250.0
+  ],
+  "triangles": 10080,
+  "budget_class": "medium",
+  "static": true,
+  "dimensions_mm": {
+    "base_xyz": [
+      240,
+      300,
+      20
+    ],
+    "platform_xyz": [
+      75,
+      100,
+      8
+    ],
+    "platform_top_z": 28,
+    "locating_inner_xy": [
+      71,
+      96
+    ],
+    "stop_height_above_platform": 18,
+    "stop_thickness": 8,
+    "stop_arms_xy": [
+      20,
+      18
+    ],
+    "entry_chamfer": 3,
+    "jaw_clear_span_y": 60,
+    "button_box_xyz": [
+      60,
+      60,
+      60
+    ],
+    "button_box_centre_xy": [
+      -20,
+      120
+    ],
+    "button_box_top_z": 80,
+    "result_post_diameter": 20,
+    "result_post_height": 200,
+    "result_lamp_diameter": 60,
+    "result_post_centre_xy": [
+      88,
+      -100
+    ]
+  },
+  "parts": [
+    {
+      "name": "body",
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "body_col_00.obj",
+        "body_col_01.obj",
+        "body_col_02.obj",
+        "body_col_03.obj",
+        "body_col_04.obj",
+        "body_col_05.obj",
+        "body_col_06.obj",
+        "body_col_07.obj",
+        "body_col_08.obj",
+        "body_col_09.obj",
+        "body_col_10.obj",
+        "body_col_11.obj"
+      ],
+      "mass_kg": 3.91,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": null,
+      "joint": null,
+      "source_collision_objects": [
+        "COL__body__00",
+        "COL__body__01",
+        "COL__body__02",
+        "COL__body__03",
+        "COL__body__04",
+        "COL__body__05",
+        "COL__body__06",
+        "COL__body__07",
+        "COL__body__08",
+        "COL__body__09",
+        "COL__body__10",
+        "COL__body__11"
+      ]
+    },
+    {
+      "name": "test_button",
+      "visual": "test_button.obj",
+      "texture": "test_button_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "test_button_col_00.obj"
+      ],
+      "mass_kg": 0.01,
+      "friction": 0.8,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "body",
+      "joint": {
+        "type": "slide",
+        "parent": "body",
+        "axis": [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        "anchor_m": [
+          -0.015000000596046448,
+          0.12000000476837158,
+          0.08000000566244125
+        ],
+        "range": [
+          0.0,
+          0.006
+        ],
+        "damping": 0.6,
+        "frictionloss": 0.08,
+        "spring": {
+          "stiffness": 400.0,
+          "reference": 0.0
+        }
+      },
+      "source_collision_objects": [
+        "COL__test_button__00"
+      ]
+    },
+    {
+      "name": "result_lamp",
+      "visual": "result_lamp.obj",
+      "texture": null,
+      "texture_px": null,
+      "collision": [
+        "result_lamp_col_00.obj"
+      ],
+      "mass_kg": 0.08,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "body",
+      "joint": null,
+      "source_collision_objects": [
+        "COL__result_lamp__00"
+      ],
+      "rgba": [
+        0.85,
+        0.85,
+        0.82,
+        1
+      ],
+      "emission": 0.0
+    }
+  ],
+  "recommended_instance_color_gain_range": [
+    0.97,
+    1.03
+  ],
+  "variants": [],
+  "notes": "Metres, Z up, front -X. Applied transforms in the shared prop frame. Cycles CPU 64-sample diffuse COLOR times (0.4 + 0.6 AO), sRGB8 albedo; PBR and artwork packed in source.blend. DejaVu Sans Bold, English only. Task 15 uses isolated finalization to protect existing props. The post rises 200 mm above the 20 mm base; hemisphere top is Z250. Pogo pins and flexible cable are appearance-only. All eight L-stop arms have 3 mm entry chamfers. Lamp mast at [88,-100] mm avoids the gripper housing envelope while remaining on the +X side. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification.",
+  "recommended_placement_m": [
+    0.38,
+    0,
+    0.9
+  ],
+  "buttons": [
+    {
+      "part": "test_button",
+      "press_direction": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "travel_m": 0.006,
+      "stroke_m": 0.006,
+      "cap_diameter_mm": 40,
+      "activation_m": 0.0048000000000000004
+    }
+  ],
+  "lamps": [
+    {
+      "part": "result_lamp",
+      "on_rgba": [
+        0.18,
+        0.8,
+        0.25,
+        1
+      ],
+      "emission": 0.8,
+      "state_colors": {
+        "testing": [
+          1,
+          0.65,
+          0,
+          1
+        ],
+        "pass": [
+          0.18,
+          0.8,
+          0.25,
+          1
+        ],
+        "fail": [
+          0.9,
+          0.08,
+          0.05,
+          1
+        ]
+      }
+    }
+  ],
+  "collision_exclusions": [
+    [
+      "body",
+      "test_button"
+    ]
+  ]
+}

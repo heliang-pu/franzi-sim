@@ -25,8 +25,12 @@ SIDES = ("left", "right")
 # 45-degree grasp the gripper housing spans about 85 mm to either side of the
 # grasp point at grasp height, and 65 mm behind it, so slots are 120 mm apart
 # and the rows 100 mm. The kit row is where both policy cameras see it; the
-# supply row behind it is still inside the reach of the grasp.
-SLOT_Y = (0.10, 0.22, 0.34)
+# supply row behind it is still inside the reach of the grasp. The inner slots
+# are 130 mm out from the middle: at 100 mm, wheel_robot_26.8.16_3's longer
+# gripper put the forearm into the chest over the inner cell (up to 8 mm into
+# the torso's hull, 17 mm with the old retreat); at 130 mm every arm link
+# keeps 11 mm from it over seeds 0-19.
+SLOT_Y = (0.13, 0.25, 0.37)
 KIT_X, SUPPLY_X = 0.38, 0.48
 ROW_Y = (SLOT_Y[0] + SLOT_Y[-1]) / 2
 ROW_HALF = (0.038, 0.18)  # tray and mat half depth (x) and half length (y)
@@ -183,7 +187,10 @@ def key_poses(part, cell, xy=None, psi=None):
         "lift": grasp + up,
         "above": place + up,
         "place": place,
-        "retreat": place + back,
+        # Straight up, not back along the approach: from the inner cells that
+        # put the forearm into the chest (wheel_robot_26.8.16_3's longer
+        # gripper). The open jaws clear the part by CLEAR either side.
+        "retreat": place + up,
     }
 
 

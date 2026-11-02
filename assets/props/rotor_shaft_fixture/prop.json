@@ -1,0 +1,334 @@
+{
+  "id": "rotor_shaft_fixture",
+  "task": "bearing_assembly",
+  "units": "m",
+  "origin": "bottom_center",
+  "budget_class": "medium",
+  "bbox_mm": [
+    260.019988,
+    439.999998,
+    305.000007
+  ],
+  "triangles": 15078,
+  "source": "source.blend",
+  "preview": "preview.png",
+  "inspection": "inspection.png",
+  "parts": [
+    {
+      "name": "body",
+      "mass_kg": 11.92,
+      "parent": null,
+      "joint": null,
+      "texture_px": 2048,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "collision": [
+        "body_col_00.obj",
+        "body_col_01.obj",
+        "body_col_02.obj",
+        "body_col_03.obj",
+        "body_col_04.obj",
+        "body_col_05.obj",
+        "body_col_06.obj",
+        "body_col_07.obj",
+        "body_col_08.obj",
+        "body_col_09.obj",
+        "body_col_10.obj",
+        "body_col_11.obj",
+        "body_col_12.obj",
+        "body_col_13.obj",
+        "body_col_14.obj",
+        "body_col_15.obj",
+        "body_col_16.obj",
+        "body_col_17.obj",
+        "body_col_18.obj",
+        "body_col_19.obj",
+        "body_col_20.obj",
+        "body_col_21.obj",
+        "body_col_22.obj"
+      ],
+      "source_visual_object": "body",
+      "source_collision_objects": [
+        "COL__body__000",
+        "COL__body__001",
+        "COL__body__002",
+        "COL__body__003",
+        "COL__body__004",
+        "COL__body__005",
+        "COL__body__006",
+        "COL__body__007",
+        "COL__body__008",
+        "COL__body__009",
+        "COL__body__010",
+        "COL__body__011",
+        "COL__body__012",
+        "COL__body__013",
+        "COL__body__014",
+        "COL__body__015",
+        "COL__body__016",
+        "COL__body__017",
+        "COL__body__018",
+        "COL__body__019",
+        "COL__body__020",
+        "COL__body__021",
+        "COL__body__022"
+      ]
+    },
+    {
+      "name": "start_left",
+      "mass_kg": 0.02,
+      "parent": "body",
+      "joint": {
+        "type": "slide",
+        "axis": [
+          0,
+          0,
+          -1
+        ],
+        "anchor_m": [
+          -0.1,
+          0.19,
+          0.08
+        ],
+        "range": [
+          0,
+          0.006
+        ],
+        "damping": 2.0,
+        "frictionloss": 0.1,
+        "spring": {
+          "stiffness": 700.0,
+          "reference": 0.0
+        }
+      },
+      "texture_px": 1024,
+      "friction": 0.8,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "visual": "start_left.obj",
+      "texture": "start_left_albedo.png",
+      "collision": [
+        "start_left_col_00.obj"
+      ],
+      "source_visual_object": "start_left",
+      "source_collision_objects": [
+        "COL__start_left__000"
+      ]
+    },
+    {
+      "name": "start_right",
+      "mass_kg": 0.02,
+      "parent": "body",
+      "joint": {
+        "type": "slide",
+        "axis": [
+          0,
+          0,
+          -1
+        ],
+        "anchor_m": [
+          -0.1,
+          -0.19,
+          0.08
+        ],
+        "range": [
+          0,
+          0.006
+        ],
+        "damping": 2.0,
+        "frictionloss": 0.1,
+        "spring": {
+          "stiffness": 700.0,
+          "reference": 0.0
+        }
+      },
+      "texture_px": 1024,
+      "friction": 0.8,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "visual": "start_right.obj",
+      "texture": "start_right_albedo.png",
+      "collision": [
+        "start_right_col_00.obj"
+      ],
+      "source_visual_object": "start_right",
+      "source_collision_objects": [
+        "COL__start_right__000"
+      ]
+    },
+    {
+      "name": "station_lamp",
+      "mass_kg": 0.04,
+      "parent": "body",
+      "joint": null,
+      "texture_px": null,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "visual": "station_lamp.obj",
+      "texture": null,
+      "collision": [
+        "station_lamp_col_00.obj"
+      ],
+      "source_visual_object": "station_lamp",
+      "source_collision_objects": [
+        "COL__station_lamp__000"
+      ],
+      "rgba": [
+        0.12,
+        0.22,
+        0.14,
+        1
+      ]
+    }
+  ],
+  "variants": [],
+  "dimensions_mm": {
+    "base_xyz": [
+      260,
+      440,
+      30
+    ],
+    "station_centers_xy": [
+      [
+        0,
+        120
+      ],
+      [
+        0,
+        -120
+      ]
+    ],
+    "shaft_diameter": 18,
+    "shaft_height": 40,
+    "shaft_top_z": 156,
+    "shoulder_diameter": 26,
+    "shoulder_top_z": 116,
+    "lead_in_axial_length": 4,
+    "lead_in_angle_deg": 30,
+    "lead_in_tip_diameter": 13.381197846482994,
+    "shaft_collision_facets": 32,
+    "shaft_chord_error": 0.04333745995022764
+  },
+  "notes": "Metres, Z up, robot front -X, shared bottom-centre frame; applied transforms. CPU Cycles 64 diffuse colour times mix(1, AO, 0.6); PBR source retained. Inspection render 1024 square; preview thumbnail 512 for the unchanged validator. 32 shaft facets replace the listed 24: R9 at 24 facets has 0.077 mm chord error, exceeding the binding 0.05 mm tolerance; 32 gives 0.04334 mm and 64 vertices. V clamps use three convex pieces each to preserve the groove. Lead-in is 4 mm axial length at 30 degrees to the shaft axis. No overhead crossbeam. Buttons and station lamp are separate functional parts; scene implements the 0.5 s interlock. Simulator must honor cap/support collision_exclusions for the full 6 mm button stroke. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Shaft/chamfer collision coordinates retain 12 decimal metres after compaction and an inward 0.00001 mm numerical guard; vertices never exceed the design circle. This prevents 5-decimal rounding from creating an oversized shaft.",
+  "static": true,
+  "precision_mm": 0.05,
+  "recommended_placement_m": {
+    "origin": [
+      0.4,
+      0,
+      0.9
+    ]
+  },
+  "buttons": [
+    {
+      "part": "start_left",
+      "press_direction": [
+        0,
+        0,
+        -1
+      ],
+      "travel_m": 0.006,
+      "pressed_threshold_m": 0.004,
+      "center_m": [
+        -0.1,
+        0.19,
+        0.096
+      ]
+    },
+    {
+      "part": "start_right",
+      "press_direction": [
+        0,
+        0,
+        -1
+      ],
+      "travel_m": 0.006,
+      "pressed_threshold_m": 0.004,
+      "center_m": [
+        -0.1,
+        -0.19,
+        0.096
+      ]
+    }
+  ],
+  "lamps": [
+    {
+      "part": "station_lamp",
+      "on_rgba": [
+        0.08,
+        0.85,
+        0.18,
+        1
+      ],
+      "emission": 0.8
+    }
+  ],
+  "two_hand_start": {
+    "parts": [
+      "start_left",
+      "start_right"
+    ],
+    "max_interval_s": 0.5,
+    "requires_both_bearings_seated": true
+  },
+  "bearing_seats": [
+    {
+      "center_m": [
+        0,
+        0.12,
+        0.116
+      ],
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "shaft_diameter_m": 0.018,
+      "bearing_bore_m": 0.02,
+      "diametral_clearance_m": 0.002
+    },
+    {
+      "center_m": [
+        0,
+        -0.12,
+        0.116
+      ],
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "shaft_diameter_m": 0.018,
+      "bearing_bore_m": 0.02,
+      "diametral_clearance_m": 0.002
+    }
+  ],
+  "collision_exclusions": [
+    [
+      "start_left",
+      "body"
+    ],
+    [
+      "start_right",
+      "body"
+    ]
+  ],
+  "preview_variant": "default",
+  "preview_source": "Delivered OBJ meshes and exported albedos; 1024 native inspection, 512 thumbnail."
+}

@@ -6,10 +6,16 @@ into mesh vertices, preserving the shared prop frame. No per-part recentering.
 Source image textures should name a separate UV layer (e.g. LabelUV); UVMap is
 the nonoverlapping export/bake atlas. Polygonal bores specify an *apothem*;
 cylinders specify a circumradius so shafts never exceed their nominal diameter.
+
+PROP_PYTHON names the Python that runs the validators and artwork workers
+(numpy, scipy, trimesh, Pillow), e.g. the project env's interpreter. Artwork
+text uses the fonts in fonts/ (DejaVu Sans), so a prop builds the same on
+every machine.
 """
 
 import json
 import math
+import os
 import shutil
 import struct
 import subprocess
@@ -25,7 +31,8 @@ from mathutils import Vector
 from prop_schema import FICTIONAL_BRANDS, check_schema
 
 ROOT = Path(__file__).resolve().parents[2]
-VALIDATOR_PYTHON = Path("/Users/puheliang/miniforge3/envs/inovance-fineart/bin/python")
+VALIDATOR_PYTHON = Path(os.environ.get("PROP_PYTHON") or shutil.which("python3") or "python3")
+FONTS = Path(__file__).resolve().with_name("fonts")
 
 # Every builder imports this module, including source/geometry resume modes.
 bpy.context.preferences.filepaths.save_version = 0

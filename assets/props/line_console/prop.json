@@ -1,0 +1,500 @@
+{
+  "id": "line_console",
+  "task": "electronics_line",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    211.99999749660492,
+    319.9999928474426,
+    159.9780023097992
+  ],
+  "triangles": 17094,
+  "budget_class": "medium",
+  "static": true,
+  "dimensions_mm": {
+    "enclosure_xy": [
+      200,
+      320
+    ],
+    "front_height": 60,
+    "rear_height": 160,
+    "slope_degrees": 26.56505117707799,
+    "panel_uv": [
+      280,
+      190
+    ],
+    "mushroom_diameter": 40,
+    "button_travel": 4,
+    "emergency_travel": 5
+  },
+  "parts": [
+    {
+      "name": "body",
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "body_col_00.obj",
+        "body_col_01.obj",
+        "body_col_02.obj",
+        "body_col_03.obj",
+        "body_col_04.obj",
+        "body_col_05.obj",
+        "body_col_06.obj"
+      ],
+      "mass_kg": 3.635,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "parent": null,
+      "joint": null,
+      "source_collision_objects": [
+        "COL__body__00",
+        "COL__body__01",
+        "COL__body__02",
+        "COL__body__03",
+        "COL__body__04",
+        "COL__body__05",
+        "COL__body__06"
+      ]
+    },
+    {
+      "name": "panel",
+      "visual": "panel.obj",
+      "texture": "panel_albedo.png",
+      "texture_px": 1024,
+      "collision": [],
+      "mass_kg": 0.3,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "parent": "body",
+      "joint": null,
+      "source_collision_objects": []
+    },
+    {
+      "name": "reset_button",
+      "visual": "reset_button.obj",
+      "texture": "reset_button_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "reset_button_col_00.obj"
+      ],
+      "mass_kg": 0.01,
+      "friction": 0.8,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "panel",
+      "joint": {
+        "type": "slide",
+        "parent": "panel",
+        "axis": [
+          0.4472135901451111,
+          0.0,
+          -0.8944271802902222
+        ],
+        "anchor_m": [
+          0.018548987805843353,
+          0.10500000417232513,
+          0.12395155429840088
+        ],
+        "range": [
+          0.0,
+          0.004
+        ],
+        "damping": 0.6,
+        "frictionloss": 0.08,
+        "spring": {
+          "stiffness": 400.0,
+          "reference": 0.0
+        }
+      },
+      "source_collision_objects": [
+        "COL__reset_button__00"
+      ]
+    },
+    {
+      "name": "mode",
+      "visual": "mode.obj",
+      "texture": "mode_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "mode_col_00.obj"
+      ],
+      "mass_kg": 0.025,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "panel",
+      "joint": {
+        "type": "hinge",
+        "parent": "panel",
+        "axis": [
+          -0.4472135901451111,
+          0.0,
+          0.8944271802902222
+        ],
+        "anchor_m": [
+          0.018548987805843353,
+          0.03500000014901161,
+          0.12395155429840088
+        ],
+        "range": [
+          -0.7853981633974483,
+          0.7853981633974483
+        ],
+        "damping": 0.02,
+        "frictionloss": 0.025,
+        "detents": {
+          "positions_rad": [
+            -0.7853981633974483,
+            0.7853981633974483
+          ],
+          "labels": [
+            "MAN",
+            "AUTO"
+          ],
+          "holding_torque_nm": 0.08,
+          "snap_stiffness_nm_per_rad": 0.4,
+          "implementation": "bistable endpoint torque in simulator"
+        }
+      },
+      "source_collision_objects": [
+        "COL__mode__00"
+      ],
+      "recommended_initial_qpos": -0.7853981633974483
+    },
+    {
+      "name": "start_button",
+      "visual": "start_button.obj",
+      "texture": "start_button_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "start_button_col_00.obj"
+      ],
+      "mass_kg": 0.01,
+      "friction": 0.8,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "panel",
+      "joint": {
+        "type": "slide",
+        "parent": "panel",
+        "axis": [
+          0.4472135901451111,
+          0.0,
+          -0.8944271802902222
+        ],
+        "anchor_m": [
+          0.018548987805843353,
+          -0.03500000014901161,
+          0.12395155429840088
+        ],
+        "range": [
+          0.0,
+          0.004
+        ],
+        "damping": 0.6,
+        "frictionloss": 0.08,
+        "spring": {
+          "stiffness": 400.0,
+          "reference": 0.0
+        }
+      },
+      "source_collision_objects": [
+        "COL__start_button__00"
+      ]
+    },
+    {
+      "name": "stop_button",
+      "visual": "stop_button.obj",
+      "texture": "stop_button_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "stop_button_col_00.obj"
+      ],
+      "mass_kg": 0.01,
+      "friction": 0.8,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "panel",
+      "joint": {
+        "type": "slide",
+        "parent": "panel",
+        "axis": [
+          0.4472135901451111,
+          0.0,
+          -0.8944271802902222
+        ],
+        "anchor_m": [
+          0.018548987805843353,
+          -0.10500000417232513,
+          0.12395155429840088
+        ],
+        "range": [
+          0.0,
+          0.004
+        ],
+        "damping": 0.6,
+        "frictionloss": 0.08,
+        "spring": {
+          "stiffness": 400.0,
+          "reference": 0.0
+        }
+      },
+      "source_collision_objects": [
+        "COL__stop_button__00"
+      ]
+    },
+    {
+      "name": "emergency_button",
+      "visual": "emergency_button.obj",
+      "texture": "emergency_button_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "emergency_button_col_00.obj"
+      ],
+      "mass_kg": 0.01,
+      "friction": 0.8,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "panel",
+      "joint": {
+        "type": "slide",
+        "parent": "panel",
+        "axis": [
+          0.4472135901451111,
+          0.0,
+          -0.8944271802902222
+        ],
+        "anchor_m": [
+          -0.04584977403283119,
+          -0.10000000149011612,
+          0.09175217151641846
+        ],
+        "range": [
+          0.0,
+          0.005
+        ],
+        "damping": 0.6,
+        "frictionloss": 0.08,
+        "spring": {
+          "stiffness": 400.0,
+          "reference": 0.0
+        },
+        "latch": {
+          "engage_at_m": 0.0048,
+          "hold_at_m": 0.005,
+          "implementation": "Simulator state machine overrides spring after latching"
+        }
+      },
+      "source_collision_objects": [
+        "COL__emergency_button__00"
+      ]
+    }
+  ],
+  "recommended_instance_color_gain_range": [
+    0.97,
+    1.03
+  ],
+  "variants": [],
+  "notes": "Metres, Z up, front -X. Applied transforms in the shared prop frame. Cycles CPU 64-sample diffuse COLOR times (0.4 + 0.6 AO), sRGB8 albedo; PBR and artwork packed in source.blend. DejaVu Sans Bold, English only. Task 15 uses isolated finalization to protect existing props. Task 2 shell and panel frame reused, selector/bezel meshes appended read-only from panel_devices. RESET/START/STOP enlarged to 40 mm mushrooms per section 6.0 and user instruction. Row left-to-right is +Y to -Y: RESET, MAN/AUTO, START, STOP; emergency is lower right. Emergency spring is overridden by simulator latch once engaged. No built-in lamps. Body includes fixed rear gland, hence seven body proxies instead of six shell-only proxies. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification.",
+  "buttons": [
+    {
+      "part": "reset_button",
+      "press_direction": [
+        0.4472135901451111,
+        0.0,
+        -0.8944271802902222
+      ],
+      "travel_m": 0.004,
+      "stroke_m": 0.004,
+      "cap_diameter_mm": 40,
+      "activation_m": 0.0032
+    },
+    {
+      "part": "start_button",
+      "press_direction": [
+        0.4472135901451111,
+        0.0,
+        -0.8944271802902222
+      ],
+      "travel_m": 0.004,
+      "stroke_m": 0.004,
+      "cap_diameter_mm": 40,
+      "activation_m": 0.0032
+    },
+    {
+      "part": "stop_button",
+      "press_direction": [
+        0.4472135901451111,
+        0.0,
+        -0.8944271802902222
+      ],
+      "travel_m": 0.004,
+      "stroke_m": 0.004,
+      "cap_diameter_mm": 40,
+      "activation_m": 0.0032
+    },
+    {
+      "part": "emergency_button",
+      "press_direction": [
+        0.4472135901451111,
+        0.0,
+        -0.8944271802902222
+      ],
+      "travel_m": 0.005,
+      "stroke_m": 0.005,
+      "cap_diameter_mm": 40,
+      "activation_m": 0.004
+    }
+  ],
+  "lamps": [],
+  "devices": [
+    {
+      "name": "reset",
+      "library_part": "btn_blue",
+      "panel_uv_mm": [
+        105,
+        140
+      ],
+      "position_m": [
+        0.018548987805843353,
+        0.10500000417232513,
+        0.12395155429840088
+      ]
+    },
+    {
+      "name": "mode",
+      "library_part": "selector_knob",
+      "panel_uv_mm": [
+        35,
+        140
+      ],
+      "position_m": [
+        0.018548987805843353,
+        0.03500000014901161,
+        0.12395155429840088
+      ]
+    },
+    {
+      "name": "start",
+      "library_part": "btn_green",
+      "panel_uv_mm": [
+        -35,
+        140
+      ],
+      "position_m": [
+        0.018548987805843353,
+        -0.03500000014901161,
+        0.12395155429840088
+      ]
+    },
+    {
+      "name": "stop",
+      "library_part": "btn_red",
+      "panel_uv_mm": [
+        -105,
+        140
+      ],
+      "position_m": [
+        0.018548987805843353,
+        -0.10500000417232513,
+        0.12395155429840088
+      ]
+    },
+    {
+      "name": "emergency",
+      "library_part": "estop",
+      "panel_uv_mm": [
+        -100,
+        68
+      ],
+      "position_m": [
+        -0.04584977403283119,
+        -0.10000000149011612,
+        0.09175217151641846
+      ]
+    }
+  ],
+  "recommended_placement_m": [
+    0.436,
+    -0.2,
+    0.9
+  ],
+  "selector": {
+    "part": "mode",
+    "positions_rad": [
+      -0.7853981633974483,
+      0.7853981633974483
+    ],
+    "labels": [
+      "MAN",
+      "AUTO"
+    ],
+    "initial_qpos": -0.7853981633974483
+  },
+  "collision_exclusions": [
+    [
+      "reset_button",
+      "body"
+    ],
+    [
+      "reset_button",
+      "panel"
+    ],
+    [
+      "mode",
+      "body"
+    ],
+    [
+      "mode",
+      "panel"
+    ],
+    [
+      "start_button",
+      "body"
+    ],
+    [
+      "start_button",
+      "panel"
+    ],
+    [
+      "stop_button",
+      "body"
+    ],
+    [
+      "stop_button",
+      "panel"
+    ],
+    [
+      "emergency_button",
+      "body"
+    ],
+    [
+      "emergency_button",
+      "panel"
+    ]
+  ]
+}

@@ -15,10 +15,11 @@ from pathlib import Path
 
 import mujoco
 import numpy as np
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 
 from sim import tabletop as tt
 from sim.camera_rig import POLICY_CAMERAS
+from sim.episode import overlay_font
 
 VIEW_CAMERAS = ("head_d435", "body_d435")
 
@@ -51,7 +52,7 @@ def pixel_counts(scene, renderer, groups):
 def sheet(scene, renderer, wide, title):
     """Overview (1280 x 720) above the four policy cameras (640 x 480 each)."""
     canvas = Image.new("RGB", (1280, 720 + 960), (20, 27, 38))
-    font = ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial.ttf", 20)
+    font = overlay_font(20)
     draw = ImageDraw.Draw(canvas)
     wide.update_scene(scene.d, camera="overview")
     canvas.paste(Image.fromarray(wide.render()), (0, 0))

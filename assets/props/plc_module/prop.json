@@ -1,0 +1,80 @@
+{
+  "id": "plc_module",
+  "task": "electronics_line",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    65.01000002026558,
+    90.02000093460083,
+    30.009999871253967
+  ],
+  "triangles": 484,
+  "budget_class": "small",
+  "static": false,
+  "dimensions_mm": {
+    "xyz": [
+      65,
+      90,
+      30
+    ],
+    "grip_width": 65,
+    "flat_grip_region_y": 50,
+    "front_color_band_height": 8,
+    "model_letter_height": 12,
+    "DIN_recess_depth": 2.5
+  },
+  "parts": [
+    {
+      "name": "body",
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "body_col_00.obj"
+      ],
+      "mass_kg": 0.15,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": null,
+      "joint": null,
+      "source_collision_objects": [
+        "COL__body__00"
+      ]
+    }
+  ],
+  "recommended_instance_color_gain_range": [
+    0.97,
+    1.03
+  ],
+  "variants": [
+    {
+      "name": "DI",
+      "model": "DI16",
+      "color": "#1565C0",
+      "textures": {
+        "body": "body_albedo.png"
+      }
+    },
+    {
+      "name": "DO",
+      "model": "DO16",
+      "color": "#EF6C00",
+      "textures": {
+        "body": "body_albedo_v1.png"
+      }
+    },
+    {
+      "name": "AI",
+      "model": "AI4",
+      "color": "#2E7D32",
+      "textures": {
+        "body": "body_albedo_v2.png"
+      }
+    }
+  ],
+  "notes": "Metres, Z up, front -X. Applied transforms in the shared prop frame. Cycles CPU 64-sample diffuse COLOR times (0.4 + 0.6 AO), sRGB8 albedo; PBR and artwork packed in source.blend. DejaVu Sans Bold, English only. Task 15 uses isolated finalization to protect existing props. Brand is split into IMC / Controls to retain 12 mm glyph height on a 90 mm face. DIN rebates and terminal are outside the central 50 mm jaw contact strip. Terminal, flip tag, vents and LEDs are visual details; nominal one-box collision. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification."
+}

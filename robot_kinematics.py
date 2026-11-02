@@ -2,10 +2,10 @@
 
 "Real follows sim": Cartesian goals are solved here, and the simulation and the
 real controller both receive joint commands only, so the controller's own IK never
-picks a pose. FK and Jacobians come from Pinocchio on the source URDF, with each
-{side}_grasp tool point and base_link placed as in the simulation; FK equals the
-MuJoCo scene's to 1e-15 m and the controller image's MDH table to 1e-14, and the
-user found the URDF to match the real robot. Joint limits are the controller-
+picks a pose. FK and Jacobians come from Pinocchio on the source URDF
+(wheel_robot_26.8.16_3 since 2026-10-25, exported in the controller's joint
+convention), with each {side}_grasp tool point and the URDF root placed as in
+the simulation (sim/franzi_model.py). Joint limits are the controller-
 aligned ranges the scene uses. Needs NumPy, SciPy, PyYAML and Pinocchio (pin), as
 in the inovance-fineart env; no physics engine, so simbridge services and a
 real-robot host can import it.
@@ -21,6 +21,16 @@ from scipy.optimize import least_squares
 
 ROOT = Path(__file__).resolve().parent
 SOURCE = ROOT / "assets/franzi_source"
+URDF = SOURCE / "wheel_robot_26.8.16_3.urdf"
+# The base frame B: world-aligned, BASE_HEIGHT above the floor under the base
+# centre, where the previous URDF's root was. The new root lies on its back
+# (x up, y forward, z left) on the calf axis, ROOT_IN_BASE in B. Pinocchio
+# works in B; the world is B plus base (Kinematics.base).
+BASE_HEIGHT = 0.0872648
+ROOT_IN_BASE = (
+    np.array([[0, 1, 0], [0, 0, 1], [1, 0, 0]], float),
+    np.array([0, 0, 0.24785]),
+)
 # Controller limits read from the controller image, the SDK <-> URDF joint mapping
 # and the tool point, shared with simbridge.
 ROBOT_CONFIG = ROOT / "config/robot/franzi_sdk.yaml"
@@ -57,8 +67,7 @@ def controller_ranges():
     """
     config = yaml.safe_load(ROBOT_CONFIG.read_text())
     margin = config["limits"]["position_margin_rad"]
-    source = ET.parse(SOURCE / "franzi.xml").getroot()
-    joints = {j.get("name"): j for j in source.iter("joint")}
+    joints = {j.get("name"): j for j in ET.parse(URDF).getroot().findall("joint")}
     out = {}
     for unit in config["units"].values():
         mapping = unit["mapping"]["controller_mdh"]
@@ -68,7 +77,8 @@ def controller_ranges():
             mapping["sign"],
             mapping["offset_rad"],
         ):
-            lo, hi = map(float, joints[name].get("range").split())
+            limit = joints[name].find("limit")
+            lo, hi = float(limit.get("lower")), float(limit.get("upper"))
             c_lo, c_hi = sorted((np.radians(v) - offset) / sign for v in limits)
             new = (
                 c_lo + margin if c_lo > lo else lo,
@@ -95,6 +105,23 @@ def controller_rates():
     }
 
 
+def root_joints():
+    """The URDF's movable joints that Pinocchio hangs off its universe: those
+    whose parent link reaches the root link through fixed joints only."""
+    joints = ET.parse(URDF).getroot().findall("joint")
+    into = {j.find("child").get("link"): j for j in joints}
+    names = []
+    for joint in joints:
+        if joint.get("type") == "fixed":
+            continue
+        link = joint.find("parent").get("link")
+        while link in into and into[link].get("type") == "fixed":
+            link = into[link].find("parent").get("link")
+        if link not in into:
+            names.append(joint.get("name"))
+    return names
+
+
 class Kinematics:
     """FK and IK of each arm's grasp point in the world frame (fixed base).
 
@@ -106,12 +133,25 @@ class Kinematics:
 
     def __init__(self, margin=PLANNING_MARGIN):
         self.margin = margin
-        self.model = pin.buildModelFromUrdf(str(SOURCE / "wheel_robot_4.0.urdf"))
-        source = ET.parse(SOURCE / "franzi.xml").getroot()
-        base = source.find(".//body[@name='base_link']")
-        self.base = np.array(base.get("pos").split(), float)  # URDF root in world
+        self.model = pin.buildModelFromUrdf(str(URDF))
+        # Into B: everything hung off the root moves with it. The joints come
+        # from the URDF tree: Isaac's Pinocchio 2.7 can't index model.parents
+        # inside Kit, and calls a frame's parentJoint parent.
+        root = pin.SE3(*ROOT_IN_BASE)
+        for name in root_joints():
+            j = self.model.getJointId(name)
+            self.model.jointPlacements[j] = root * self.model.jointPlacements[j]
+        for f in range(self.model.nframes):
+            frame = self.model.frames[f]
+            parent = (
+                frame.parentJoint if hasattr(frame, "parentJoint") else frame.parent
+            )
+            if parent == 0:
+                frame.placement = root * frame.placement
+                self.model.frames[f] = frame
+        self.base = np.array([0.0, 0.0, BASE_HEIGHT])  # B in the world
         config = yaml.safe_load(ROBOT_CONFIG.read_text())
-        tcp = config["frames"]["tcp"]["position_in_wrist_roll_link_m"]
+        tcp = config["frames"]["tcp"]
         ranges = controller_ranges()
         self.neutral = pin.neutral(self.model)
         self.body_q = {
@@ -129,10 +169,19 @@ class Kinematics:
             joints = [self.model.joints[self.model.getJointId(n)] for n in names]
             self.idx_q[side] = np.array([j.idx_q for j in joints])
             self.idx_v[side] = np.array([j.idx_v for j in joints])
-            placement = pin.SE3(np.eye(3), np.array(tcp[side], float))
+            # The tool point in its gripper link, which is welded to the wrist roll.
+            gripper = self.model.getFrameId(tcp["parent_link"][side])
+            placement = self.model.frames[gripper].placement * pin.SE3(
+                np.array(tcp["rotation"][side], float),
+                np.array(tcp["position_m"][side], float),
+            )
             self.frames[side] = self.model.addFrame(
                 pin.Frame(
-                    f"{side}_grasp", joints[-1].id, 0, placement, pin.FrameType.OP_FRAME
+                    f"{side}_grasp",
+                    joints[-1].id,
+                    gripper,
+                    placement,
+                    pin.FrameType.OP_FRAME,
                 )
             )
             self.limits[side] = np.array([ranges[n]["aligned_rad"] for n in names])
@@ -209,12 +258,19 @@ class Kinematics:
                 )
             return cache[key]
 
+        # The fixed seeds in wheel_robot_26.8.16_3's convention: wheel_robot_4.0's
+        # times its SDK signs [-1, 1, -1, -1, -1, -1, 1], the same arm postures.
+        # Left in the old convention, their elbows lay outside the new range,
+        # clipped onto its bound, and alone they solved 21-36% of the reachable
+        # targets on a grid (these: 44-98%).
         sign = 1 if side == "left" else -1
         seeds = [
             current,
-            np.array([0.2, 0.5 * sign, -0.3 * sign, -1.6, 1.4 * sign, 1.0, 0.6 * sign]),
-            np.array([0.5, 1.0 * sign, 0, -2, 0, 1.0, 0]),
-            np.array([-0.4, 0.3 * sign, 0, -1.2, 0, 1.0, 0]),
+            np.array(
+                [-0.2, 0.5 * sign, 0.3 * sign, 1.6, -1.4 * sign, -1.0, 0.6 * sign]
+            ),
+            np.array([-0.5, 1.0 * sign, 0, 2.0, 0, -1.0, 0]),
+            np.array([0.4, 0.3 * sign, 0, 1.2, 0, -1.0, 0]),
         ]
         candidates = []
         inset = max(0.001, 2 * self.margin)  # seeds start inside the bounds

@@ -1,0 +1,54 @@
+{
+  "id": "terminal_block",
+  "task": "order_picking",
+  "units": "m",
+  "origin": "bottom_center",
+  "budget_class": "small",
+  "bbox_mm": [
+    45.000002,
+    22.0,
+    35.020001
+  ],
+  "triangles": 7358,
+  "source": "source.blend",
+  "preview": "preview.png",
+  "inspection": "inspection.png",
+  "parts": [
+    {
+      "name": "body",
+      "mass_kg": 0.05,
+      "parent": null,
+      "joint": null,
+      "texture_px": 1024,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "collision": [
+        "body_col_00.obj"
+      ],
+      "source_visual_object": "body",
+      "source_collision_objects": [
+        "COL__body__000"
+      ]
+    }
+  ],
+  "variants": [],
+  "dimensions_mm": {
+    "outer_xyz": [
+      45,
+      22,
+      35
+    ],
+    "orange_wells": 4,
+    "well_diameter": 7.6
+  },
+  "notes": "Metres, Z up, robot front -X, shared bottom-centre frame; applied transforms. CPU Cycles 64 diffuse colour times mix(1, AO, 0.6); PBR source retained. Inspection render 1024 square; preview thumbnail 512 for the unchanged validator. Four shallow screw wells and screw slots are visual; prescribed single box collision bridges them. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification.",
+  "static": false,
+  "preview_variant": "default",
+  "preview_source": "Delivered OBJ meshes and exported albedos; 1024 native inspection, 512 thumbnail."
+}

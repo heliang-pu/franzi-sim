@@ -6,7 +6,7 @@
   "bbox_mm": [
     700.0,
     1200.0,
-    1420.0
+    1520.0
   ],
   "triangles": 89256,
   "budget_class": "large",
@@ -79,28 +79,28 @@
     "bench_xyz": [
       700,
       1200,
-      800
+      900
     ],
     "top_substrate_thickness": 40,
     "esd_mat_thickness": 2,
-    "finished_top_z": 800,
+    "finished_top_z": 900,
     "top_substrate_z": [
-      758,
-      798
+      858,
+      898
     ],
     "pegboard_yz": [
       1200,
       600
     ],
     "pegboard_z": [
-      820,
-      1420
+      920,
+      1520
     ],
     "pegboard_holes": 288,
     "pegboard_hole_diameter": 6,
     "pegboard_pitch": 50,
     "lower_shelf_top_z": 199
   },
-  "notes": "Finished ESD working surface is Z800: the exact 40 mm top lies at Z758..798, with a separate 2 mm grey-green mat above it. Black PVC is the -X front edge. The 1200 x 600 rear pegboard is on +X at Z820..1420, with 288 real through-holes and steel spanners, screwdrivers, hammer, pliers and hex keys facing the robot. Overall bbox includes the pegboard; 800 mm describes the bench working height. The task explicitly requests only ONE tabletop collision box; legs, lower shelf, feet and pegboard are visual-only and intentionally omitted from collision. Its top is exactly Z800, including the mat, with nominal XY 700 x 1200. Keep tools/background behind the robot manipulation workspace. Static environment geometry; mass values are descriptive, not free-body dynamics. Metres, Z up, robot-facing front -X; transforms applied in the shared prop frame. 30-degree split smoothing and triangulated OBJ with exported normals. New parts have nonoverlapping Smart UV 66-degree atlases with 0.01 island margins. Albedo = CPU Cycles 64-sample diffuse COLOR * (0.4 + 0.6 * AO), RGB8 sRGB, without direct illumination or highlights. Full procedural Principled PBR and source images remain packed in source.blend. Source roughness variation cannot be represented by MuJoCo's single highlight setting per part. Preview: CPU Cycles 64, 1024 square, neutral grey, three area lights, front-left above.  Blender's fixed 0.01 fractional margin collapses the numerous peg-hole UV islands to zero area. This dense part uses Smart UV at the same 66 degrees with a 0.002 fractional island margin (about 4 pixels at 2048), preserving positive-area, nonoverlapping islands. The actual uv_island_margin is recorded per affected part. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder.",
+  "notes": "Finished ESD working surface is Z900: the exact 40 mm top lies at Z858..898, with a separate 2 mm grey-green mat above it. Black PVC is the -X front edge. The 1200 x 600 rear pegboard is on +X at Z920..1520, with 288 real through-holes and steel spanners, screwdrivers, hammer, pliers and hex keys facing the robot. Overall bbox includes the pegboard; 900 mm describes the bench working height (raised from 800 on 2026-10-25 so that the fixed-waist robot reaches further over it). The task explicitly requests only ONE tabletop collision box; legs, lower shelf, feet and pegboard are visual-only and intentionally omitted from collision. Its top is exactly Z900, including the mat, with nominal XY 700 x 1200. Keep tools/background behind the robot manipulation workspace. Static environment geometry; mass values are descriptive, not free-body dynamics. Metres, Z up, robot-facing front -X; transforms applied in the shared prop frame. 30-degree split smoothing and triangulated OBJ with exported normals. New parts have nonoverlapping Smart UV 66-degree atlases with 0.01 island margins. Albedo = CPU Cycles 64-sample diffuse COLOR * (0.4 + 0.6 * AO), RGB8 sRGB, without direct illumination or highlights. Full procedural Principled PBR and source images remain packed in source.blend. Source roughness variation cannot be represented by MuJoCo's single highlight setting per part. Preview: CPU Cycles 64, 512 square, neutral grey, three area lights, front-left above.  Blender's fixed 0.01 fractional margin collapses the numerous peg-hole UV islands to zero area. This dense part uses Smart UV at the same 66 degrees with a 0.002 fractional island margin (about 4 pixels at 2048), preserving positive-area, nonoverlapping islands. The actual uv_island_margin is recorded per affected part. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification.",
   "build_blender_version": "5.2.0 LTS"
 }

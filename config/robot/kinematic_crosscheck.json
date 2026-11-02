@@ -1,8 +1,8 @@
 {
   "inputs": {
     "urdf": {
-      "path": "assets/franzi_source/wheel_robot_4.0.urdf",
-      "sha256": "12787a2aaa067a294a23c60ce0c70a1efcb48b3a6a15920f8e96c73e87643656"
+      "path": "assets/franzi_source/wheel_robot_26.8.16_3.urdf",
+      "sha256": "c957b94960f5507275c4b3137081840d7e04a3971c6c7ef6bc33dd2d28fe3d33"
     },
     "machine_params": {
       "path": "sdk_review/controller_image_probe_v2/files/image/inocfg/inbc_for_humanoid/machine_params.json",
@@ -31,153 +31,107 @@
       ],
       "mdh_convention_tested": "Craig modified DH, theta_i = q_i + theta_offset_i",
       "sign_assignments_searched": 128,
-      "exact_fk_solutions": 14,
+      "exact_fk_solutions": 12,
       "exact_solutions": [
         {
           "signs": [
-            -1,
             1,
-            -1,
-            -1,
-            -1,
-            -1,
+            1,
+            1,
+            1,
+            1,
+            1,
             1
           ],
           "offsets_deg": [
             0.0,
-            0.0,
             -0.0,
             0.0,
             -0.0,
-            -0.0,
+            0.0,
+            0.0,
             0.0
           ],
-          "rms_m": 1.7172352561054568e-15,
+          "rms_m": 2.0844064347654583e-07,
           "range_consistent": true,
           "worst_range_endpoint_difference_deg": 9.943
         },
         {
           "signs": [
-            -1,
             1,
-            -1,
-            -1,
-            -1,
-            -1,
+            1,
+            1,
+            1,
+            1,
+            1,
             -1
           ],
           "offsets_deg": [
             0.0,
-            0.0,
             -0.0,
             0.0,
+            -0.0,
             0.0,
             180.0,
             0.0
           ],
-          "rms_m": 8.444268208957348e-17,
+          "rms_m": 2.0844073560921254e-07,
           "range_consistent": false,
           "worst_range_endpoint_difference_deg": 180.161
         },
         {
           "signs": [
             1,
-            -1,
-            -1,
-            -1,
-            -1,
             1,
+            1,
+            1,
+            1,
+            -1,
             1
           ],
           "offsets_deg": [
             0.0,
             -0.0,
-            180.0,
             0.0,
-            180.0,
-            180.0,
-            0.0
-          ],
-          "rms_m": 2.3396806059797855e-09,
-          "range_consistent": false,
-          "worst_range_endpoint_difference_deg": 180.168
-        },
-        {
-          "signs": [
-            1,
-            -1,
-            -1,
-            -1,
-            -1,
-            1,
-            -1
-          ],
-          "offsets_deg": [
-            0.0,
-            0.0,
-            180.0,
             -0.0,
             180.0,
-            0.0,
+            180.0,
             0.0
           ],
-          "rms_m": 1.1350927056502081e-11,
+          "rms_m": 2.0844064347390655e-07,
           "range_consistent": false,
           "worst_range_endpoint_difference_deg": 180.168
         },
         {
           "signs": [
             1,
-            -1,
-            -1,
-            -1,
-            -1,
+            1,
+            1,
+            1,
+            1,
             -1,
             -1
           ],
           "offsets_deg": [
             0.0,
+            -0.0,
             0.0,
+            -0.0,
             180.0,
-            0.0,
-            0.0,
-            180.0,
+            -0.0,
             0.0
           ],
-          "rms_m": 9.580998340387223e-17,
+          "rms_m": 2.0844064346080954e-07,
           "range_consistent": false,
           "worst_range_endpoint_difference_deg": 180.168
         },
         {
           "signs": [
-            -1,
             1,
             -1,
-            -1,
-            -1,
             1,
-            -1
-          ],
-          "offsets_deg": [
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            180.0,
-            0.0,
-            0.0
-          ],
-          "rms_m": 5.321163179431613e-17,
-          "range_consistent": false,
-          "worst_range_endpoint_difference_deg": 180.168
-        },
-        {
-          "signs": [
-            -1,
-            -1,
-            -1,
-            -1,
-            -1,
+            1,
+            1,
             1,
             1
           ],
@@ -185,23 +139,46 @@
             0.0,
             180.0,
             180.0,
+            -0.0,
             0.0,
-            180.0,
-            180.0,
+            0.0,
             0.0
           ],
-          "rms_m": 1.3454003328141912e-09,
+          "rms_m": 2.0844064346463366e-07,
           "range_consistent": false,
           "worst_range_endpoint_difference_deg": 180.168
         },
         {
           "signs": [
-            -1,
-            -1,
-            -1,
-            -1,
+            1,
             -1,
             1,
+            1,
+            1,
+            1,
+            -1
+          ],
+          "offsets_deg": [
+            0.0,
+            180.0,
+            180.0,
+            -0.0,
+            0.0,
+            180.0,
+            0.0
+          ],
+          "rms_m": 2.0844064345891505e-07,
+          "range_consistent": false,
+          "worst_range_endpoint_difference_deg": 180.168
+        },
+        {
+          "signs": [
+            1,
+            -1,
+            1,
+            1,
+            1,
+            -1,
             -1
           ],
           "offsets_deg": [
@@ -213,7 +190,7 @@
             -0.0,
             0.0
           ],
-          "rms_m": 3.906519481602371e-12,
+          "rms_m": 2.0844064346612348e-07,
           "range_consistent": false,
           "worst_range_endpoint_difference_deg": 180.168
         },
@@ -221,78 +198,55 @@
           "signs": [
             -1,
             -1,
-            -1,
-            -1,
-            -1,
+            1,
+            1,
+            1,
             -1,
             1
           ],
           "offsets_deg": [
             0.0,
-            180.0,
-            180.0,
             0.0,
-            0.0,
+            180.0,
             -0.0,
+            180.0,
+            180.0,
             0.0
           ],
-          "rms_m": 2.821291357483213e-16,
+          "rms_m": 2.0844064346663697e-07,
           "range_consistent": false,
           "worst_range_endpoint_difference_deg": 180.168
         },
         {
           "signs": [
             -1,
-            -1,
-            -1,
-            -1,
-            -1,
-            -1,
-            -1
-          ],
-          "offsets_deg": [
-            0.0,
-            180.0,
-            180.0,
-            0.0,
-            0.0,
-            180.0,
-            0.0
-          ],
-          "rms_m": 1.6687022191929385e-16,
-          "range_consistent": false,
-          "worst_range_endpoint_difference_deg": 180.168
-        },
-        {
-          "signs": [
             1,
             1,
-            -1,
-            -1,
-            -1,
+            1,
+            1,
             1,
             1
           ],
           "offsets_deg": [
             0.0,
             180.0,
+            0.0,
             -0.0,
             0.0,
-            180.0,
-            180.0,
+            0.0,
             0.0
           ],
-          "rms_m": 3.967033389755295e-11,
+          "rms_m": 2.084408440751213e-07,
           "range_consistent": false,
           "worst_range_endpoint_difference_deg": 180.206
         },
         {
           "signs": [
+            -1,
             1,
             1,
-            -1,
-            -1,
-            -1,
+            1,
+            1,
             1,
             -1
           ],
@@ -301,21 +255,21 @@
             180.0,
             0.0,
             -0.0,
+            0.0,
             180.0,
-            -0.0,
             0.0
           ],
-          "rms_m": 8.926532804118243e-12,
+          "rms_m": 2.0844064352943316e-07,
           "range_consistent": false,
           "worst_range_endpoint_difference_deg": 180.206
         },
         {
           "signs": [
+            -1,
             1,
             1,
-            -1,
-            -1,
-            -1,
+            1,
+            1,
             -1,
             1
           ],
@@ -323,65 +277,65 @@
             0.0,
             180.0,
             0.0,
-            0.0,
             -0.0,
-            -0.0,
+            180.0,
+            180.0,
             0.0
           ],
-          "rms_m": 1.1312276512009759e-16,
+          "rms_m": 2.0844064346278567e-07,
           "range_consistent": false,
           "worst_range_endpoint_difference_deg": 180.206
         },
         {
           "signs": [
+            -1,
             1,
             1,
-            -1,
-            -1,
-            -1,
+            1,
+            1,
             -1,
             -1
           ],
           "offsets_deg": [
             0.0,
             180.0,
-            -0.0,
-            -0.0,
             0.0,
+            -0.0,
             180.0,
+            -0.0,
             0.0
           ],
-          "rms_m": 1.893997884615871e-11,
+          "rms_m": 2.0844064345541e-07,
           "range_consistent": false,
           "worst_range_endpoint_difference_deg": 180.206
         }
       ],
-      "standard_dh_best_rms_m": 0.07235924972883752,
-      "seconds": 222.6,
+      "standard_dh_best_rms_m": 0.07456624167547315,
+      "seconds": 202.5,
       "status": "unique: FK exact up to a discrete family; archive ranges select one",
       "selected": {
         "signs": [
-          -1,
           1,
-          -1,
-          -1,
-          -1,
-          -1,
+          1,
+          1,
+          1,
+          1,
+          1,
           1
         ],
         "offsets_rad": [
           0.0,
-          0.0,
-          -0.0,
-          0.0,
-          -0.0,
-          -0.0,
+          -3.435753e-06,
+          3.823873e-06,
+          -1.38931e-07,
+          2.233038e-06,
+          3.458115e-06,
           0.0
         ],
         "validation": {
           "samples": 500,
-          "max_position_error_m": 1.2863534048538412e-14,
-          "max_rotation_error_rad": 2.1172269791858184e-14
+          "max_position_error_m": 3.1793260398456645e-06,
+          "max_rotation_error_rad": 1.443552524468755e-05
         },
         "ranges": [
           {
@@ -417,7 +371,7 @@
           {
             "sim_range_mapped_to_sdk_deg": [
               -170.168,
-              170.168
+              170.169
             ],
             "controller_range_deg": [
               -170.0,
@@ -425,13 +379,13 @@
             ],
             "endpoint_difference_deg": [
               0.168,
-              0.168
+              0.169
             ],
             "consistent": true
           },
           {
             "sim_range_mapped_to_sdk_deg": [
-              -7.448,
+              -14.897,
               150.115
             ],
             "controller_range_deg": [
@@ -439,7 +393,7 @@
               148.0
             ],
             "endpoint_difference_deg": [
-              7.552,
+              0.103,
               2.115
             ],
             "consistent": true
@@ -447,7 +401,7 @@
           {
             "sim_range_mapped_to_sdk_deg": [
               -170.168,
-              170.168
+              170.169
             ],
             "controller_range_deg": [
               -170.0,
@@ -455,13 +409,13 @@
             ],
             "endpoint_difference_deg": [
               0.168,
-              0.168
+              0.169
             ],
             "consistent": true
           },
           {
             "sim_range_mapped_to_sdk_deg": [
-              -60.161,
+              -60.16,
               60.161
             ],
             "controller_range_deg": [
@@ -469,7 +423,7 @@
               60.0
             ],
             "endpoint_difference_deg": [
-              0.161,
+              0.16,
               0.161
             ],
             "consistent": true
@@ -496,49 +450,49 @@
           "mdh_base_in_parent": {
             "R": [
               [
-                0.0,
                 1.0,
-                0.0
+                4.324e-06,
+                1.412e-06
               ],
               [
-                -0.0,
-                0.0,
-                -1.0
+                -4.324e-06,
+                1.0,
+                4.68e-07
               ],
               [
-                -1.0,
-                0.0,
-                0.0
+                -1.412e-06,
+                -4.68e-07,
+                1.0
               ]
             ],
             "p_m": [
-              -0.0,
-              0.2385,
-              0.374
+              1.91e-07,
+              5.6e-08,
+              3.37e-07
             ]
           },
           "mdh_flange_in_child_link": {
             "R": [
               [
-                -0.0,
-                -0.0,
-                1.0
-              ],
-              [
-                0.0,
                 1.0,
-                0.0
+                1.062e-06,
+                2.181e-06
               ],
               [
-                -1.0,
-                0.0,
-                -0.0
+                -1.062e-06,
+                1.0,
+                -5.87e-07
+              ],
+              [
+                -2.181e-06,
+                5.87e-07,
+                1.0
               ]
             ],
             "p_m": [
-              -0.0303,
-              0.0,
-              -0.0
+              -1.83e-07,
+              4.02e-07,
+              -4e-09
             ]
           }
         },
@@ -561,51 +515,51 @@
       ],
       "mdh_convention_tested": "Craig modified DH, theta_i = q_i + theta_offset_i",
       "sign_assignments_searched": 128,
-      "exact_fk_solutions": 14,
+      "exact_fk_solutions": 12,
       "exact_solutions": [
         {
           "signs": [
-            -1,
             1,
-            -1,
-            -1,
-            -1,
-            -1,
+            1,
+            1,
+            1,
+            1,
+            1,
             1
           ],
           "offsets_deg": [
             0.0,
             -0.0,
             0.0,
-            0.0,
+            -0.0,
             0.0,
             0.0,
             0.0
           ],
-          "rms_m": 2.588051032771662e-16,
+          "rms_m": 2.0844064347654583e-07,
           "range_consistent": true,
           "worst_range_endpoint_difference_deg": 9.943
         },
         {
           "signs": [
+            -1,
             1,
             1,
-            -1,
-            -1,
-            -1,
-            -1,
+            1,
+            1,
+            1,
             1
           ],
           "offsets_deg": [
             0.0,
             180.0,
             0.0,
-            0.0,
+            -0.0,
             0.0,
             0.0,
             0.0
           ],
-          "rms_m": 6.599376398006963e-17,
+          "rms_m": 2.084408440751213e-07,
           "range_consistent": false,
           "worst_range_endpoint_difference_deg": 180.091
         },
@@ -613,22 +567,22 @@
           "signs": [
             1,
             1,
-            -1,
-            -1,
-            -1,
-            -1,
+            1,
+            1,
+            1,
+            1,
             -1
           ],
           "offsets_deg": [
             0.0,
-            180.0,
             -0.0,
+            0.0,
             -0.0,
             0.0,
             180.0,
             0.0
           ],
-          "rms_m": 1.8806618350976673e-11,
+          "rms_m": 2.0844073560921254e-07,
           "range_consistent": false,
           "worst_range_endpoint_difference_deg": 180.161
         },
@@ -636,22 +590,22 @@
           "signs": [
             -1,
             1,
-            -1,
-            -1,
-            -1,
-            -1,
+            1,
+            1,
+            1,
+            1,
             -1
           ],
           "offsets_deg": [
             0.0,
-            0.0,
+            180.0,
             0.0,
             -0.0,
             0.0,
             180.0,
             0.0
           ],
-          "rms_m": 8.367045875486726e-17,
+          "rms_m": 2.0844064352943316e-07,
           "range_consistent": false,
           "worst_range_endpoint_difference_deg": 180.161
         },
@@ -659,33 +613,79 @@
           "signs": [
             1,
             1,
+            1,
+            1,
+            1,
             -1,
+            1
+          ],
+          "offsets_deg": [
+            0.0,
+            -0.0,
+            0.0,
+            -0.0,
+            180.0,
+            180.0,
+            0.0
+          ],
+          "rms_m": 2.0844064347390655e-07,
+          "range_consistent": false,
+          "worst_range_endpoint_difference_deg": 180.168
+        },
+        {
+          "signs": [
+            1,
+            1,
+            1,
+            1,
+            1,
             -1,
+            -1
+          ],
+          "offsets_deg": [
+            0.0,
+            -0.0,
+            0.0,
+            -0.0,
+            180.0,
+            -0.0,
+            0.0
+          ],
+          "rms_m": 2.0844064346080954e-07,
+          "range_consistent": false,
+          "worst_range_endpoint_difference_deg": 180.168
+        },
+        {
+          "signs": [
             -1,
             1,
+            1,
+            1,
+            1,
+            -1,
             1
           ],
           "offsets_deg": [
             0.0,
             180.0,
             0.0,
-            0.0,
+            -0.0,
             180.0,
             180.0,
             0.0
           ],
-          "rms_m": 3.7162582940044e-09,
+          "rms_m": 2.0844064346278567e-07,
           "range_consistent": false,
           "worst_range_endpoint_difference_deg": 180.168
         },
         {
           "signs": [
+            -1,
+            1,
+            1,
             1,
             1,
             -1,
-            -1,
-            -1,
-            1,
             -1
           ],
           "offsets_deg": [
@@ -697,30 +697,30 @@
             -0.0,
             0.0
           ],
-          "rms_m": 1.8940663335748384e-11,
+          "rms_m": 2.0844064345541e-07,
           "range_consistent": false,
           "worst_range_endpoint_difference_deg": 180.168
         },
         {
           "signs": [
-            1,
-            -1,
-            -1,
             -1,
             -1,
             1,
+            1,
+            1,
+            -1,
             1
           ],
           "offsets_deg": [
             0.0,
-            -0.0,
-            180.0,
             0.0,
+            180.0,
+            -0.0,
             180.0,
             180.0,
             0.0
           ],
-          "rms_m": 3.5025926057989526e-09,
+          "rms_m": 2.0844064346663697e-07,
           "range_consistent": false,
           "worst_range_endpoint_difference_deg": 180.168
         },
@@ -728,78 +728,9 @@
           "signs": [
             1,
             -1,
-            -1,
-            -1,
-            -1,
             1,
-            -1
-          ],
-          "offsets_deg": [
-            0.0,
-            -0.0,
-            180.0,
-            0.0,
-            180.0,
-            0.0,
-            0.0
-          ],
-          "rms_m": 8.333811229738139e-17,
-          "range_consistent": false,
-          "worst_range_endpoint_difference_deg": 180.168
-        },
-        {
-          "signs": [
             1,
-            -1,
-            -1,
-            -1,
-            -1,
-            -1,
-            -1
-          ],
-          "offsets_deg": [
-            0.0,
-            0.0,
-            180.0,
-            -0.0,
-            0.0,
-            180.0,
-            0.0
-          ],
-          "rms_m": 1.1127676804503975e-16,
-          "range_consistent": false,
-          "worst_range_endpoint_difference_deg": 180.168
-        },
-        {
-          "signs": [
-            -1,
             1,
-            -1,
-            -1,
-            -1,
-            1,
-            -1
-          ],
-          "offsets_deg": [
-            0.0,
-            0.0,
-            0.0,
-            -0.0,
-            180.0,
-            0.0,
-            0.0
-          ],
-          "rms_m": 1.577531044490798e-14,
-          "range_consistent": false,
-          "worst_range_endpoint_difference_deg": 180.168
-        },
-        {
-          "signs": [
-            -1,
-            -1,
-            -1,
-            -1,
-            -1,
             1,
             1
           ],
@@ -807,22 +738,22 @@
             0.0,
             180.0,
             180.0,
+            -0.0,
             0.0,
-            180.0,
-            180.0,
+            0.0,
             0.0
           ],
-          "rms_m": 3.0734809293648843e-09,
+          "rms_m": 2.0844064346463366e-07,
           "range_consistent": false,
           "worst_range_endpoint_difference_deg": 330.206
         },
         {
           "signs": [
+            1,
             -1,
-            -1,
-            -1,
-            -1,
-            -1,
+            1,
+            1,
+            1,
             1,
             -1
           ],
@@ -831,44 +762,21 @@
             180.0,
             180.0,
             -0.0,
+            0.0,
             180.0,
-            -0.0,
             0.0
           ],
-          "rms_m": 3.904488955654482e-12,
+          "rms_m": 2.0844064345891505e-07,
           "range_consistent": false,
           "worst_range_endpoint_difference_deg": 330.206
         },
         {
           "signs": [
+            1,
             -1,
-            -1,
-            -1,
-            -1,
-            -1,
-            -1,
-            1
-          ],
-          "offsets_deg": [
-            0.0,
-            180.0,
-            180.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0
-          ],
-          "rms_m": 2.3813170410285273e-16,
-          "range_consistent": false,
-          "worst_range_endpoint_difference_deg": 330.206
-        },
-        {
-          "signs": [
-            -1,
-            -1,
-            -1,
-            -1,
-            -1,
+            1,
+            1,
+            1,
             -1,
             -1
           ],
@@ -876,42 +784,42 @@
             0.0,
             180.0,
             180.0,
-            0.0,
             -0.0,
             180.0,
+            -0.0,
             0.0
           ],
-          "rms_m": 4.127884120275488e-16,
+          "rms_m": 2.0844064346612348e-07,
           "range_consistent": false,
           "worst_range_endpoint_difference_deg": 330.206
         }
       ],
-      "standard_dh_best_rms_m": 0.07235924975214347,
-      "seconds": 222.5,
+      "standard_dh_best_rms_m": 0.07456624167547315,
+      "seconds": 203.3,
       "status": "unique: FK exact up to a discrete family; archive ranges select one",
       "selected": {
         "signs": [
-          -1,
           1,
-          -1,
-          -1,
-          -1,
-          -1,
+          1,
+          1,
+          1,
+          1,
+          1,
           1
         ],
         "offsets_rad": [
           0.0,
-          -0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
+          -3.435753e-06,
+          3.823873e-06,
+          -1.38931e-07,
+          2.233038e-06,
+          3.458115e-06,
           0.0
         ],
         "validation": {
           "samples": 500,
-          "max_position_error_m": 1.7713624884240054e-15,
-          "max_rotation_error_rad": 3.2325896941245687e-15
+          "max_position_error_m": 3.2513028818676415e-06,
+          "max_rotation_error_rad": 1.4340845049361295e-05
         },
         "ranges": [
           {
@@ -947,7 +855,7 @@
           {
             "sim_range_mapped_to_sdk_deg": [
               -170.168,
-              170.168
+              170.169
             ],
             "controller_range_deg": [
               -170.0,
@@ -955,13 +863,13 @@
             ],
             "endpoint_difference_deg": [
               0.168,
-              0.168
+              0.169
             ],
             "consistent": true
           },
           {
             "sim_range_mapped_to_sdk_deg": [
-              -7.448,
+              -14.897,
               150.115
             ],
             "controller_range_deg": [
@@ -969,7 +877,7 @@
               148.0
             ],
             "endpoint_difference_deg": [
-              7.552,
+              0.103,
               2.115
             ],
             "consistent": true
@@ -977,7 +885,7 @@
           {
             "sim_range_mapped_to_sdk_deg": [
               -170.168,
-              170.168
+              170.169
             ],
             "controller_range_deg": [
               -170.0,
@@ -985,13 +893,13 @@
             ],
             "endpoint_difference_deg": [
               0.168,
-              0.168
+              0.169
             ],
             "consistent": true
           },
           {
             "sim_range_mapped_to_sdk_deg": [
-              -60.161,
+              -60.16,
               60.161
             ],
             "controller_range_deg": [
@@ -999,7 +907,7 @@
               60.0
             ],
             "endpoint_difference_deg": [
-              0.161,
+              0.16,
               0.161
             ],
             "consistent": true
@@ -1026,49 +934,49 @@
           "mdh_base_in_parent": {
             "R": [
               [
-                0.0,
                 1.0,
-                0.0
+                4.324e-06,
+                1.412e-06
               ],
               [
-                0.0,
-                0.0,
-                -1.0
+                -4.324e-06,
+                1.0,
+                4.68e-07
               ],
               [
-                -1.0,
-                0.0,
-                -0.0
+                -1.412e-06,
+                -4.68e-07,
+                1.0
               ]
             ],
             "p_m": [
-              -0.0,
-              -0.2385,
-              0.374
+              1.91e-07,
+              5.6e-08,
+              3.37e-07
             ]
           },
           "mdh_flange_in_child_link": {
             "R": [
               [
-                0.0,
-                0.0,
-                1.0
-              ],
-              [
-                0.0,
                 1.0,
-                -0.0
+                1.062e-06,
+                2.181e-06
               ],
               [
-                -1.0,
-                0.0,
-                0.0
+                -1.062e-06,
+                1.0,
+                -5.87e-07
+              ],
+              [
+                -2.181e-06,
+                5.87e-07,
+                1.0
               ]
             ],
             "p_m": [
-              -0.0303,
-              0.0,
-              -0.0
+              -1.83e-07,
+              4.02e-07,
+              -4e-09
             ]
           }
         },
@@ -1100,13 +1008,13 @@
         ],
         "offsets_deg": [
           0.0,
-          -0.0,
+          0.0,
           0.0,
           0.0
         ],
-        "rms_m": 4.921791284310467e-16,
-        "range_consistent": false,
-        "worst_range_endpoint_difference_deg": 45.006
+        "rms_m": 9.500317948011669e-08,
+        "range_consistent": true,
+        "worst_range_endpoint_difference_deg": 10.0
       },
       {
         "signs": [
@@ -1117,11 +1025,11 @@
         ],
         "offsets_deg": [
           0.0,
-          0.0,
+          -0.0,
           -0.0,
           0.0
         ],
-        "rms_m": 1.3128639607124931e-16,
+        "rms_m": 9.50031794769424e-08,
         "range_consistent": false,
         "worst_range_endpoint_difference_deg": 147.0
       },
@@ -1138,9 +1046,9 @@
           180.0,
           0.0
         ],
-        "rms_m": 9.091013070044678e-17,
+        "rms_m": 9.500317947628687e-08,
         "range_consistent": false,
-        "worst_range_endpoint_difference_deg": 225.006
+        "worst_range_endpoint_difference_deg": 179.994
       },
       {
         "signs": [
@@ -1151,18 +1059,18 @@
         ],
         "offsets_deg": [
           0.0,
-          0.0,
+          -0.0,
           180.0,
           0.0
         ],
-        "rms_m": 3.858824733163896e-16,
+        "rms_m": 9.500321476125182e-08,
         "range_consistent": false,
-        "worst_range_endpoint_difference_deg": 225.006
+        "worst_range_endpoint_difference_deg": 225.057
       }
     ],
-    "standard_dh_best_rms_m": 0.08180511479669247,
+    "standard_dh_best_rms_m": 0.08281449857464504,
     "seconds": 11.2,
-    "status": "best range match (no exact solution fits every archive range; see selected.range_conflicts)",
+    "status": "unique: FK exact up to a discrete family; archive ranges select one",
     "selected": {
       "signs": [
         1,
@@ -1172,14 +1080,14 @@
       ],
       "offsets_rad": [
         0.0,
-        -0.0,
-        0.0,
+        1.5092e-08,
+        3.678299e-06,
         0.0
       ],
       "validation": {
         "samples": 500,
-        "max_position_error_m": 1.813071795247537e-15,
-        "max_rotation_error_rad": 7.120928264881106e-16
+        "max_position_error_m": 3.633201236913496e-08,
+        "max_rotation_error_rad": 6.546598983972454e-06
       },
       "ranges": [
         {
@@ -1199,7 +1107,7 @@
         },
         {
           "sim_range_mapped_to_sdk_deg": [
-            -0.0,
+            0.0,
             146.677
           ],
           "controller_range_deg": [
@@ -1214,18 +1122,18 @@
         },
         {
           "sim_range_mapped_to_sdk_deg": [
-            -29.994,
-            29.994
+            -75.057,
+            29.995
           ],
           "controller_range_deg": [
             -75.0,
             30.0
           ],
           "endpoint_difference_deg": [
-            45.006,
-            0.006
+            0.057,
+            0.005
           ],
-          "consistent": false
+          "consistent": true
         },
         {
           "sim_range_mapped_to_sdk_deg": [
@@ -1243,57 +1151,55 @@
           "consistent": true
         }
       ],
-      "range_conflicts": [
-        "waist_pitch_joint"
-      ],
+      "range_conflicts": [],
       "runner_up_worst_endpoint_difference_deg": 147.0,
       "frames": {
         "mdh_base_in_parent": {
           "R": [
             [
-              -0.0,
               1.0,
-              -0.0
+              4e-09,
+              5.1e-08
             ],
             [
-              -0.0,
-              0.0,
+              -4e-09,
+              1.0,
+              2.9e-08
+            ],
+            [
+              -5.1e-08,
+              -2.9e-08,
               1.0
-            ],
-            [
-              1.0,
-              0.0,
-              0.0
             ]
           ],
           "p_m": [
             0.0,
             0.0,
-            0.24785
+            2.8e-08
           ]
         },
         "mdh_flange_in_child_link": {
           "R": [
             [
               1.0,
-              0.0,
-              0.0
+              -9e-09,
+              -7.14e-07
             ],
             [
-              0.0,
+              9e-09,
               1.0,
-              0.0
+              2.727e-06
             ],
             [
-              0.0,
-              0.0,
+              7.14e-07,
+              -2.727e-06,
               1.0
             ]
           ],
           "p_m": [
-            0.0,
-            0.0,
-            -0.0157
+            5e-09,
+            3e-09,
+            1e-09
           ]
         }
       },

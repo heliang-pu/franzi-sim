@@ -1,39 +1,65 @@
 {
   "purpose": "README previews: sped-up, downscaled animated WebP cut from recorded runs. outputs/ is not committed, so regenerate these after the scene or an expert changes.",
-  "method": "PyAV decodes the MP4 and keeps every `step`-th frame; Pillow resizes it (LANCZOS) and writes a lossy animated WebP (quality 70, method 6), 80 ms per frame, the last frame held 1.5 s, looping. Speed = step x 40 ms / 80 ms.",
-  "made_on": "2026-10-24",
+  "method": "PyAV decodes the MP4 and keeps every `step`-th frame and the last; Pillow resizes it (LANCZOS) and writes a lossy animated WebP (quality 70, method 6), 80 ms per frame, the last frame held 1.5 s, looping. Speed = step x 40 ms / 80 ms.",
+  "made_on": "2026-10-25",
   "files": {
     "kitting.webp": {
-      "source": "outputs/kitting_demo_seed7/expert.mp4 (overview with both wrist D405 insets)",
-      "recorded_with": "python -m sim.run_kitting --output outputs/kitting_demo_seed7 --seed 7 --record (now scenes.kitting.run)",
-      "episode": "seed 7, 62.8 s, 6/6 parts placed; the shortest seed of outputs/kitting_check_wrist_block",
-      "sha256_source": "4de392018aa24f48fd0b657f27cf583c1fbe5277b707d85e39722022aab051e6",
-      "source_frames": 1571,
-      "step": 10,
-      "speed": "5x",
+      "source": "outputs/kitting_demo_urdf_seed7/expert.mp4 on the pro6000 (overview with both wrist D405 insets)",
+      "recorded_with": "python -m scenes.kitting.run --output outputs/kitting_demo_urdf_seed7 --seed 7 --record",
+      "episode": "wheel_robot_26.8.16_3, single-arm subtasks; seed 7, 111.9 s, 6/6 parts placed, no collision; the shortest seed of outputs/kitting_check_urdf_v1",
+      "sha256_source": "9522eff4602195c17947220c307743aee1ae702124bd4e5fbf051c4d537250c5",
+      "source_frames": 2798,
+      "step": 16,
+      "speed": "8x",
       "width": 720,
-      "frames": 158
+      "frames": 176
     },
     "cameras.webp": {
-      "source": "outputs/kitting_demo_seed7/cameras.mp4 (2x2 mosaic of the four policy cameras)",
+      "source": "outputs/kitting_demo_urdf_seed7/cameras.mp4 (2x2 mosaic of the four policy cameras)",
       "recorded_with": "the same run as kitting.webp",
-      "sha256_source": "6b5eea50a5990bab6ef358939ce4aa868c5c42364e9ae7993949c0e1ec351b0b",
-      "source_frames": 1571,
-      "step": 10,
-      "speed": "5x",
+      "sha256_source": "bcbacd48ee4e77225259b8bda01ca6d175ee8199e1d5183064645cad161920b2",
+      "source_frames": 2798,
+      "step": 16,
+      "speed": "8x",
       "width": 560,
-      "frames": 158
+      "frames": 176
+    },
+    "scenes.webp": {
+      "purpose": "README scene gallery: one body_d435 tile per scene, 5 per row, labelled with the scene package name",
+      "made_on": "2026-10-25",
+      "robot": "wheel_robot_26.8.16_3",
+      "method": "Each 640x480 body_d435 frame is cropped to its bottom 640x320 (the plain wall above the table dropped), resized to 320x160 (LANCZOS) and labelled in Arial Bold 15 on a translucent black box; tiles 4 px apart; lossy WebP quality 82, method 6.",
+      "row_1": {
+        "pick_place": "outputs/pp_urdf_rec/body_d435.mp4, frame 850 (the blue part on its pad, the right hand setting the orange one down)",
+        "kitting": "outputs/kitting_demo_urdf_seed7/body_d435.mp4, frame 2600 (the right hand placing the last part)",
+        "robosyn_kitchen, robosyn_drawer, robosyn_tray": "seed 0 in the default posture (tabletop.start_home), rendered from body_d435: their experts are not redone on wheel_robot_26.8.16_3 yet"
+      },
+      "rows_2_3_start_state": "the body_d435 panel (x 0-640, y 520-1000) of outputs/urdf_bench_<scene>/preview.png, the scene checks on wheel_robot_26.8.16_3 (2026-10-25), in docs/benchmark.md order",
+      "size": [
+        1616,
+        488
+      ]
     },
     "pick_place.webp": {
-      "source": "outputs/expert_wrist_block/expert.mp4 (overview with both wrist D405 insets)",
-      "recorded_with": "python -m sim.run_expert --output outputs/expert_wrist_block --record (now scenes.pick_place.run)",
-      "episode": "30.0 s, both parts placed; the current pick-and-place reference run",
-      "sha256_source": "5c408b37e2c668838c5c17d3f9c62cc281c828f14cdc1f4b4f2cc8f126d5e15f",
-      "source_frames": 749,
+      "used_in": "docs/tasks.md, pick-and-place section (no longer in the README)",
+      "source": "outputs/pp_urdf_rec/expert.mp4 on the pro6000 (overview with both wrist D405 insets)",
+      "recorded_with": "python -m scenes.pick_place.run --output outputs/pp_urdf_rec --record",
+      "episode": "wheel_robot_26.8.16_3, single-arm subtasks: 43.3 s, both parts placed; the current pick-and-place reference run",
+      "sha256_source": "78c826c119c8e62b142e3e26242bdfe7935c4eb9e33e9fa13fbd0843d16cff13",
+      "source_frames": 1082,
       "step": 6,
       "speed": "3x",
       "width": 720,
-      "frames": 125
+      "frames": 182
+    },
+    "isaac_tote_transfer.webp": {
+      "purpose": "docs/isaac.md: the MuJoCo (top) and Isaac Sim 5.1 (bottom) scene-check previews of tote_transfer after the 4 s settle",
+      "source": "outputs/isaac_bench_v1/tote_transfer/check/compare.png on the pro6000",
+      "made_with": "python -m isaac.export tote_transfer --output outputs/isaac_bench_v1, then isaac/run.sh isaac.check outputs/isaac_bench_v1/tote_transfer",
+      "sha256_source": "d24577821a4c2ff545b815f9f762f7db3b26ea273760963168d5c620f9b39a19",
+      "method": "Pillow resize to 1280 px wide (LANCZOS), lossy WebP quality 80, method 6",
+      "width": 1280,
+      "made_on": "2026-10-25"
     }
   }
 }

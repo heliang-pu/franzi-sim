@@ -1,0 +1,203 @@
+{
+  "id": "handle_tote",
+  "task": "line_replenish",
+  "used_by": [
+    "line_replenish",
+    "tote_sorting"
+  ],
+  "units": "m",
+  "origin": "bottom_center",
+  "static": false,
+  "budget_class": "medium",
+  "bbox_mm": [
+    200.000003,
+    300.000012,
+    100.000001
+  ],
+  "triangles": 13114,
+  "source": "source.blend",
+  "preview": "preview.png",
+  "parts": [
+    {
+      "name": "body",
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "body_col_00.obj",
+        "body_col_01.obj",
+        "body_col_02.obj",
+        "body_col_03.obj",
+        "body_col_04.obj",
+        "body_col_05.obj",
+        "body_col_06.obj",
+        "body_col_07.obj",
+        "body_col_08.obj",
+        "body_col_09.obj",
+        "body_col_10.obj"
+      ],
+      "mass_kg": 0.45,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.25,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "parent": null,
+      "joint": null
+    }
+  ],
+  "variants": [
+    {
+      "name": "blue",
+      "textures": {
+        "body": "body_albedo.png"
+      },
+      "base_color": "#1F5FA8",
+      "label_text": "BIN-A07",
+      "label_face": "-X"
+    },
+    {
+      "name": "grey",
+      "textures": {
+        "body": "body_albedo_v1.png"
+      },
+      "base_color": "#9AA0A6",
+      "label_text": "BIN-A07",
+      "label_face": "-X"
+    },
+    {
+      "name": "red",
+      "textures": {
+        "body": "body_albedo_v2.png"
+      },
+      "base_color": "#C62828",
+      "label_text": "NG",
+      "label_face": "-X"
+    },
+    {
+      "name": "yellow",
+      "textures": {
+        "body": "body_albedo_v3.png"
+      },
+      "base_color": "#F9A825",
+      "label_text": "RECHECK",
+      "label_face": "-X"
+    },
+    {
+      "name": "green",
+      "textures": {
+        "body": "body_albedo_v4.png"
+      },
+      "base_color": "#2E7D32",
+      "label_text": "OK",
+      "label_face": "-X"
+    }
+  ],
+  "dimensions_mm": {
+    "outside_xyz": [
+      200,
+      300,
+      100
+    ],
+    "wall_top_xy": [
+      188,
+      288
+    ],
+    "wall_bottom_xy": [
+      181.01584610165045,
+      281.0158461016505
+    ],
+    "wall_normal_thickness": 3,
+    "draft_degrees": 2,
+    "floor_nominal": 4,
+    "underside_recess": 3,
+    "rim_outward_width": 6,
+    "rim_thickness": 4,
+    "rib_width_projection": [
+      3,
+      5
+    ],
+    "ribs_long_side_each": 4,
+    "ribs_short_side_each": 2,
+    "front_rib_y": [
+      -105,
+      -55,
+      55,
+      105
+    ],
+    "handle_centers": [
+      [
+        0,
+        143,
+        85
+      ],
+      [
+        0,
+        -143,
+        85
+      ]
+    ],
+    "handle_length": 120,
+    "handle_thickness": 14,
+    "handle_height": 30,
+    "handle_xyz": [
+      120,
+      14,
+      30
+    ],
+    "handle_bevel": 1,
+    "handle_z_range": [
+      70,
+      100
+    ],
+    "handle_abs_y_faces": [
+      136,
+      150
+    ],
+    "handle_opening_width_height_radius": [
+      80,
+      20,
+      8
+    ],
+    "handle_opening_z_range": [
+      48,
+      68
+    ],
+    "label_width_height": [
+      90,
+      40
+    ],
+    "label_center_z": 50,
+    "label_glyph_height": 22
+  },
+  "grasp": {
+    "points_mm": [
+      [
+        0,
+        143,
+        85
+      ],
+      [
+        0,
+        -143,
+        85
+      ]
+    ],
+    "width_mm": 14
+  },
+  "collision_roles": {
+    "body_col_00.obj": "floor",
+    "body_col_01.obj": "wall_nx",
+    "body_col_02.obj": "wall_ny",
+    "body_col_03.obj": "wall_px",
+    "body_col_04.obj": "wall_py",
+    "body_col_05.obj": "handle_py",
+    "body_col_06.obj": "handle_ny",
+    "body_col_07.obj": "rim_nx",
+    "body_col_08.obj": "rim_ny",
+    "body_col_09.obj": "rim_px",
+    "body_col_10.obj": "rim_py"
+  },
+  "notes": "Task18 section 6.1: two solid 120 X x 14 Y x 30 Z handles at Y +/-143, Z85, flat vertical grip faces at |Y|136 and 150; tops flush at Z100; 1 mm three-segment bevels. Two real rounded 80 x 20 openings at Z48..68 are cosmetic; collision intentionally fills them. Original small_tote ring-loft geometry approach, ribs, 4 mm floor and 3 mm underside waffle retained. The exact 200 x 300 outer rim plus 6 mm outward flange implies 188 x 288 wall top and 181.016 x 281.016 wall base; inherited approximate 193 x 293 base is incompatible. Front inner ribs move from Y +/-35 to +/-55 to clear the 90 x 40 white card. Card on -X follows the 2-degree draft; all variant glyphs are exactly 22 mm high. BIN-A07 and RECHECK use horizontally condensed bundled DejaVu Sans Bold to fit an 86 mm ink width. Eleven convex collision pieces preserve the cavity and flat handle faces; cosmetic openings, underside recesses, ribs and thin label are omitted from collision per the task decomposition. Handles use nominal box collisions (bevel error below 1 mm); shell/rim proxies follow rounded corners. Mass 0.45 kg without payload; simulation adds task payload. No buttons, lamps, conveyor or joints. No single fixed placement is prescribed for this movable prop; use the scene's cart/lane support transform. Metres, Z up, front -X, bottom-centre origin, transforms applied. Smart UV 66 degrees; normals smoothed at 30 degrees; baked CPU Cycles 64-sample diffuse color times (0.4 + 0.6 AO), no direct light/highlights. Source retains packed Principled PBR. Previews render the delivered atlas at 1024 square, three-point lighting and grey background; final compaction delivers 512-square previews. Blender 5.2.3 LTS. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification."
+}

@@ -1,6 +1,6 @@
-"""Build benchmark_props.md sections 1, 2 and 3.6, and only Task 06 assets.
+"""Build benchmark_props.md sections 1, 2, 3.6 and the section 6.3 foam revision.
 
-Blender -b --factory-startup -P tools/blender/build_task06_shaped_kitting.py
+Blender -b --factory-startup -t 6 -P tools/blender/build_task06_shaped_kitting.py
         -- [--props hex_blank flanged_bushing l_bracket spur_gear foam_kit_tray]
 Geometry is specified in millimetres; prop_lib exports metres in the prop frame.
 --geometry-only writes inspection blends under tools/blender/_qa/task06/.
@@ -25,6 +25,10 @@ from mathutils import Matrix, Vector
 import prop_lib as props
 
 IDS = ("hex_blank", "flanged_bushing", "l_bracket", "spur_gear", "foam_kit_tray")
+# Pocket outline clearance per side, mm. 4.0 since 2026-10-25 (was 1.5): at 1.5
+# the L bracket's pocket allowed about 2 degrees of yaw, too tight for a
+# camera-guided robot hand.
+CLEAR = 4.0
 OUTPUT = props.ROOT / "assets" / "props"
 QA = HERE / "_qa" / "task06"
 PREFLIGHT = []
@@ -545,6 +549,35 @@ def update_tray_materials_only():
     folder = OUTPUT / "foam_kit_tray"
     bpy.ops.wm.open_mainfile(filepath=str(folder / "source.blend"))
     data = json.loads((folder / "prop.json").read_text())
+    if len(data['parts']) > 1:
+        from support_task16 import bake, render, material
+        visuals=[bpy.data.objects[p['source_visual_object']] for p in data['parts']]
+        light=grain(props.pbr_material('Light-grey EVA foam #A9AFB6','#A9AFB6',.95,0,
+                                       wear=.004,grime=.12),scale=5500,amplitude=.20,bump_mm=.055)
+        light.use_fake_user=True
+        copies=[]
+        for obj in visuals:
+            copy=obj.copy(); copy.data=obj.data.copy(); bpy.context.collection.objects.link(copy)
+            for i,mat in enumerate(copy.data.materials):
+                if mat.name.startswith('Black EVA'): copy.data.materials[i]=light
+            copies.append(copy); obj.hide_render=True
+        atlas=props.join_objects(copies,'Existing shared atlas - light variant')
+        bake(atlas,2048,folder,'body_albedo_v1.png')
+        bpy.data.objects.remove(atlas,do_unlink=True)
+        for obj in visuals: obj.hide_render=False
+        originals=[list(obj.data.materials) for obj in visuals]
+        for obj in visuals:
+            for i,mat in enumerate(obj.data.materials):
+                if mat.name.startswith('Black EVA'): obj.data.materials[i]=light
+        render(visuals,folder)
+        for obj,mats in zip(visuals,originals):
+            for i,mat in enumerate(mats): obj.data.materials[i]=mat
+        data['preview_variant']='light_grey'
+        bpy.ops.file.pack_all()
+        bpy.ops.wm.save_as_mainfile(filepath=str(folder/'source.blend'),check_existing=False)
+        props.write_prop_json(data,folder/'prop.json')
+        print('TASK16_MATERIALS_ONLY complete; black atlas, exported geometry and UVs preserved',flush=True)
+        return
     body = bpy.data.objects[data["parts"][0]["source_visual_object"]]
     data["variants"] = bake_tray_light_variant(body, folder)
     render_tray_light_variant(body, folder)
@@ -641,10 +674,14 @@ def l_outline(clearance=0, samples=12):
     """Side-lying bracket, 40 X x 60 Y, R4 inner fillet, mitered outer corners."""
     a, b, thickness, radius = 20 + clearance, 30 + clearance, 4 + 2 * clearance, 4 - clearance
     center = (-12, -22)
-    outline = [(-a, -b), (a, -b), (a, -b + thickness), (center[0], center[1] - radius)]
-    outline += [(center[0] + radius * math.cos(-math.pi / 2 - math.pi / 2 * i / samples),
-                 center[1] + radius * math.sin(-math.pi / 2 - math.pi / 2 * i / samples))
-                for i in range(1, samples + 1)]
+    outline = [(-a, -b), (a, -b), (a, -b + thickness)]
+    if radius > 0:
+        outline += [(center[0], center[1] - radius)]
+        outline += [(center[0] + radius * math.cos(-math.pi / 2 - math.pi / 2 * i / samples),
+                     center[1] + radius * math.sin(-math.pi / 2 - math.pi / 2 * i / samples))
+                    for i in range(1, samples + 1)]
+    else:  # an offset of 4 mm or more leaves the R4 fillet a sharp inner corner
+        outline += [(-a + thickness, -b + thickness)]
     outline += [(-a + thickness, b), (-a, b)]
     return ccw(outline)
 
@@ -809,140 +846,154 @@ def extrude_walls(name, polygons, center, z0, z1):
 
 
 def build_tray():
-    folder = start("foam_kit_tray")
-    pp = grain(props.pbr_material("Grey PP shell #8A9097", "#8A9097", .55, 0, wear=.035, grime=.15),
-               scale=3600, amplitude=.06)
-    foam_material = grain(props.pbr_material("Black EVA foam #161616", "#161616", .95, 0,
-                                             wear=.004, grime=.15),
-                          scale=5500, amplitude=.20, bump_mm=.055)
-    shell = props.box("260 x 380 x 50 grey PP shell", (260, 380, 50), (0, 0, 25),
-                       bevel_mm=0, material=pp)
-    boolean(shell, props.box("Open PP shell, 3 mm wall and floor", (254, 374, 55), (0, 0, 30.5),
-                              bevel_mm=0))
-    bevel(shell, 1, 3)
-    foam = props.box("252 x 372 x 40 EVA insert", (252, 372, 40), (0, 0, 23),
-                      bevel_mm=0, material=foam_material)
-    # Outlines are derived from the parts, not guessed from a photograph.
-    hex_slot = offset_polygon(hex_outline(), 1.5)
-    l_slot = l_outline(clearance=1.5)
-    gear_outline, gear_dims = involute_outline()
-    gear_radius = max(math.hypot(x, y) for x, y in gear_outline) + 1.5
-    pockets = [
-        ("hex_blank", (55, -90), hex_slot, 18, 43, -15),
-        ("flanged_bushing_counterbore", (55, 90), regular_polygon(21.5, 96), 38, 43, -21.5),
-        ("flanged_bushing_body", (55, 90), regular_polygon(16.5, 96), 13, 38, -21.5),
-        ("l_bracket", (-55, -90), l_slot, 18, 43, -21.5),
-        ("spur_gear", (-55, 90), regular_polygon(gear_radius, 96), 33, 43, -gear_radius),
+    """Section 6.3: 20 mm seats, two deep X finger slots and 3 mm lead-ins."""
+    from support_task16 import (start as start16, part as part16, complete as complete16,
+        box as box16, material as material16, boolean as cut16, bake as bake16,
+        convex_object, subtract_convex, prism_planes)
+    import numpy as np
+    folder = start16("foam_kit_tray", clear_collisions=not GEOMETRY_ONLY)
+    pp = material16("Grey PP shell #8A9097", "#8A9097")
+    black = grain(props.pbr_material("Black EVA foam #161616", "#161616", .95, 0,
+                                     wear=.004, grime=.12), scale=5500, amplitude=.20, bump_mm=.055)
+    light = grain(props.pbr_material("Light-grey EVA foam #A9AFB6", "#A9AFB6", .95, 0,
+                                     wear=.004, grime=.12), scale=5500, amplitude=.20, bump_mm=.055)
+    shell = box16("PP shell", (260,380,50), (0,0,25), pp, 1)
+    cut16(shell, box16("Shell interior", (254,374,60), (0,0,33), edge=.6))
+    shellcols = [box16("PP floor", (260,380,3), (0,0,1.5), edge=0)]
+    for sign in (-1,1):
+        shellcols += [box16("X wall", (3,380,47), (sign*128.5,0,26.5), edge=0),
+                      box16("Y wall", (254,3,47), (0,sign*188.5,26.5), edge=0)]
+    parts = [part16("body", [shell], shellcols, .18)]
+    pockets = []
+    def rectangle(x0,x1,y0,y1): return [(x0,y0),(x1,y0),(x1,y1),(x0,y1)]
+    def shifted(poly, cx,cy): return [(x+cx,y+cy) for x,y in poly]
+    definitions = [
+        ("hex_blank",55,-90, "hexagon", 17.5),
+        ("flanged_bushing",55,90, "stepped_circle",24),
+        ("l_bracket",-55,-90, "side_lying_L",24),
+        ("spur_gear",-55,90, "circle",28),
     ]
-    for name, center, outline, z0, z1, _ in pockets:
-        boolean(foam, props.extruded_profile(name + " pocket cutter", outline, z1 - z0 + .1,
-                                             (*center, (z0 + z1) / 2 + .05), bevel_mm=0))
-    # Same-depth -X finger notches, including the complete 30 mm bushing depth.
-    for name, center, _, z0, z1, notch_x in (pockets[0], pockets[2], pockets[3], pockets[4]):
-        if name == "l_bracket":
-            # The straight L wall admits a literal half-circle, without enlarging its 7 mm leg.
-            half = [(0, 12)] + [(12 * math.cos(math.pi / 2 + math.pi * i / 32),
-                                  12 * math.sin(math.pi / 2 + math.pi * i / 32)) for i in range(1, 33)]
-            cutter = props.extruded_profile("L half-circle finger notch", half, z1 - z0 + .1,
-                                            (center[0] + notch_x, center[1], (z0 + z1) / 2 + .05), bevel_mm=0)
+    for name,cx,cy,shape,radius in definitions:
+        bounds = (0,126,-186,0) if cx>0 and cy<0 else (0,126,0,186) if cx>0 else (-126,0,-186,0) if cy<0 else (-126,0,0,186)
+        x0,x1,y0,y1 = bounds
+        # Slots overlap the cavity so their full 26 mm width is open. The L's
+        # opposite X face is the inner side of its vertical leg, not its bbox.
+        intervals = [(-radius-22,-radius+8),(radius-8,radius+22)]
+        if name == "l_bracket": intervals = [(-46,-22),(-14,10)]
+        notches = [shifted(rectangle(a,b,-13,13),cx,cy) for a,b in intervals]
+        metadata = dict(part=name, center_yx_mm=[cy,cx], center_xy_mm=[cx,cy], shape=shape,
+                        depth_mm=20, floor_z_mm=23, clearance_per_side_mm=4,
+                        entry_chamfer_mm=3, entry_chamfer_angle_deg=45,
+                        finger_notches=[dict(side="-X" if i==0 else "+X",width_y_mm=26,
+                          extension_x_mm=22,depth_mm=25,floor_z_mm=18,
+                          center_xy_mm=[cx+(a+b)/2,cy],bounds_xy_mm=[cx+a,cx+b,cy-13,cy+13],
+                          chamfer_mm=3) for i,(a,b) in enumerate(intervals)])
+        if name == "flanged_bushing":
+            metadata.update(steps=[dict(diameter_mm=48,depth_mm=5,floor_z_mm=38),
+                                   dict(diameter_mm=38,depth_mm=20,floor_z_mm=23)],required_orientation="flange_up")
+        elif name == "hex_blank": metadata['across_flats_mm']=35
+        elif name == "spur_gear": metadata.update(diameter_mm=56,required_orientation="hub_up")
+        else: metadata.update(outer_yx_mm=[68,48],leg_mm=12)
+        pockets.append(metadata)
+        layer_z = [3,18,23,38,40,43] if name == "flanged_bushing" else [3,18,23,40,43]
+        allcols = []
+        for z0,z1 in zip(layer_z,layer_z[1:]):
+            points=np.array([(x,y,z) for x in (x0,x1) for y in (y0,y1) for z in (z0,z1)],dtype=float)
+            chunks=[points]
+            cutters=[]
+            if z0>=23:
+                if name=="hex_blank": cutters=[shifted(offset_polygon(hex_outline(),4),cx,cy)]
+                elif name=="l_bracket":
+                    cutters=[shifted(rectangle(-24,-12,-34,34),cx,cy),shifted(rectangle(-24,24,-34,-22),cx,cy)]
+                else:
+                    r=(19 if z0<38 else 24) if name=="flanged_bushing" else 28
+                    cutters=[regular_polygon(r/math.cos(math.pi/16),16,center=(cx,cy))]
+            if z0>=18: cutters += notches
+            for outline in cutters:
+                chunks=subtract_convex(chunks,prism_planes(outline,expand=1 if z0==40 else 0))
+            allcols += [convex_object(name+" collision",chunk) for chunk in chunks]
+        # Continuous visual pocket; chamfers are actual tapered cutters.
+        foam=box16(name+" foam cell",(x1-x0,y1-y0,40),((x0+x1)/2,(y0+y1)/2,23),black,0)
+        visual_cutters=[]
+        if name=="hex_blank": visual_cutters=[(shifted(offset_polygon(hex_outline(),4),cx,cy),23)]
+        elif name=="l_bracket": visual_cutters=[(shifted(l_outline(4),cx,cy),23)]
         else:
-            cutter = props.cylinder(name + " 24 mm finger notch", 12, 43 - z0 + .1,
-                                    (center[0] + notch_x, center[1], (z0 + 43) / 2 + .05),
-                                    bevel_mm=0, vertices=64)
-        boolean(foam, cutter)
-    bevel(foam, .5, 3)
-    body = props.join_objects([shell, foam], "body")
-
-    collisions = [box_bounds("Common floor, shell plus foam below deepest pocket", -130, 130,
-                             -190, 190, 0, 13),
-                  box_bounds("Hex and L floors, plus lower inter-pocket fill", -126, 126,
-                             -186, 0, 13, 18),
-                  box_bounds("Gear floor plus lower front-right inter-pocket fill", -126, 0,
-                             0, 186, 13, 33)]
-    labels = ["base", "hex_l_floor", "gear_floor"]
-    for name, bounds in (
-        ("PP -X wall", (-130, -127, -190, 190)), ("PP +X wall", (127, 130, -190, 190)),
-        ("PP -Y wall", (-127, 127, -190, -187)), ("PP +Y wall", (-127, 127, 187, 190)),
-    ):
-        collisions.append(box_bounds(name, *bounds, 0, 50))
-        labels.append("shell_wall")
-    # Six primary hex faces are clipped by the real notch. A six-sided notch
-    # approximation stays within 0.915 mm of the 12 mm radius circle.
-    hex_notch = regular_polygon(12.8, 6, 0, (-15, 0))
-    hex_combined = union_convex(hex_slot, hex_notch)
-    hex_walls = wall_polygons(hex_combined, (-55, 71, -96, 90), (-10, 0))
-    collisions += extrude_walls("Hex face or notch wall", hex_walls, (55, -90), 18, 43)
-    labels += ["hex_wall"] * len(hex_walls)
-    layout = {"hex": {"primary_hex_faces": 6, "combined_boundary_segments": len(hex_combined),
-                       "convex_wall_pieces": len(hex_walls), "notch_max_error_mm": .915}}
-    for name, radius, distance, center, bounds, z0, z1 in (
-        ("bushing_body", 16.5, 21.5, (55, 90), (-55, 71, -90, 96), 13, 38),
-        ("bushing_counterbore", 21.5, 21.5, (55, 90), (-55, 71, -90, 96), 38, 43),
-        ("gear", 25.5, 25.5, (-55, 90), (-71, 55, -90, 96), 33, 43),
-    ):
-        outline, info = circular_collision_outline(radius, distance)
-        walls = wall_polygons(outline, bounds, (-distance + 6, 0))
-        info["convex_wall_pieces"] = len(walls)
-        layout[name] = info
-        collisions += extrude_walls(name + " wall", walls, center, z0, z1)
-        labels += [name + "_wall"] * len(walls)
-    # Rectangular complement of the 63 x 43, 7 mm leg L, with a semicircular notch.
-    l_boxes = [(-21.5, 21.5, -96, -31.5), (-21.5, 21.5, 31.5, 90),
-               (21.5, 55, -96, 90), (-14, 21.5, -24, 31.5)]
-    for index, (x0, x1, y0, y1) in enumerate(l_boxes):
-        collisions.append(box_bounds(f"L rectangular fill {index}", x0 - 55, x1 - 55,
-                                     y0 - 90, y1 - 90, 18, 43))
-        labels.append("l_box")
-    notch_r = 12 / math.cos(math.pi / 8)
-    l_half = [(-21.5 + notch_r * math.cos(math.pi / 2 + i * math.pi / 4),
-               notch_r * math.sin(math.pi / 2 + i * math.pi / 4)) for i in range(5)]
-    l_notch_walls = wall_polygons(l_half, (-71, -21.5, -96, 90), (-21.5, 0), merge=False)
-    collisions += extrude_walls("L notch wall", l_notch_walls, (-55, -90), 18, 43)
-    labels += ["l_notch_wall"] * len(l_notch_walls)
-    layout["l_bracket"] = {"rectangular_fills": 4, "notch_walls": len(l_notch_walls),
-                            "inner_corner_collision_clearance": .5}
-    print("TASK06_COLLISION_LAYOUT", json.dumps(layout), "TOTAL", len(collisions), flush=True)
-    assert len(collisions) <= 64, layout
-    pocket_metadata = [
-        {"part": "hex_blank", "center_yx_mm": [-90, 55], "shape": "hexagon", "across_flats_mm": 30,
-         "depth_mm": 25, "floor_z_mm": 18, "notch_center_xy_mm": [40, -90]},
-        {"part": "flanged_bushing", "center_yx_mm": [90, 55], "shape": "stepped_circle",
-         "steps": [{"diameter_mm": 43, "depth_mm": 5, "floor_z_mm": 38},
-                   {"diameter_mm": 33, "depth_mm": 25, "floor_z_mm": 13}],
-         "depth_mm": 30, "floor_z_mm": 13, "notch_center_xy_mm": [33.5, 90],
-         "required_orientation": "flange_up"},
-        {"part": "l_bracket", "center_yx_mm": [-90, -55], "shape": "side_lying_L",
-         "outer_yx_mm": [63, 43], "leg_mm": 7, "depth_mm": 25, "floor_z_mm": 18,
-         "notch_center_xy_mm": [-76.5, -90]},
-        {"part": "spur_gear", "center_yx_mm": [90, -55], "shape": "circle", "diameter_mm": 51,
-         "depth_mm": 10, "floor_z_mm": 33, "notch_center_xy_mm": [-80.5, 90],
-         "required_orientation": "hub_up"},
-    ]
-    complete(folder, body, collisions, 2048, .6, .80, EVA,
-             {"outer_xyz": [260, 380, 50], "shell_wall": 3, "shell_floor": 3,
-              "foam_xyz": [252, 372, 40], "foam_bottom_z": 3, "foam_top_z": 43,
-              "outline_clearance_per_side": 1.5, "notch_diameter": 24},
-             "Static 0.6 kg PP tray with EVA insert; foam seated on the 3 mm shell floor, top Z=43 mm. "
-             "Pockets derived from part outlines +1.5 mm per side; the gear uses its specified "
-             "circular tip envelope. Bushing has 43 x 5 over 33 x 25, full 30 mm notch; flange up "
-             "alone seats to its proper floor. Gear seat 51 x 10 leaves hub up, L side-lying. "
-             "Each finger notch is 24 mm on -X, at pocket depth. Where a curved/hex wall meets "
-             "the notch, its overlapping circle is used; the straight L wall has a literal semicircle. "
-             "Collision uses 16 boundary wall segments per round step including the notch, with "
-             "pairs at concave joins merged when their union is convex; seven hex/notch walls "
-             "replace six plain hex walls so the finger opening is preserved. This interprets "
-             "the nominal wall counts after adding finger notches while keeping the entire tray "
-             "at most 64 convex pieces. Wall sectors extend to rectangular cell edges to fill "
-             "between pockets; L and floor fill are boxes. Hole polygon apothems preserve seat "
-             "clearance; maximum round/notch error <1 mm. Hex notch approximation has <=0.915 mm "
-             "radial error. The 1 mm insert/shell gap is bridged only by the base proxy. Uniform "
-             "MuJoCo material/friction uses EVA; complete PP/EVA PBR is retained in source.",
-             {"static": True, "pockets": pocket_metadata, "collision_layout": layout,
-              "collision_roles": dict(zip([f"body_col_{i:02d}.obj" for i in range(len(labels))], labels)),
-              "recommended_placement_m": {"origin": [.4, 0, .8],
-                                           "pocket_centers_world_xy": [[.455, -.09], [.455, .09],
-                                                                       [.345, -.09], [.345, .09]]}})
-
+            r=19 if name=="flanged_bushing" else 28
+            visual_cutters=[(regular_polygon(r,64,center=(cx,cy)),23)]
+            if name=="flanged_bushing": visual_cutters.append((regular_polygon(24,64,center=(cx,cy)),38))
+        for outline,z0 in visual_cutters+[(n,18) for n in notches]:
+            cut16(foam,props.extruded_profile("Pocket / notch",outline,60-z0,(0,0,(60+z0)/2),bevel_mm=0))
+        # Counterbore covers the lower bushing outline at the top, so only the
+        # outer opening gets a chamfer. All notch upper edges have the same ramp.
+        chamfer_outlines=[visual_cutters[-1][0]]+notches
+        for outline in chamfer_outlines:
+            outer=offset_polygon(outline,3)
+            cutter=loft("3 x 45-degree lead-in",[outline,outer,outer],[40,43,50],black)
+            cut16(foam,cutter)
+        # Subdivide only when the collision budget requires it. Each split is
+        # a fixed child; visual halves meet without overlapping triangles.
+        if len(allcols)<=64:
+            parts.append(part16("foam_"+name,[foam],allcols,.105,parent="body",friction=.8,
+                                mujoco=EVA))
+        else:
+            split_z = 38 if name == "flanged_bushing" else 40
+            lower,upper=[],[]
+            for col in allcols:
+                (lower if max(v.co.z for v in col.data.vertices)<(split_z+.01)/1000 else upper).append(col)
+            low=foam.copy(); low.data=foam.data.copy(); bpy.context.collection.objects.link(low)
+            cut16(low,box16("Remove upper foam",(400,500,40),(0,0,split_z+20),edge=0))
+            cut16(foam,box16("Remove lower foam",(400,500,50),(0,0,split_z-25),edge=0))
+            assert max(len(lower),len(upper))<=64, (name,len(lower),len(upper))
+            parts += [part16("foam_"+name+"_lower",[low],lower,.097,parent="body",friction=.8,mujoco=EVA),
+                      part16("foam_"+name+"_rim",[foam],upper,.008,parent="body",friction=.8,mujoco=EVA)]
+        print("TASK16_FOAM",name,"collision pieces",len(allcols),flush=True)
+    if GEOMETRY_ONLY:
+        QA.mkdir(parents=True,exist_ok=True)
+        bpy.ops.wm.save_as_mainfile(filepath=str(QA/'foam_kit_tray_geometry.blend'),check_existing=False)
+        return
+    # All fixed sections share one 2048 atlas. A temporary joined bake mesh
+    # preserves a face-to-source mapping, so UVs are identical for both colours.
+    copies=[]
+    for index,p in enumerate(parts):
+        obj=p['obj']; copy=obj.copy(); copy.data=obj.data.copy()
+        bpy.context.collection.objects.link(copy)
+        tag=copy.data.attributes.new('source_part','INT','FACE')
+        face=copy.data.attributes.new('source_face','INT','FACE')
+        for j in range(len(copy.data.polygons)):
+            tag.data[j].value=index; face.data[j].value=j
+        copies.append(copy)
+    for p in parts: p['obj'].hide_render=True
+    atlas=props.join_objects(copies,'Shared foam tray bake atlas')
+    props.uv_unwrap(atlas)
+    bake16(atlas,2048,folder,'body_albedo.png')
+    original=list(atlas.data.materials)
+    for i,mat in enumerate(atlas.data.materials):
+        if mat==black: atlas.data.materials[i]=light
+    bake16(atlas,2048,folder,'body_albedo_v1.png')
+    for poly in atlas.data.polygons:
+        index=atlas.data.attributes['source_part'].data[poly.index].value
+        face=atlas.data.attributes['source_face'].data[poly.index].value
+        obj=parts[index]['obj']; target=obj.data.polygons[face]
+        # The join preserves loop order and the common prop frame.
+        for source_loop,target_loop in zip(poly.loop_indices,target.loop_indices):
+            obj.data.uv_layers['UVMap'].data[target_loop].uv=atlas.data.uv_layers['UVMap'].data[source_loop].uv
+    bpy.data.objects.remove(atlas,do_unlink=True)
+    for p in parts: p['obj'].hide_render=False
+    for p in parts: p['texture_override']='body_albedo.png'
+    variants=[dict(name='black',textures={p['name']:'body_albedo.png' for p in parts}),
+              dict(name='light_grey',textures={p['name']:'body_albedo_v1.png' for p in parts})]
+    complete16(folder,parts,dict(outer_xyz=[260,380,50],shell_wall=3,shell_floor=3,
+                 foam_xyz=[252,372,40],foam_bottom_z=3,foam_top_z=43,outline_clearance_per_side=4,
+                 pocket_depth=20,notch_width_y=26,notch_extension_x=22,notch_depth=25,chamfer=3),
+               dict(task='shaped_kitting',static=True,pockets=pockets,
+                    recommended_placement_m={'origin':[.4,0,.9]}),variants=variants,
+               notes='Section 6.3 rebuild. All pocket centres unchanged. Convex 16-facet circular cavity '
+               'proxies are circumscribed: minimum nominal clearance preserved, maximum radius error '
+               '0.55 mm. Exact 3 x 45-degree collision lead-ins. Finger slots overlap the cavity '
+               'to expose their full width, extend 22 mm beyond its X rim and end at Z18. '
+               'L slots follow both X faces of the vertical leg at its centre. Foam partitions '
+               'are fixed children of the PP shell, each at most 64 collision pieces. '
+               'Bushing depth 20 mm is measured from foam top, including its 5 mm counterbore.')
 
 def main():
     global GEOMETRY_ONLY
@@ -968,4 +1019,5 @@ def main():
 
 if __name__ == "__main__":
     main()
-    props.finalize_assets()
+    from support_task16 import finalize_selected
+    finalize_selected()

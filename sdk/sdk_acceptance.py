@@ -302,6 +302,7 @@ def core(s, program):
     )
 
     p = "physical_behaviour"
+    s.check(c, "MoveJ to the lift pose", lift(s, program))
     t0 = time.monotonic()
     accepted = s.call("MoveJ", [pose_a.tolist()], 15)
     first = s.call("GetMotionStatus", 15)
@@ -440,6 +441,7 @@ def core(s, program):
             ok,
             readings={str(k): v for k, v in readings.items()},
         )
+    s.check(c, "MoveJ back to the lift pose", lift(s, program))
     s.check(c, "Home accepted", s.call("Home") == 0)
     code, _, _ = s.wait_motion(15)
     s.check(
@@ -448,6 +450,14 @@ def core(s, program):
         code == 0 and np.max(np.abs(s.joints())) < 0.01,
         max_abs_rad=float(np.max(np.abs(s.joints()))),
     )
+
+
+def lift(s, program):
+    """MoveJ to the program's lift pose and wait: the way between the SDK zero
+    pose and the work poses, where the straight joint line puts the jaws into
+    the table (make_sdk_program.py)."""
+    pose = np.r_[program["lift_pose"]["left"], program["lift_pose"]["right"]]
+    return s.call("MoveJ", [pose.tolist()], 15) == 0 and s.wait_motion(15)[0] == 0
 
 
 def matrix(values):
@@ -499,7 +509,9 @@ def kinematics(s, program):
     s.check(
         c,
         "MoveJ to pose_a for the kinematics checks",
-        s.call("MoveJ", [pose_a.tolist()], 15) == 0 and s.wait_motion(15)[0] == 0,
+        lift(s, program)
+        and s.call("MoveJ", [pose_a.tolist()], 15) == 0
+        and s.wait_motion(15)[0] == 0,
     )
     goals, targets = [], []
     for side in (0, 10):
@@ -540,10 +552,14 @@ def kinematics(s, program):
             np.allclose(fkb, s.call("FKb", side, q, waist)[1], atol=1e-5),
         )
         status, q_b = s.call("IKb", side, fkb)
+        # 1 mrad: the arm has a redundant elbow swivel, along which the IK
+        # stops within its tolerance (1.3e-4 rad on wheel_robot_26.8.16_3's
+        # left arm); another branch would differ by tenths of a radian.
         s.check(
             c,
             f"side {side}: IKb(FKb(q)) returns q",
-            status == 0 and np.max(np.abs(np.subtract(q_b, q))) < 1e-4,
+            status == 0 and np.max(np.abs(np.subtract(q_b, q))) < 1e-3,
+            max_difference_rad=float(np.max(np.abs(np.subtract(q_b, q)))),
         )
         target = matrix(fkb)
         target[2, 3] += LIFT_M
@@ -561,6 +577,13 @@ def kinematics(s, program):
         f"IKb + MoveJ raise both flanges {LIFT_M} m in B (FKb error < 1 mm)",
         moved and max(errors) < 0.001,
         error_m=errors,
+    )
+    # Back at pose_a: IK starts from the current joints, as the controller's
+    # does, so IK(FkTool(q)) returns q only where the arm stands at q.
+    s.check(
+        c,
+        "MoveJ back to pose_a for the tool checks",
+        s.call("MoveJ", [pose_a.tolist()], 15) == 0 and s.wait_motion(15)[0] == 0,
     )
     q = s.joints(0).tolist()
     tool = np.eye(4)
@@ -606,7 +629,7 @@ def kinematics(s, program):
     s.check(
         c,
         "Home after the kinematics checks",
-        s.call("Home") == 0 and s.wait_motion(15)[0] == 0,
+        lift(s, program) and s.call("Home") == 0 and s.wait_motion(15)[0] == 0,
     )
 
 
@@ -616,11 +639,22 @@ def task(s, program):
     rate = program["task"]["rate_hz"]
     phases = program["task"]["phases"]
     log = []
+    s.check(
+        c,
+        "MoveJ to the task's start (the expert's default posture)",
+        lift(s, program)
+        and s.call("MoveJ", [phases[0]["points"][0]], 15) == 0
+        and s.wait_motion(15)[0] == 0,
+    )
     s.check(c, "TeleJointDual for the task", s.call("TeleJointDual") == 0)
     current = s.joints()
     grip = [None, None]
     for phase in phases:
-        entry = {"phase": phase["name"], "started_s": round(time.time() - s.start, 3)}
+        entry = {
+            "phase": phase["name"],
+            "arms": phase.get("arms", ["left", "right"]),
+            "started_s": round(time.time() - s.start, 3),
+        }
         if phase["gripper"] != grip:
             for k, side in enumerate((0, 10)):
                 s.call("GripperSetPosition", side, phase["gripper"][k])
@@ -646,12 +680,18 @@ def task(s, program):
         log.append(entry)
         print(f"  task phase {phase['name']}: {entry}", flush=True)
     s.check(c, "StopTeleJointDual after the task", s.call("StopTeleJointDual") == 0)
-    lift = next((e for e in log if e["phase"] == "lift"), None)
+    lifts = [e for e in log if e["phase"] == "lift"]
     s.check(
         c,
-        "SDK reports both grippers holding (2) after the lift",
-        lift is not None and lift["grip_state_after"] == [2, 2],
-        lift=lift,
+        "SDK reports each lifting arm's gripper holding (2) after its lift",
+        bool(lifts)
+        and all(
+            e["grip_state_after"][k] == 2
+            for e in lifts
+            for k, side in enumerate(("left", "right"))
+            if side in e["arms"]
+        ),
+        lifts=lifts,
     )
     s.check(
         c,

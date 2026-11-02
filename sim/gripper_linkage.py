@@ -16,12 +16,24 @@ these joints follows its finger's x-slide through a quartic joint equality
 fitted to the exact linkage solution (solve()). Their gravity is compensated
 like the servos' (the real lead screw does not back-drive).
 
-Coordinates: wrist_roll_Link frame, metres, the jaw-closing plane x-z. The
-pivots are the left jaw's (finger1); finger2 mirrors them about x = XC. Both
-wrist meshes put the linkage at the same x-z (they mirror each other in y).
+Coordinates: wheel_robot_4.0's wrist_roll_Link frame, metres, the jaw-closing
+plane x-z. The pivots are the left jaw's (finger 1); finger 2 mirrors them
+about x = XC. Both wrist meshes put the linkage at the same x-z (they mirror
+each other in y).
+
+wheel_robot_26.8.16_3 (2026-10-25) is the same gripper, re-exported on a
+gripper link of its own, turned 90 degrees about the hand and 12 mm further
+out. The model gives each gripper link a welded body in the previous wrist
+frame, HAND (sim/franzi_model.py), and the fingers and this linkage live in
+it unchanged. Finger 1 and 2 are the URDF's finger01 and finger02; their
+slides keep the URDF's signs, so a finger closes on CLOSES (+1 or -1) times
+its travel.
 """
 
+import hashlib
+import json
 import xml.etree.ElementTree as ET
+from pathlib import Path
 
 import numpy as np
 
@@ -70,6 +82,18 @@ BODIES = {
     "link14": ("link8", E),
 }
 FIT_RANGE = (-0.002, STROKE + 0.002)  # slide values the couplings must cover
+HAND = "{side}_hand"  # the gripper's body in wheel_robot_4.0's wrist frame
+# The moving part of each face of wheel_robot_26.8.16_3's gripper meshes
+# (face_groups(); made by tools/gripper_faces.py).
+FACES = Path(__file__).with_name("gripper_faces.json")
+# The fingers' bodies in it (wheel_robot_4.0's finger origins) and the sign of
+# their URDF slide as they close (finger01 closes on a negative slide on the
+# left, a positive one on the right; finger02 the other way).
+FINGER_ORIGIN = {
+    "left": {1: (-0.07795, -0.005, -0.22904), 2: (0.01705, -0.005, -0.22904)},
+    "right": {1: (-0.07795, 0.005, -0.22904), 2: (0.01705, 0.005, -0.22904)},
+}
+CLOSES = {"left": {1: -1, 2: 1}, "right": {1: 1, 2: -1}}
 SOLREF = "0.004 1"  # stiff couplings: twice the 2 ms physics step
 LINK_MASS = 0.001  # kg; the links' real mass stays in the wrist's inertial
 
@@ -162,10 +186,15 @@ def group_of(bounds):
     return None
 
 
+def finger(side, n):
+    """Finger n's (1 or 2) body and slide joint."""
+    return f"{side}_finger0{n}_Link", f"{side}_finger0{n}_joint"
+
+
 def body_name(side, group):
     """The body a moving group rides in: jaws in their finger body."""
     if group.startswith("jaw_"):
-        return f"{side}finger{group[-1]}_Link"
+        return finger(side, int(group[-1]))[0]
     return f"{side}_gripper_{group}"
 
 
@@ -178,10 +207,26 @@ def origin(key, finger):
     return np.array([x, 0.0, pivot[1]])
 
 
+def face_table(path):
+    """The moving group (None: the gripper body) and the finish (None: the
+    body's) of each face of a gripper link's mesh, in file order as trimesh
+    loads it. wheel_robot_26.8.16_3 exports the links, jaw blocks and the
+    gripper body as one surface, so its faces are sorted by FACES."""
+    entry = json.loads(FACES.read_text())[Path(path).stem]
+    digest = hashlib.sha256(Path(path).read_bytes()).hexdigest()
+    assert digest == entry["sha256"], f"{path}: mesh changed, rerun gripper_faces"
+    groups = {".": None} | entry["groups"]
+    finishes = {".": None} | entry["finishes"]
+    return (
+        np.array([groups[c] for c in entry["labels"]], dtype=object),
+        np.array([finishes[c] for c in entry["paint"]], dtype=object),
+    )
+
+
 def offset_in_wrist(root, side, name):
-    """Origin of body name in its wrist_roll_Link frame, from the scene tree at
-    closure 0 (no body below the wrist is rotated)."""
-    wrist = root.find(f".//body[@name='{side}_wrist_roll_Link']")
+    """Origin of body name in its hand's (wheel_robot_4.0's wrist) frame, from
+    the scene tree at closure 0 (no body below the hand is rotated)."""
+    wrist = root.find(f".//body[@name='{HAND.format(side=side)}']")
     parent = {child: body for body in wrist.iter("body") for child in body}
     body = wrist.find(f".//body[@name='{name}']")
     total = np.zeros(3)
@@ -195,9 +240,9 @@ def offset_in_wrist(root, side, name):
 def dependent_joints(side):
     """The joints the couplings drive, for gravity compensation."""
     names = [f"{side}_gripper_slider_joint"]
-    for finger in (1, 2):
-        names.append(f"{side}finger{finger}_drop_joint")
-        names += [f"{side}_gripper_{key}_{finger}_joint" for key in BODIES]
+    for n in (1, 2):
+        names.append(f"{side}_finger0{n}_drop_joint")
+        names += [f"{side}_gripper_{key}_{n}_joint" for key in BODIES]
     return names
 
 
@@ -207,18 +252,18 @@ def set_closure(m, d, side, closure):
     an episode drives the fingers through their actuators."""
     s = STROKE * closure
     exact = solve(s)
-    for finger, sign in ((1, 1), (2, -1)):
-        d.qpos[m.joint(f"{side}finger{finger}_joint").qposadr[0]] = sign * s
-        d.qpos[m.joint(f"{side}finger{finger}_drop_joint").qposadr[0]] = exact["drop"]
+    for n in (1, 2):
+        d.qpos[m.joint(finger(side, n)[1]).qposadr[0]] = CLOSES[side][n] * s
+        d.qpos[m.joint(f"{side}_finger0{n}_drop_joint").qposadr[0]] = exact["drop"]
         for key in BODIES:
-            joint = m.joint(f"{side}_gripper_{key}_{finger}_joint")
+            joint = m.joint(f"{side}_gripper_{key}_{n}_joint")
             d.qpos[joint.qposadr[0]] = exact[key]
     d.qpos[m.joint(f"{side}_gripper_slider_joint").qposadr[0]] = exact["slider"]
 
 
-def coupling(coef, finger):
-    """Polynomial in the finger's own slide value: finger2's slide is -s."""
-    sign = 1 if finger == 1 else -1
+def coupling(coef, sign):
+    """Polynomial in a finger's own slide value, which is sign times the
+    travel the fit is in."""
     return [c * sign**k for k, c in enumerate(coef)]
 
 
@@ -238,19 +283,19 @@ def add_linkage(root, fmt):
             diaginertia=fmt([1e-8] * 3),
         )
 
-    def couple(joint, key, finger, slide):
+    def couple(joint, key, sign, slide):
         ET.SubElement(
             equality,
             "joint",
             name=joint + "_coupling",
             joint1=joint,
             joint2=slide,
-            polycoef=fmt(coupling(fits[key][0], finger)),
+            polycoef=fmt(coupling(fits[key][0], sign)),
             solref=SOLREF,
         )
 
     for side in ("left", "right"):
-        wrist = root.find(f".//body[@name='{side}_wrist_roll_Link']")
+        wrist = root.find(f".//body[@name='{HAND.format(side=side)}']")
         slider = ET.SubElement(
             wrist,
             "body",
@@ -269,11 +314,11 @@ def add_linkage(root, fmt):
             damping="0",
             armature="0.0001",
         )
-        couple(joint, "slider", 1, f"{side}finger1_joint")
-        for finger in (1, 2):
-            slide = f"{side}finger{finger}_joint"
-            body = wrist.find(f"body[@name='{side}finger{finger}_Link']")
-            joint = f"{side}finger{finger}_drop_joint"
+        couple(joint, "slider", CLOSES[side][1], finger(side, 1)[1])
+        for n in (1, 2):
+            name, slide = finger(side, n)
+            body = wrist.find(f"body[@name='{name}']")
+            joint = f"{side}_finger0{n}_drop_joint"
             ET.SubElement(
                 body,
                 "joint",
@@ -284,13 +329,13 @@ def add_linkage(root, fmt):
                 damping="0",
                 armature="0",
             )
-            couple(joint, "drop", finger, slide)
+            couple(joint, "drop", CLOSES[side][n], slide)
             made = {}
             for key, (parent, _) in BODIES.items():
-                here = origin(key, finger)
+                here = origin(key, n)
                 outer = wrist if parent is None else made[parent]
-                base = np.zeros(3) if parent is None else origin(parent, finger)
-                name = body_name(side, f"{key}_{finger}")
+                base = np.zeros(3) if parent is None else origin(parent, n)
+                name = body_name(side, f"{key}_{n}")
                 made[key] = ET.SubElement(
                     outer, "body", name=name, pos=fmt(here - base)
                 )
@@ -301,12 +346,12 @@ def add_linkage(root, fmt):
                     "joint",
                     name=joint,
                     type="hinge",
-                    axis="0 -1 0" if finger == 1 else "0 1 0",
+                    axis="0 -1 0" if n == 1 else "0 1 0",
                     limited="false",
                     damping="0",
                     armature="1e-05",
                 )
-                couple(joint, key, finger, slide)
+                couple(joint, key, CLOSES[side][n], slide)
     return {
         "model": "CAD parallelogram linkage; finger x-slides actuated, the rest coupled",
         "pivots_m": {

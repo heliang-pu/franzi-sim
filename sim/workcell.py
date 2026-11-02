@@ -4,16 +4,22 @@ floor, background fences and racks, the workbench, and plain steel stands.
 industrial_cell() takes the robot scene from build_task and swaps its grey floor
 plane and plain table for the Blender-built factory floor (with its own
 collision plane) and, unless bench=False, the workbench. The bench top is at
-TABLE_Z like the table it replaces, and its front edge sits at x = 0.20 (the
-table's was 0.18), clear of the hanging hands. The fences and racks stand
-behind the bench as camera background and have no colliders.
+BENCH_Z, and its front edge sits at x = 0.20 (the table's was 0.18), clear of
+the hanging hands. The fences and racks stand behind the bench as camera
+background and have no colliders.
+
+BENCH_Z is 0.90 m, 0.10 above the robot scene's table (TABLE_Z), since
+2026-10-25: the robot cannot bend at the waist, and at 0.80 its top-down grasps
+reached only x 0.37-0.41 at bench height (0.45-0.48 at 0.90), so large props
+had to stand at the edge of reach.
 """
 
 import xml.etree.ElementTree as ET
 
 from sim import prop_assets as pa
-from sim.build_task import TABLE_Z, fmt
+from sim.build_task import fmt
 
+BENCH_Z = 0.90  # the workbench prop's finished top
 BENCH_FRONT_X = 0.20
 BENCH_DEPTH = 0.70  # the workbench prop, along x
 STEEL_RGBA = "0.33 0.36 0.40 1"
@@ -63,7 +69,7 @@ def block(root, name, center, size, base_z, top_z):
     return body
 
 
-def stand(root, name, center, size, top_z=TABLE_Z, legs=True):
+def stand(root, name, center, size, top_z=BENCH_Z, legs=True):
     """A plain steel stand or riser: a 20 mm top plate whose top is at top_z,
     covering size (x, y) around center (x, y), on four 40 mm legs. Only the top
     plate collides. Bodies end in _part, so they are not robot bodies."""

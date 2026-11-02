@@ -17,19 +17,21 @@ from PIL import Image, ImageDraw, ImageFont
 from scipy import ndimage
 from scipy.sparse import coo_matrix
 from scipy.sparse.csgraph import connected_components
+from scipy.spatial import cKDTree
 from scipy.spatial.transform import Rotation
 
-from sim import wrist_mount
+from sim import franzi_model, wrist_mount
 from sim.fittings import attach_fittings, build_fittings
-from sim.gripper_linkage import body_name, group_of, offset_in_wrist
+from sim.gripper_linkage import FACES, body_name, face_table, offset_in_wrist
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "assets/appearance/painted"
 WORDMARK_DIR = ROOT / "assets/appearance/wordmark"
 FITTINGS_DIR = ROOT / "assets/appearance/fittings"
 CAMERA_DIR = ROOT / "assets/appearance/cameras"
-# Bump when a face rule changes; the cache key only sees the source meshes.
-PAINT_VERSION = 10
+# Bump when a face rule changes; the cache key only sees the source meshes and
+# the gripper's face table.
+PAINT_VERSION = 15
 
 # Finishes matched to the lab and factory videos of the real robot.
 PALETTE = {
@@ -77,8 +79,8 @@ D435_ALIGN = (
 REAL_CAMERAS = {
     "head_d435_Link": "d435",
     "body_d435_Link": "d435",
-    "left_wrist_d405_Link": "d405",
-    "right_wrist_d405_Link": "d405",
+    "left_D405_Link": "d405",
+    "right_D405_Link": "d405",
 }
 # Chest camera slot, in the body D435 sensor frame (x height, y width, z forward).
 # The shell's slot is an 85.1 x 20.8 mm stadium around the camera, its walls
@@ -221,16 +223,6 @@ def part_size(size, tol=0.0015):
     return lambda part: np.abs(np.ptp(part.bounds, axis=0) - size).max() < tol
 
 
-def linkage_group(part, side):
-    # Gripper links and jaw blocks ride in their own bodies (gripper_linkage).
-    return group_of(part.bounds)
-
-
-def old_wrist_block(part, side):
-    # The original D405 block and its screws, replaced by the tilted block.
-    return wrist_mount.is_old_block(part.bounds, side)
-
-
 def d435_housing(part, side):
     # The head D435 box is merged with its bracket; the box matches body_d435 and
     # is dropped for the official D435 mesh, leaving the bracket.
@@ -276,20 +268,15 @@ RECIPE = {
     "{side}_wrist_pitch_Link": {"rest": "fa_black"},
     # Linkage gripper: black body, flange, links and camera bracket; aluminium
     # jaw blocks and pins, red screws on the jaw blocks, aluminium finger pads.
-    # "detach" moves the links and jaw blocks into the bodies that move them;
-    # "drop" leaves out the original D405 block (attach_wrist_blocks).
-    "{side}_wrist_roll_Link": {
-        "rest": "fa_black",
-        "parts": [
-            (part_size([0.0317, 0.0175, 0.028]), "fa_silver"),
-            (part_size([0.0075, 0.029, 0.0075]), "fa_silver"),
-            (part_size([0.008, 0.0055, 0.0055]), "fa_estop_red"),
-        ],
-        "detach": linkage_group,
-        "drop": old_wrist_block,
-    },
-    "{side}finger1_Link": {"rest": "fa_silver"},
-    "{side}finger2_Link": {"rest": "fa_silver"},
+    # wheel_robot_26.8.16_3 exports the gripper's parts as one surface, so its
+    # moving parts and finishes are per face (gripper_linkage.face_table).
+    "{side}_wrist_roll_Link": {"rest": "fa_black"},
+    "left_gripper_link": {"rest": "fa_black", "table": face_table},
+    "right_gripper_Link": {"rest": "fa_black", "table": face_table},
+    # The shoulder mounts wheel_robot_26.8.16_3 adds, between torso and arm.
+    "{side}_j0_Link": {"rest": "fa_graphite"},
+    "{side}_finger01_Link": {"rest": "fa_silver"},
+    "{side}_finger02_Link": {"rest": "fa_silver"},
     "head_d435_Link": {"rest": "fa_black", "faces": [(0, d435_housing, None)]},
     "{wheel}_wheel_Link": {"rest": "fa_silver", 0: "fa_black"},
 }
@@ -305,16 +292,30 @@ def expanded_recipe():
             for wheel in ("left_front", "right_front", "rear"):
                 recipes[key.format(wheel=wheel)] = (recipe, None)
         else:
-            recipes[key] = (recipe, None)
+            # The grippers' links are spelt differently on each side.
+            side = next((s for s in ("left", "right") if key.startswith(s)), None)
+            recipes[key] = (recipe, side)
     return recipes
 
 
 def paint_groups(path, recipe, side):
-    """Painted meshes keyed by (detached group or None, material)."""
+    """Painted meshes keyed by (detached group or None, material), in the mesh's
+    wheel_robot_4.0 frame where it has one (sim/franzi_model.py FRAMES): the
+    recipe's rules are written in it, and the model's visual geoms place it."""
     mesh = trimesh.load(path, process=True, force="mesh")
+    previous = franzi_model.to_previous(path.stem)
+    if previous is not None:
+        mesh.apply_transform(previous)
     parts = sorted(
         mesh.split(only_watertight=False), key=lambda p: len(p.faces), reverse=True
     )
+    table = recipe.get("table")
+    if table:
+        # A moving group and finish per face of the whole mesh, found in each
+        # component by face centre: the gripper's parts are not components.
+        moving_of, finish_of = table(path)
+        assert len(moving_of) == len(mesh.faces), path.name
+        lookup = cKDTree(mesh.triangles_center)
     groups = {}
     for k, part in enumerate(parts):
         material = recipe.get(k, recipe.get("rest"))
@@ -324,17 +325,18 @@ def paint_groups(path, recipe, side):
         assert material, f"{path.name}: component {k} has no paint; CAD changed?"
         if recipe.get("drop") and recipe["drop"](part, side):
             continue
-        detach = recipe.get("detach")
-        group = detach(part, side) if detach else None
         paint = np.full(len(part.faces), material, dtype=object)
         for index, rule, override in recipe.get("faces", []):
             if index == k:
                 paint[rule(part, side)] = override
-        for name in set(paint) - {None}:
-            faces = np.nonzero(paint == name)[0]
-            groups.setdefault((group, name), []).append(
-                part.submesh([faces], append=True)
-            )
+        moving = np.full(len(part.faces), None)
+        if table:
+            index = lookup.query(part.triangles_center)[1]
+            moving, finish = moving_of[index], finish_of[index]
+            paint = np.where(finish == None, paint, finish)
+        for key in {(g, name) for g, name in zip(moving, paint) if name is not None}:
+            faces = np.nonzero((moving == key[0]) & (paint == key[1]))[0]
+            groups.setdefault(key, []).append(part.submesh([faces], append=True))
     return {key: trimesh.util.concatenate(g) for key, g in groups.items()}
 
 
@@ -343,6 +345,7 @@ def prepare_paint(source):
     key = hashlib.sha256(f"paint-v{PAINT_VERSION}".encode())
     for name in sorted(recipes):
         key.update((source / "meshes" / f"{name}.STL").read_bytes())
+    key.update(FACES.read_bytes())
     digest = key.hexdigest()
     manifest_path = OUTPUT / "manifest.json"
     if manifest_path.exists():
@@ -533,6 +536,7 @@ def build_chest_decal(source):
             return info
     p, f = WORDMARK, FACTORY_PRINT
     mesh = trimesh.load(source / "meshes/torso_Link.STL", process=True, force="mesh")
+    mesh.apply_transform(franzi_model.to_previous("torso_Link"))
     shell = sorted(
         mesh.split(only_watertight=False), key=lambda m: len(m.faces), reverse=True
     )[2]
@@ -646,6 +650,7 @@ def attach_chest_decal(root, info):
     ET.SubElement(
         root.find(".//body[@name='torso_Link']"),
         "geom",
+        franzi_model.placement("torso_Link"),
         name="inovance_chest_wordmark",
         type="mesh",
         mesh="inovance_chest_wordmark",
@@ -765,6 +770,7 @@ def attach_elbow_logos(root, infos):
         ET.SubElement(
             root.find(f".//body[@name='{side}_elbow_pitch_Link']"),
             "geom",
+            franzi_model.placement(f"{side}_elbow_pitch_Link"),
             name=name,
             type="mesh",
             mesh=name,
@@ -828,7 +834,7 @@ def attach_real_cameras(root):
             else:
                 # On the tilted wrist block, as its camera (camera_rig.py).
                 side = mesh.split("_")[0]
-                pos, turned = wrist_mount.sensor_pose(side, pos, frame.as_matrix())
+                pos, turned = wrist_mount.sensor_pose(side, frame.as_matrix())
                 frame = Rotation.from_matrix(turned)
                 parts = [(path, m) for m, path in d405.items()]
             qx, qy, qz, qw = frame.as_quat()
@@ -852,8 +858,8 @@ def attach_real_cameras(root):
 
 
 def attach_wrist_blocks(root):
-    """The tilted D405 block (hardware/wrist_d405_mount) on each clevis pin, in
-    place of the original block that the recipe drops."""
+    """The wrist D405 adapter (hardware/wrist_d405_mount) on each gripper's
+    camera strip, holding the D405 (sim/wrist_mount.py)."""
     assets = root.find("asset")
     ET.SubElement(
         assets,
@@ -864,9 +870,8 @@ def attach_wrist_blocks(root):
         inertia="shell",
     )
     for side in ("left", "right"):
-        body = root.find(f".//body[@name='{side}_wrist_roll_Link']")
-        R, t = wrist_mount.part_to_wrist(side)
-        x, y, z, w = Rotation.from_matrix(R).as_quat()
+        site = root.find(f".//site[@name='{side}_wrist_d405']")
+        body = next(b for b in root.iter("body") if site in list(b))
         ET.SubElement(
             body,
             "geom",
@@ -874,8 +879,7 @@ def attach_wrist_blocks(root):
             type="mesh",
             mesh="wrist_d405_block",
             material="fa_black",
-            pos=vec(t / 1000),
-            quat=vec([w, x, y, z]),
+            pos=vec(wrist_mount.PAD / 1000),
             mass="0",
             **{"class": "visual"},
         )
@@ -972,7 +976,7 @@ def apply_appearance(root, source):
                 parent, where = body, frame
                 if "part" in entry:
                     # A gripper link or jaw block: same place at closure 0, in
-                    # the body that moves it (no rotation below the wrist).
+                    # the body that moves it (no rotation below the hand).
                     assert "quat" not in frame, mesh
                     side = mesh.split("_")[0]
                     name = f"paint_{mesh}_{entry['part']}_{entry['material']}"

@@ -13,6 +13,7 @@ either side of the grasp point and 65 mm behind it, the jaws open 95 mm, and
 the fingertips reach 17 mm past the grasp point.
 """
 
+import itertools
 import xml.etree.ElementTree as ET
 
 import numpy as np
@@ -34,9 +35,14 @@ SOURCES = {
     "cup_green": "robosyn_assets/PaperCup/green_cup.ply",
     "cup_blue": "robosyn_assets/PaperCup/blue_cup.ply",
     "drawer_outer": "embodichain_data/SlidingBoxDrawer/OuterBox.stl",
+    "basket": "robosyn_assets/Basket/kago3_deform.obj",
+    "milk": "robosyn_assets/MilkBox/source/Milk_Packaging.glb",
+    "mixer": "robosyn_assets/beaker_mixer/beaker_mixer.obj",
+    "rack": "robosyn_assets/test_tube_rack_standard.ply",
+    "tube": "robosyn_assets/test_tube_standard.ply",
     "drawer_inner": "embodichain_data/SlidingBoxDrawer/InnerBox.stl",
 }
-VERSION = 3
+VERSION = 7
 STEEL = [0.70, 0.71, 0.73, 1]
 BLACK = [0.07, 0.07, 0.08, 1]
 
@@ -218,12 +224,12 @@ def make_beaker(color, rgba):
     return make
 
 
-def make_cup(color, rgba):
-    """A RoboSyn paper cup (75 mm across at the rim, 81-104 mm tall). Collided
-    as its hull: the scenes only stand them up."""
+def make_cup(color, rgba, scale=(1, 1, 1)):
+    """A RoboSyn paper cup (75 mm across at the rim, 81-104 mm tall at 1).
+    Collided as its hull: the scenes only stand them up."""
 
     def make(export):
-        mesh = pp.settle(pp.load(SOURCES[f"cup_{color}"], (1, 1, 1)))
+        mesh = pp.settle(pp.load(SOURCES[f"cup_{color}"], scale))
         v = mesh.vertices
         r = np.hypot(v[:, 0], v[:, 1])
         return {
@@ -301,6 +307,169 @@ def make_drawer(export):
     }
 
 
+def make_basket(export):
+    """RoboSyn's woven basket (handle_basket), its long side turned along y.
+    RoboSyn scales it (1.0, 0.5, 0.82); here it is 20% longer and 10% deeper,
+    so two hands placing two things in it at once each keep their housing
+    (about 85 mm either side) inside its walls. Collided as its floor, 24
+    sectors of its wall and ten pieces of its handle arch."""
+    mesh = pp.load(SOURCES["basket"], (1.2, 0.5, 0.9))
+    mesh.apply_transform(pp.rot_x(np.pi / 2))
+    mesh.apply_transform(pp.rot_z(np.pi / 2))
+    mesh = pp.settle(mesh)
+    v = mesh.vertices
+    centre = (v.min(0) + v.max(0)) / 2
+    v = v - [centre[0], centre[1], 0]
+    mesh.apply_translation([-centre[0], -centre[1], 0])
+    rim = 0.112
+    middle = (np.abs(v[:, 0]) < 0.08) & (np.abs(v[:, 1]) < 0.12)
+    floor = float(v[middle & (v[:, 2] < 0.04), 2].max())
+    handle = (v[:, 2] > rim) & (np.abs(v[:, 0]) < 0.04)
+    # Wall points only: the outer 30% of the oval and above the floor. Taking
+    # the floor's points too made each sector's hull a wedge rising from the
+    # middle of the floor to the rim, filling the basket.
+    a, b = np.abs(v[:, :2]).max(0)
+    oval = (v[:, 0] / a) ** 2 + (v[:, 1] / b) ** 2 >= 0.7**2
+    wall = (v[:, 2] <= rim) & (v[:, 2] > floor + 0.002) & oval & ~handle
+    bottom = v[:, 2] <= floor + 0.0005
+    hv = v[handle]
+    edges = np.linspace(hv[:, 1].min(), hv[:, 1].max(), 11)
+    arch = [
+        pp.hull(hv[(hv[:, 1] >= a - 0.004) & (hv[:, 1] <= b + 0.004)])
+        for a, b in itertools.pairwise(edges)
+    ]
+    top = hv[np.abs(hv[:, 1]) < 0.03]
+    return {
+        "visual": [{"file": export(mesh, "basket"), "rgba": [0.62, 0.44, 0.26, 1]}],
+        "collision": [pp.hull(v[bottom])] + pp.ring(v[wall]) + arch,
+        "dims": {
+            "floor_z": floor,
+            "rim_z": rim,
+            "inner_half": [0.128, 0.178],
+            "handle_top_z": float(top[:, 2].max()),
+            "handle_mid_z": float((top[:, 2].max() + top[:, 2].min()) / 2),
+            "handle_width": float(np.ptp(top[:, 0])),
+            "size": mesh.extents.tolist(),
+        },
+    }
+
+
+def make_milk(export):
+    """RoboSyn's milk carton at its handle_basket scale (43 x 44 x 100 mm),
+    upright, with its printed texture."""
+    mesh = pp.load(SOURCES["milk"], (0.0066, 0.0067, 0.0066))
+    mesh.apply_transform(pp.rot_x(np.pi / 2))
+    mesh = pp.settle(mesh)
+    image = mesh.visual.material.baseColorTexture
+    return {
+        "visual": [
+            {
+                "file": export(mesh, "milk", texture=image),
+                "texture": "milk.png",
+            }
+        ],
+        "collision": [pp.hull(mesh.vertices)],
+        "dims": {"size": mesh.extents.tolist()},
+    }
+
+
+def make_rack(export):
+    """RoboSyn's test tube rack (sample_loading's 1.1), drawn only: scenery
+    for the lab bench (its grid would need a collider per bar)."""
+    mesh = pp.settle(pp.cluster(pp.load(SOURCES["rack"], (1.1, 1.1, 1.1)), 0.0008))
+    return {
+        "visual": [{"file": export(mesh, "rack"), "rgba": [0.90, 0.90, 0.92, 1]}],
+        "collision": [],
+        "dims": {"size": mesh.extents.tolist()},
+    }
+
+
+def make_tube(export):
+    """RoboSyn's test tube (sample_loading's 1.1 x 1.3), drawn only."""
+    mesh = pp.settle(pp.load(SOURCES["tube"], (1.1, 1.1, 1.3)))
+    return {
+        "visual": [{"file": export(mesh, "tube"), "rgba": [0.85, 0.92, 0.96, 0.6]}],
+        "collision": [],
+        "dims": {"size": mesh.extents.tolist()},
+    }
+
+
+def make_mixer(export):
+    """RoboSyn's magnetic stirrer (mixer_operating) at 0.2 (RoboSyn's 0.3 is
+    250 x 300 mm, more than this table's reach band), its knob panel turned
+    toward the robot (-x). Coloured from its texture, split into dark, mid and
+    light. Its two knobs are cut out as their own pieces, to press along the
+    panel's outward normal; the body collides as its hull."""
+    mesh = pp.load(SOURCES["mixer"], (0.2, 0.2, 0.2))
+    mesh.apply_transform(pp.rot_x(np.pi / 2))
+    mesh.apply_transform(pp.rot_z(-np.pi / 2))
+    mesh = pp.settle(mesh)
+    mesh.visual = mesh.visual.to_color()
+    mesh = pp.cluster(mesh, 0.0008)
+    v = mesh.vertices
+    # The knob panel slopes up toward +x; fit it away from the knobs.
+    panel = v[(v[:, 0] < -0.06) & (v[:, 2] > 0.041) & (np.abs(v[:, 1]) < 0.03)]
+    k, c = np.linalg.lstsq(np.c_[panel[:, 0], np.ones(len(panel))], panel[:, 2])[0]
+    normal = np.array([k, 0.0, -1.0]) / np.hypot(k, 1.0)
+    if normal[2] < 0:
+        normal = -normal  # outward: up, and toward the robot
+    height = (v - [0, 0, c]) @ normal  # above the panel plane
+    knobs, knob_dims = {}, {}
+    for side, sel in (("left", v[:, 1] > 0.03), ("right", v[:, 1] < -0.03)):
+        mask = sel & (v[:, 0] < -0.06) & (v[:, 2] > 0.041) & (height > 0.0015)
+        knobs[side] = mask
+        pts = v[mask]
+        centre = pts.mean(0)
+        knob_dims[side] = {
+            "top": (pts[np.argmax(height[mask])]).tolist(),
+            "centre": centre.tolist(),
+            "radius": float(np.ptp(pts[:, 1]) / 2),
+        }
+    color = mesh.visual.vertex_colors[:, :3].astype(float)
+    face = color[mesh.faces].mean(1)
+    on_knob = np.zeros(len(mesh.faces), bool)
+    for mask in knobs.values():
+        on_knob |= mask[mesh.faces].all(1)
+    light = face.mean(1)
+    groups = {
+        "dark": ~on_knob & (light < 90),
+        "mid": ~on_knob & (light >= 90) & (light < 170),
+        "light": ~on_knob & (light >= 170),
+    }
+    visual = []
+    for name, faces in groups.items():
+        if faces.any():
+            part = mesh.submesh([np.flatnonzero(faces)], append=True)
+            rgba = np.r_[face[faces].mean(0) / 255, 1].round(3).tolist()
+            visual.append({"file": export(part, f"mixer_{name}"), "rgba": rgba})
+    for side, mask in knobs.items():
+        faces = mask[mesh.faces].all(1)
+        part = mesh.submesh([np.flatnonzero(faces)], append=True)
+        visual.append({"file": export(part, f"mixer_knob_{side}"), "rgba": BLACK})
+    body = v[~(knobs["left"] | knobs["right"])]
+    top = v[(np.abs(v[:, 0]) < 0.03) & (np.abs(v[:, 1]) < 0.03)]
+    # The heating plate: the top surface behind the knob panel.
+    plate = v[(v[:, 2] > top[:, 2].max() - 0.001) & (v[:, 0] > -0.06)]
+    return {
+        "visual": visual,
+        "collision": [
+            pp.hull(body),
+            pp.hull(v[knobs["left"]]),
+            pp.hull(v[knobs["right"]]),
+        ],
+        "dims": {
+            "size": mesh.extents.tolist(),
+            "plate_z": float(top[:, 2].max()),
+            "plate_xy": ((plate[:, :2].min(0) + plate[:, :2].max(0)) / 2).tolist(),
+            "panel": {"slope": float(k), "z0": float(c)},
+            "press_axis": (-normal).tolist(),
+            "knobs": knob_dims,
+            "body_visuals": len(visual) - 2,
+            "travel": 0.004,
+        },
+    }
+
+
 MAKERS = {
     "pot": make_pot,
     "lid": make_lid,
@@ -314,8 +483,15 @@ MAKERS = {
     "cup_green": make_cup("green", [0.22, 0.66, 0.32, 1]),
     "cup_blue": make_cup("blue", [0.16, 0.42, 0.85, 1]),
     "drawer": make_drawer,
+    "basket": make_basket,
+    "milk": make_milk,
+    "mixer": make_mixer,
+    "rack": make_rack,
+    "tube": make_tube,
+    "cup_green_small": make_cup("green", [0.22, 0.66, 0.32, 1], (0.75, 0.75, 1.0)),
 }
 RAW_FILES = {
+    "cup_green_small": ["cup_green"],
     "beaker_blue": ["beaker"],
     "beaker_amber": ["beaker"],
     "button": ["button_base", "button_cap"],
@@ -412,3 +588,52 @@ def add_drawer(root, name, prop, mesh_dir, xy, yaw, contact, travel=0.16):
     pp.add_geoms(
         drawer, f"{name}_box", visual[1:], collision[pieces["cabinet"] :], contact
     )
+
+
+def add_mixer(root, name, prop, mesh_dir, xy, contact):
+    """The stirrer fixed at xy on the table, <name>_part, with its two knobs
+    <name>_knob_{left,right}_part on sprung slides along the panel's normal
+    (<name>_knob_{side}_part_joint, 0 out, pressed in to the travel). Each
+    knob is excluded from contact with the body it sinks into."""
+    asset, world = root.find("asset"), root.find("worldbody")
+    visual, collision = pp.mesh_assets(asset, name, prop, mesh_dir)
+    dims = prop["dims"]
+    n_body = dims["body_visuals"]
+    body = ET.SubElement(world, "body", name=f"{name}_part", pos=fmt([*xy, TABLE_Z]))
+    pp.add_geoms(body, name, visual[:n_body], collision[:1], contact)
+    exclude = root.find("contact")
+    if exclude is None:
+        exclude = ET.SubElement(root, "contact")
+    axis = dims["press_axis"]
+    for k, side in enumerate(("left", "right")):
+        knob = ET.SubElement(body, "body", name=f"{name}_knob_{side}_part")
+        ET.SubElement(
+            exclude, "exclude", body1=f"{name}_part", body2=f"{name}_knob_{side}_part"
+        )
+        ET.SubElement(
+            knob,
+            "joint",
+            name=f"{name}_knob_{side}_part_joint",
+            type="slide",
+            axis=fmt(axis),
+            range=fmt([0, dims["travel"]]),
+            limited="true",
+            stiffness="300",
+            springref="0",
+            damping="3",
+            armature="0.0001",
+        )
+        ET.SubElement(
+            knob,
+            "inertial",
+            pos=fmt(dims["knobs"][side]["centre"]),
+            mass="0.005",
+            diaginertia="1e-7 1e-7 1e-7",
+        )
+        pp.add_geoms(
+            knob,
+            f"{name}_knob_{side}",
+            visual[n_body + k : n_body + k + 1],
+            collision[1 + k : 2 + k],
+            contact,
+        )

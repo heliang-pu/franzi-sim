@@ -1,5 +1,5 @@
-"""Convert recorded expert runs (scenes.pick_place.run or scenes.kitting.run,
-with --record) into raw VLA episodes.
+"""Convert recorded expert runs (scenes.pick_place.run, scenes.kitting.run or a
+RoboSyn scene's run, with --record) into raw VLA episodes.
 
     python -m data.convert_expert_run outputs/expert_pinocchio --output outputs/<new_episode>
     python -m data.convert_expert_run outputs/<runs>/seed_* --output outputs/<new_folder>
@@ -24,7 +24,19 @@ commands the robot through the stock SDK unchanged:
 - the episode instruction is the run's own (summary.json "instruction", one per
   scenes.kitting.run seed), else KITTING_TASK; --task overrides both. Subtask texts
   come from trace.json. The camera videos are copied unchanged. Ground-truth
-  object state (trace.json "objects", summary.json placements) is not carried over.
+  object state (trace.json "objects", summary.json placements) stays out of
+  frames.npz.
+
+Runs with the full log (sim/episode.py, 2026-10-25) give schema-2 episodes:
+- state_full and action_full: the 16 above, then the waist and head joints
+  through their franzi_sdk.yaml unit mappings (simbridge.robot.load_robot);
+- velocity_full and effort_full with each joint's SDK sign; the grippers' as
+  position units/s (-1000 times the closure rate) and squeeze force (N);
+- eef_pose and camera_pose as logged, the cameras in vla_episode.CAMERAS order;
+- extras/: the recording's depth and segmentation videos and segmentation.json,
+  renamed to the SDK camera names, and the world state for evaluation only
+  (eval.npz: object_pose, object_velocity, prop_qpos and their names;
+  eval_contacts.json).
 """
 
 import argparse
@@ -44,7 +56,7 @@ from data.vla_episode import (
     video_info,
 )
 from robot_kinematics import ROBOT_CONFIG, Kinematics
-from simbridge.robot import GripperMap
+from simbridge.robot import GripperMap, load_robot
 
 
 def to_sdk(kin, values):
@@ -56,6 +68,47 @@ def to_sdk(kin, values):
     return np.c_[
         kin.to_sdk("left", values[:, :7]), kin.to_sdk("right", values[:, 7:14]), *grips
     ]
+
+
+def full_to_sdk(kin, robot, values):
+    """(n, 22) FULL_NAMES positions (URDF rad, closures) -> SDK units."""
+    values = np.asarray(values, float)
+    return np.c_[
+        to_sdk(kin, values[:, :16]),
+        robot.units["waist"].to_sdk(values[:, 16:20]),
+        robot.units["head"].to_sdk(values[:, 20:22]),
+    ]
+
+
+def rates_to_sdk(robot, values, gripper_scale):
+    """(n, 22) FULL_NAMES rates or efforts -> SDK signs; the gripper columns
+    times gripper_scale."""
+    values = np.asarray(values, float)
+    return np.c_[
+        robot.units["left"].rate_to_sdk(values[:, :7]),
+        robot.units["right"].rate_to_sdk(values[:, 7:14]),
+        gripper_scale * values[:, 14:16],
+        robot.units["waist"].rate_to_sdk(values[:, 16:20]),
+        robot.units["head"].rate_to_sdk(values[:, 20:22]),
+    ]
+
+
+def full_rows(kin, data, sim_cameras):
+    """Per-tick FULL_ARRAYS rows of a run's full log, or [] without one."""
+    if "state_full" not in data.files:
+        return []
+    robot = load_robot()
+    order = [list(data["camera_names"]).index(sim) for sim in sim_cameras]
+    columns = {
+        "state_full": full_to_sdk(kin, robot, data["state_full"]),
+        "action_full": full_to_sdk(kin, robot, data["action_full"]),
+        "velocity_full": rates_to_sdk(robot, data["velocity_full"], -1000.0),
+        "effort_full": rates_to_sdk(robot, data["effort_full"], 1.0),
+        "eef_pose": data["eef_pose"],
+        "camera_pose": data["camera_pose"][:, order],
+    }
+    n = len(data["state_full"])
+    return [{key: value[k] for key, value in columns.items()} for k in range(n)]
 
 
 def convert(run, output, task=None, allow_failed=False, kin=None):
@@ -93,6 +146,8 @@ def convert(run, output, task=None, allow_failed=False, kin=None):
     state = to_sdk(kin, data["state"])
     action = to_sdk(kin, data["action"])
     setpoint = np.r_[state[:1, :14], action[:-1, :14]]
+    sims = [streams[camera]["sim"] for camera in CAMERAS]
+    full = full_rows(kin, data, sims)
     writer = EpisodeWriter(output, encode=False)
     for k in range(n):
         writer.add(
@@ -108,10 +163,34 @@ def convert(run, output, task=None, allow_failed=False, kin=None):
                 "camera_host_ms": [-1] * 4,
                 "tick_late_s": 0.0,
                 "subtask": trace[k]["subtask"],
+                **(full[k] if full else {}),
             }
         )
     for camera, path in videos.items():
         writer.copy_video(camera, path)
+    for camera, sim in zip(CAMERAS, sims, strict=True):
+        for kind in ("depth", "segmentation"):
+            source = run / f"{kind}_{sim}.mkv"
+            if source.exists():
+                writer.copy_extra(f"{kind}_{camera}.mkv", source)
+    if (run / "segmentation.json").exists():
+        writer.copy_extra("segmentation.json", run / "segmentation.json")
+    if full:
+        writer.save_extra(
+            "eval.npz",
+            **{
+                key: data[key]
+                for key in (
+                    "object_pose",
+                    "object_velocity",
+                    "prop_qpos",
+                    "object_names",
+                    "prop_joint_names",
+                )
+            },
+        )
+    if (run / "contacts.json").exists():
+        writer.copy_extra("eval_contacts.json", run / "contacts.json")
     meta = {
         "source": "expert_run",
         "complete": True,
@@ -123,6 +202,10 @@ def convert(run, output, task=None, allow_failed=False, kin=None):
             "seed": summary.get("seed"),
             "success": summary["success"],
             "duration_s": summary["duration_s"],
+            # Isaac runs keep MuJoCo as the kinematic mirror (isaac/engine.py).
+            "simulator": summary.get(
+                "simulator", f"MuJoCo {summary['mujoco_version']}"
+            ),
             "mujoco_version": summary["mujoco_version"],
             "source_urdf_sha256": summary["source_urdf_sha256"],
             "videos": {c: p.name for c, p in videos.items()},
@@ -131,6 +214,10 @@ def convert(run, output, task=None, allow_failed=False, kin=None):
             "joints": "robot_kinematics.Kinematics().to_sdk",
             "gripper": "simbridge.robot.GripperMap.position_from_closure",
             "setpoint": "action of the previous tick",
+            "full": "waist and head: simbridge.robot.load_robot() unit maps; rates "
+            "and efforts: their signs, grippers x -1000 (rate) and N (squeeze)"
+            if full
+            else None,
         },
         "clock": "sim",
         "images": "rendered at the state's physics step",

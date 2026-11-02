@@ -3,7 +3,9 @@ outputs/
 # Vendor SDK and controller-image extracts: third-party code, and the image holds
 # credential-like fields. Never commit; copy from the original machine instead.
 sdk_review/
-# Rebuildable caches (appearance.py, fittings.py, convert_pybullet_assets.py).
+# Machine details (hosts, internal paths): the repository is public.
+CLAUDE.local.md
+# Rebuildable caches (appearance.py, fittings.py, link_hulls.py, the prop caches).
 assets/appearance/painted/
 assets/appearance/wordmark/
 assets/appearance/fittings/
@@ -13,8 +15,10 @@ assets/appearance/head_*.stl
 assets/appearance/head_parts.json
 assets/appearance/inovance_wordmark.png
 # Blender prop pipeline (tools/blender/): the build scripts rebuild each prop's
-# source.blend; the QA renders, logs and reports are Codex's run records.
-assets/props/*/source.blend
+# .blend sources; the QA renders (render*.png), logs and reports are Codex's run
+# records.
+assets/props/*/*.blend
+assets/props/*/render*.png
 *.blend1
 tools/blender/_qa/
 tools/blender/*.log

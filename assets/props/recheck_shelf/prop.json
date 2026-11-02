@@ -1,0 +1,67 @@
+{
+  "id": "recheck_shelf",
+  "task": "tote_sorting",
+  "units": "m",
+  "origin": "bottom_center",
+  "static": true,
+  "budget_class": "medium",
+  "variants": [],
+  "dimensions_mm": {
+    "shelf_xy": [
+      240,
+      400
+    ],
+    "top": 800,
+    "lower_shelf_top": 300,
+    "lip_height": 10,
+    "upright_outer_inset": 20,
+    "footprint_xy": [
+      240,
+      400
+    ]
+  },
+  "recommended_placement_m": [
+    0.36,
+    0,
+    0
+  ],
+  "notes": "Geometry in the common prop frame, Z up, front -X. CPU Cycles 64-sample diffuse colour times (0.4 + 0.6 AO); Smart UV 66 degrees. Full PBR in source.blend.  Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification.",
+  "mass_kg": 12,
+  "parts": [
+    {
+      "name": "frame",
+      "visual": "frame.obj",
+      "texture": "frame_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "frame_col_00.obj",
+        "frame_col_01.obj",
+        "frame_col_02.obj",
+        "frame_col_03.obj",
+        "frame_col_04.obj",
+        "frame_col_05.obj",
+        "frame_col_06.obj",
+        "frame_col_07.obj",
+        "frame_col_08.obj",
+        "frame_col_09.obj"
+      ],
+      "mass_kg": 12,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "parent": null,
+      "joint": null
+    }
+  ],
+  "bbox_mm": [
+    239.99999,
+    400.00001,
+    810.0
+  ],
+  "triangles": 1080,
+  "source": "source.blend",
+  "preview": "preview.png"
+}

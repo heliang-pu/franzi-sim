@@ -17,6 +17,8 @@ from scipy.interpolate import RegularGridInterpolator
 from scipy.sparse.linalg import spsolve
 from scipy.spatial.transform import Rotation
 
+from sim import franzi_model
+
 PARAMS = {
     "version": 7,
     "raster": 0.001,
@@ -80,7 +82,9 @@ OFFSETS = {
 
 
 def _parts(source, name):
+    # In the shell's wheel_robot_4.0 frame, which the fits are written in.
     mesh = trimesh.load(source / "meshes" / f"{name}.STL", process=True, force="mesh")
+    mesh.apply_transform(franzi_model.to_previous(name))
     return sorted(
         mesh.split(only_watertight=False), key=lambda p: len(p.faces), reverse=True
     )
@@ -439,6 +443,10 @@ def attach_fittings(root, info):
     added = []
 
     def geom(body, name, **attrs):
+        # Fits are in the link's wheel_robot_4.0 frame (franzi_model.placement).
+        pos = np.fromstring(attrs.pop("pos", "0 0 0"), sep=" ")
+        quat = np.fromstring(attrs.pop("quat", "1 0 0 0"), sep=" ")
+        attrs |= franzi_model.placement(body.get("name"), pos, quat)
         ET.SubElement(body, "geom", name=name, **attrs, **VISUAL)
         added.append(name)
 

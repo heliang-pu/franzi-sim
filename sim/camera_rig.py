@@ -1,7 +1,7 @@
 """Four body-mounted cameras derived from the URDF sensor sites.
 
-The wrist D405s sit on the tilted wrist block (sim/wrist_mount.py): each is its
-URDF site carried onto the block, i.e. the site's frame times a fixed bracket.
+The wrist D405s sit on the wrist D405 adapter (sim/wrist_mount.py): each is its
+URDF site carried onto the adapter, turned toward the jaws.
 No real-device intrinsics were supplied. FOV values are editable simulation
 defaults, not a claim of calibrated D435/D405 RGB or depth imaging.
 """
@@ -37,7 +37,7 @@ def install_cameras(root):
         if profile.get("mount") == "wrist_block":
             at = np.fromstring(pos, sep=" ")
             on_block, turned = wrist_mount.sensor_pose(
-                name.split("_")[0], at, r.as_matrix()
+                name.split("_")[0], r.as_matrix()
             )
             sensor = Rotation.from_matrix(turned)
             x, y, z, w = (r.inv() * sensor).as_quat()
@@ -84,7 +84,7 @@ def pinhole_K(fovy, width=640, height=480):
 def assert_mounts(model, data, metadata):
     """Check actual camera origins and view directions after forward kinematics:
     each camera sits on its URDF sensor site, or on the site times its bracket
-    (metadata "bracket_in_site", the wrist block)."""
+    (metadata "bracket_in_site", the wrist D405 adapter)."""
     for name in POLICY_CAMERAS:
         site = model.site(name).id
         cam = model.camera(name).id

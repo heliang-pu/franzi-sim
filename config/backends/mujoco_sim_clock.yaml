@@ -5,7 +5,7 @@
 # teleop_max_gap_s (0.2 s) apart, so simbridge plays each point over
 # teleop_default_period_s (0.04 s) of simulated time: one point per tick.
 backend: mujoco
-python: /Users/puheliang/miniforge3/envs/inovance-fineart/bin/python
+# No python key: the server runs under the interpreter of verify_backends.
 robot: config/robot/franzi_sdk.yaml
 connection: config/connections/sim_mujoco.yaml
 runtime:

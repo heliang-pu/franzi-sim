@@ -1,0 +1,82 @@
+{
+  "id": "order_tray",
+  "task": "order_picking",
+  "units": "m",
+  "origin": "bottom_center",
+  "budget_class": "medium",
+  "bbox_mm": [
+    140.019998,
+    200.000003,
+    29.999999
+  ],
+  "triangles": 510,
+  "source": "source.blend",
+  "preview": "preview.png",
+  "inspection": "inspection.png",
+  "parts": [
+    {
+      "name": "body",
+      "mass_kg": 0.2,
+      "parent": null,
+      "joint": null,
+      "texture_px": 2048,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "collision": [
+        "body_col_00.obj",
+        "body_col_01.obj",
+        "body_col_02.obj",
+        "body_col_03.obj",
+        "body_col_04.obj",
+        "body_col_05.obj"
+      ],
+      "source_visual_object": "body",
+      "source_collision_objects": [
+        "COL__body__000",
+        "COL__body__001",
+        "COL__body__002",
+        "COL__body__003",
+        "COL__body__004",
+        "COL__body__005"
+      ]
+    }
+  ],
+  "variants": [],
+  "dimensions_mm": {
+    "outer_xyz": [
+      140,
+      200,
+      30
+    ],
+    "divider_height": 12,
+    "wall": 2.5,
+    "floor": 3
+  },
+  "notes": "Metres, Z up, robot front -X, shared bottom-centre frame; applied transforms. CPU Cycles 64 diffuse colour times mix(1, AO, 0.6); PBR source retained. Inspection render 1024 square; preview thumbnail 512 for the unchanged validator. ",
+  "static": true,
+  "recommended_placement_m": {
+    "origin": [
+      0.38,
+      0,
+      0.9
+    ]
+  },
+  "compartments": [
+    {
+      "hand": "left",
+      "y_sign": 1
+    },
+    {
+      "hand": "right",
+      "y_sign": -1
+    }
+  ],
+  "preview_variant": "default",
+  "preview_source": "Delivered OBJ meshes and exported albedos; 1024 native inspection, 512 thumbnail."
+}

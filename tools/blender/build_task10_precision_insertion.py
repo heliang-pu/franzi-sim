@@ -17,8 +17,11 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 QA = HERE / "_qa" / "task10"
 OUTPUT = HERE.parents[1] / "assets" / "props"
+# bearing_shaft_fixture since 2026-10-25: the robot's fingertips reach 17 mm past
+# its pads, so they cannot follow a 6204 into a housing bore; the scene slides the
+# bearing onto this shaft instead, the bearing's collision a ring with its bore open.
 IDS = ("bearing_housing_c010", "bearing_housing_c020", "bearing_housing_c030",
-       "bearing_6204", "dowel_pin", "pin_fixture", "din_rail_kit")
+       "bearing_6204", "bearing_shaft_fixture", "dowel_pin", "pin_fixture", "din_rail_kit")
 
 
 def artwork_worker():
@@ -286,21 +289,61 @@ def bearing_6204():
     for loop in visual.data.loops:
         v = visual.data.vertices[loop.vertex_index].co * 1000
         marking.data[loop.index].uv = (.5 + v.x / 47, .5 + v.y / 47)
-    collision = solid_lathe("One analytic 48 sided chamfered prism",
-                            [(22.9, 0), (23.5, .6), (23.5, 13.4), (22.9, 14)], 48)
-    spec = part("body", visual, [collision], .106, friction=.25)
+    # The races collide as a ring with the ID20 bore open, so that the bearing
+    # slides onto bearing_shaft_fixture's shaft (2026-10-25; one prism filled it).
+    collisions = props.ring_segments("Race ring sector", 10, 23.5, 14, count=24, location_mm=(0, 0, 7))
+    spec = part("body", visual, collisions, .106, friction=.25)
     complete(folder, [spec], {"outer_diameter": 47, "inner_diameter": 20, "width": 14,
                              "chamfer": .6, "seal_recess": .5},
              "NVK 6204-2RS, two black recessed rubber seals; orange E25B12 seal variant. "
-             "One analytic convex 48-sided prism with vertices on the nominal OD47 circle, "
-             "0.6 mm bevel rings at both ends; collision deliberately fills the ID20 visual bore. "
-             "A 48-sided prism requires at least 96 vertices (192 with both bevel rings), "
-             "which cannot meet the universal 64-vertex/file rule. prop_lib therefore divides "
-             "that same convex solid into exact convex subpieces without changing its union "
-             "or enlarging its diameter. This is the closest faithful validator-compatible choice.",
+             "Collision: 24 convex ring sectors, 14 mm tall, inner flats exactly at the R10 bore and "
+             "outer vertices on the OD47 circle, without the 0.6 mm end bevels. The bore stays open "
+             "so that the bearing slides onto a shaft (bearing_shaft_fixture). Until 2026-10-25 one "
+             "48-sided prism filled the bore, for pressing into a housing; the robot's fingertips "
+             "reach 17 mm past its pads and cannot follow the bearing into a bore.",
              {"precision_mm": .01, "outer_diameter_mm": 47, "inner_diameter_mm": 20,
-              "width_mm": 14, "collision_sides": 48, "collision_nominal_prisms": 1,
+              "width_mm": 14, "collision_sides": 24, "collision_bore_open": True,
               "seal_material": seal.name, "marking": "NVK 6204-2RS"})
+
+
+def bearing_shaft_fixture(clearance_mm=1.0):
+    """A 6204 mounting fixture: 70 X x 110 Y x 20 base, a D24 x 14 shoulder the
+    inner ring seats on, and a shaft of diameter 20 - clearance (diametral, mm)
+    rising 20 mm above it with a 1 mm x 30 degree lead-in. Held by its outer
+    race, the bearing slides down the shaft while the fingertips stay outside
+    it, above the base, until it seats on the shoulder."""
+    folder = start("bearing_shaft_fixture")
+    aluminium = props.pbr_material("Milled aluminium C4C9CE", "#C4C9CE", .30, 1,
+                                   wear=.06, grime=.12, machining="milled")
+    steel = props.pbr_material("Ground shaft steel", "#9AA1A8", .22, 1, grime=.10, machining="turned")
+    radius = (20 - clearance_mm) / 2
+    lead = math.tan(math.radians(30))  # radial step of the 1 mm axial lead-in
+    base = box("Fixture base", (70, 110, 20), (0, 0, 10), aluminium)
+    for y in (-42, 42):
+        cutter = solid_lathe("Counterbored mounting hole",
+                             [(4.5, -1), (4.5, 11), (7.5, 11), (7.5, 19.7),
+                              (7.8, 20), (7.8, 21)], 64, apothem=True)
+        cutter.data.transform(Matrix.Translation((0, props.mm(y), 0)))
+        boolean(base, cutter)
+    shaft = solid_lathe("Shoulder and shaft", [(12, 20), (12, 34), (radius, 34), (radius, 53),
+                                               (radius - lead, 54)], 96, steel)
+    visual = props.join_objects([base, shaft], "body")
+    collisions = [box("COL base", (70, 110, 20), (0, 0, 10), edge=0),
+                  props.cylinder("COL shoulder", 12, 14, (0, 0, 27), bevel_mm=0, vertices=32),
+                  props.cylinder("COL shaft", radius, 19, (0, 0, 43.5), bevel_mm=0, vertices=32),
+                  solid_lathe("COL lead-in", [(radius, 53), (radius - lead, 54)], 32)]
+    spec = part("body", visual, collisions, 0.5)
+    complete(folder, [spec], {"base_xyz": [70, 110, 20], "shoulder_diameter": 24, "shoulder_top_z": 34,
+                             "shaft_diameter": 20 - clearance_mm, "shaft_top_z": 54, "lead_in_axial": 1,
+                             "lead_in_angle_from_axis_deg": 30, "mount_hole": 9, "counterbore": 15,
+                             "mount_centres_y": [-42, 42]},
+             "Static table fixture (2026-10-25) for sliding the 6204 onto a shaft: diametral clearance "
+             f"c={clearance_mm} mm to the 20 mm bore. Collision: the base box, a 32-sided shoulder "
+             "prism, a 32-sided shaft prism with vertices on the shaft circle, and the 32-sided lead-in "
+             "frustum. The bearing seats on the shoulder at Z34 with 6 mm of shaft above it; a gripper "
+             "holding its outer race keeps the fingertips more than 10 mm above the base there.",
+             {"precision_mm": .01, "clearance_mm": clearance_mm,
+              "shaft_diameter_mm": 20 - clearance_mm, "bearing_seat_z_mm": 34, "fixed": True})
 
 
 def dowel_pin():
@@ -335,7 +378,7 @@ def pin_fixture():
     steel = props.pbr_material("Blackened fixture steel", "#2E3135", .45, .8,
                                grime=.16, machining="milled")
     specs = []
-    for clearance in (.05, .10, .20):
+    for clearance in (.05, .10, .20, 1.00):
         tag = f"c{round(clearance * 100):03d}"
         radius = (10 + clearance) / 2
         visual = box(f"Plate {tag}", (80, 120, 20), (0, 0, 10), steel)
@@ -360,8 +403,9 @@ def pin_fixture():
     complete(folder, [specs[0]], {"plate_xyz": [80, 120, 20], "hole_pitch": 60,
                                 "hole_centres_xy": [[0, -30], [0, 30]], "entry_chamfer": .5},
              "Fixed blackened plate, two through holes on a 60 mm Y pitch. Default c=0.05 mm; "
-             "c=0.10 and c=0.20 are replacement-geometry variants in the variants[].parts "
-             "records, all in the identical frame. Load one complete variant, never all three. "
+             "c=0.10, c=0.20 and c=1.00 (added 2026-10-25 for camera-guided hands) are "
+             "replacement-geometry variants in the variants[].parts records, all in the identical "
+             "frame. Load one complete variant, never more. "
              "Each hole has 32 convex sectors with exact design apothems. To meet the 64-piece "
              "limit, sectors extend to the rectangular half-plate perimeter, integrating the "
              "peripheral box fill without extra pieces. Entry chamfers are visual; collision "
@@ -543,7 +587,10 @@ def export_current():
         texture = spec["bake_texture"]
         bake(obj, spec["texture_px"], folder / texture, cache)
         spec["texture"] = texture
-        shaft = (23.5, .6) if data["id"] == "bearing_6204" else (5,) if data["id"] == "dowel_pin" else None
+        # The bearing's ring sectors have no end bevels: clamp them to the plain
+        # OD47 circle (a (23.5, .6) limit, for the old bevelled prism, pulled their
+        # end-only vertices in to R22.9).
+        shaft = (23.5,) if data["id"] == "bearing_6204" else (5,) if data["id"] == "dowel_pin" else None
         spec["collision"] = precise_collision(spec["name"],
             [bpy.data.objects[n] for n in spec["source_collision_objects"]], folder, shaft)
 

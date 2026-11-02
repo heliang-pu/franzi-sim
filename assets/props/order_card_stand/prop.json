@@ -1,0 +1,130 @@
+{
+  "id": "order_card_stand",
+  "task": "order_picking",
+  "units": "m",
+  "origin": "bottom_center",
+  "budget_class": "medium",
+  "bbox_mm": [
+    59.999999,
+    159.999996,
+    111.172959
+  ],
+  "triangles": 388,
+  "source": "source.blend",
+  "preview": "preview.png",
+  "inspection": "inspection.png",
+  "parts": [
+    {
+      "name": "body",
+      "mass_kg": 0.295,
+      "parent": null,
+      "joint": null,
+      "texture_px": null,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "visual": "body.obj",
+      "texture": null,
+      "collision": [
+        "body_col_00.obj"
+      ],
+      "source_visual_object": "body",
+      "source_collision_objects": [
+        "COL__body__000"
+      ],
+      "rgba": [
+        0.85,
+        0.9,
+        0.95,
+        0.25
+      ]
+    },
+    {
+      "name": "card",
+      "mass_kg": 0.005,
+      "parent": "body",
+      "joint": null,
+      "texture_px": 2048,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "visual": "card.obj",
+      "texture": "card_albedo.png",
+      "collision": [
+        "card_col_00.obj"
+      ],
+      "source_visual_object": "card",
+      "source_collision_objects": [
+        "COL__card__000"
+      ]
+    }
+  ],
+  "variants": [],
+  "dimensions_mm": {
+    "base_xyz": [
+      60,
+      160,
+      8
+    ],
+    "card_width": 148,
+    "card_height": 105,
+    "rear_tilt_deg": 15,
+    "card_thickness": 0.3
+  },
+  "notes": "Metres, Z up, robot front -X, shared bottom-centre frame; applied transforms. CPU Cycles 64 diffuse colour times mix(1, AO, 0.6); PBR source retained. Inspection render 1024 square; preview thumbnail 512 for the unchanged validator. The card front uses the complete [0,1] UV rectangle, with no packing or margins. Native replacement artwork is 1480 x 1050. The unchanged validator only accepts square 1024/2048 part textures; the default card_albedo is a square bake of that artwork, geometrically restored to A6 by the full-face UVs. Acrylic is an untextured rgba part. Card is a closed 0.3 mm paper slab backed by real acrylic; support and card share one convex collision. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Hidden card back/edge UVs sample the white lower-left pixel; front UV area remains exactly one. The closed 0.3 mm slab supports simulator mesh import.",
+  "static": true,
+  "recommended_placement_m": {
+    "origin": [
+      0.56,
+      0,
+      0.9
+    ]
+  },
+  "card": {
+    "part": "card",
+    "front_image": "card_front.png",
+    "image_size_px": [
+      1480,
+      1050
+    ],
+    "front_uv_bounds": [
+      [
+        0,
+        0
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    "front_normal": [
+      -0.9659258127212524,
+      0.0,
+      0.258819043636322
+    ],
+    "u_direction": [
+      0,
+      -1,
+      0
+    ],
+    "v_direction": [
+      0.258819043636322,
+      0.0,
+      0.9659258127212524
+    ],
+    "replace_texture": true,
+    "back_edge_uv_sample": [
+      0,
+      0
+    ],
+    "thickness_m": 0.0003
+  },
+  "preview_variant": "default",
+  "preview_source": "Delivered OBJ meshes and exported albedos; 1024 native inspection, 512 thumbnail."
+}

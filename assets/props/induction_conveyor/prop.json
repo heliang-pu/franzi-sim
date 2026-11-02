@@ -1,0 +1,2074 @@
+{
+  "id": "induction_conveyor",
+  "task": "parcel_induction",
+  "units": "m",
+  "origin": "ground_entry_center",
+  "static": true,
+  "budget_class": "large",
+  "variants": [],
+  "dimensions_mm": {
+    "length": 1105,
+    "end_stop_inner_x": 1102,
+    "roller_end_clearance": 2,
+    "roller_count": 44,
+    "roller_diameter": 20,
+    "roller_length": 360,
+    "roller_pitch": 25,
+    "first_roller_x": 15,
+    "roller_top": 940,
+    "guide_inner_width": 370,
+    "guide_top": 960,
+    "entry_plate_top": 970,
+    "end_plate_top": 980,
+    "gantry_x": 650,
+    "gantry_post_y": [
+      -280,
+      280
+    ],
+    "beam_bottom": 1190,
+    "scanner_xyz": [
+      80,
+      120,
+      60
+    ],
+    "lamp_diameter": 40,
+    "footprint_xy_bounds": [
+      [
+        0,
+        1100
+      ],
+      [
+        -300,
+        300
+      ]
+    ]
+  },
+  "recommended_placement_m": [
+    0.3,
+    0,
+    0
+  ],
+  "notes": "Geometry in the common prop frame, Z up, front -X. CPU Cycles 64-sample diffuse colour times (0.4 + 0.6 AO); Smart UV 66 degrees. Full PBR in source.blend. Scanner 120 mm width is along Y; 80 mm depth along X. Gantry feet remain inside its 600 mm overall footprint. Lamp is a separate untextured dark lens; simulation changes rgba and emission.  Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification.",
+  "mass_kg": 50,
+  "conveyor": {
+    "roller_parts": [
+      "roller_00",
+      "roller_01",
+      "roller_02",
+      "roller_03",
+      "roller_04",
+      "roller_05",
+      "roller_06",
+      "roller_07",
+      "roller_08",
+      "roller_09",
+      "roller_10",
+      "roller_11",
+      "roller_12",
+      "roller_13",
+      "roller_14",
+      "roller_15",
+      "roller_16",
+      "roller_17",
+      "roller_18",
+      "roller_19",
+      "roller_20",
+      "roller_21",
+      "roller_22",
+      "roller_23",
+      "roller_24",
+      "roller_25",
+      "roller_26",
+      "roller_27",
+      "roller_28",
+      "roller_29",
+      "roller_30",
+      "roller_31",
+      "roller_32",
+      "roller_33",
+      "roller_34",
+      "roller_35",
+      "roller_36",
+      "roller_37",
+      "roller_38",
+      "roller_39",
+      "roller_40",
+      "roller_41",
+      "roller_42",
+      "roller_43"
+    ],
+    "direction": [
+      1,
+      0,
+      0
+    ],
+    "roller_top_m": 0.94,
+    "roller_radius_m": 0.01,
+    "drive": "velocity_actuators",
+    "positive_angular_velocity": true,
+    "speed_m_s": 0.1
+  },
+  "lamps": [
+    {
+      "part": "scan_lamp",
+      "on_rgba": [
+        0.18,
+        0.8,
+        0.25,
+        1
+      ],
+      "emission": 0.8,
+      "states": {
+        "read": [
+          0.18,
+          0.8,
+          0.25,
+          1
+        ],
+        "unread": [
+          0.9,
+          0.08,
+          0.06,
+          1
+        ]
+      }
+    }
+  ],
+  "collision_exclusions": [
+    [
+      "frame",
+      "roller_00"
+    ],
+    [
+      "frame",
+      "roller_01"
+    ],
+    [
+      "frame",
+      "roller_02"
+    ],
+    [
+      "frame",
+      "roller_03"
+    ],
+    [
+      "frame",
+      "roller_04"
+    ],
+    [
+      "frame",
+      "roller_05"
+    ],
+    [
+      "frame",
+      "roller_06"
+    ],
+    [
+      "frame",
+      "roller_07"
+    ],
+    [
+      "frame",
+      "roller_08"
+    ],
+    [
+      "frame",
+      "roller_09"
+    ],
+    [
+      "frame",
+      "roller_10"
+    ],
+    [
+      "frame",
+      "roller_11"
+    ],
+    [
+      "frame",
+      "roller_12"
+    ],
+    [
+      "frame",
+      "roller_13"
+    ],
+    [
+      "frame",
+      "roller_14"
+    ],
+    [
+      "frame",
+      "roller_15"
+    ],
+    [
+      "frame",
+      "roller_16"
+    ],
+    [
+      "frame",
+      "roller_17"
+    ],
+    [
+      "frame",
+      "roller_18"
+    ],
+    [
+      "frame",
+      "roller_19"
+    ],
+    [
+      "frame",
+      "roller_20"
+    ],
+    [
+      "frame",
+      "roller_21"
+    ],
+    [
+      "frame",
+      "roller_22"
+    ],
+    [
+      "frame",
+      "roller_23"
+    ],
+    [
+      "frame",
+      "roller_24"
+    ],
+    [
+      "frame",
+      "roller_25"
+    ],
+    [
+      "frame",
+      "roller_26"
+    ],
+    [
+      "frame",
+      "roller_27"
+    ],
+    [
+      "frame",
+      "roller_28"
+    ],
+    [
+      "frame",
+      "roller_29"
+    ],
+    [
+      "frame",
+      "roller_30"
+    ],
+    [
+      "frame",
+      "roller_31"
+    ],
+    [
+      "frame",
+      "roller_32"
+    ],
+    [
+      "frame",
+      "roller_33"
+    ],
+    [
+      "frame",
+      "roller_34"
+    ],
+    [
+      "frame",
+      "roller_35"
+    ],
+    [
+      "frame",
+      "roller_36"
+    ],
+    [
+      "frame",
+      "roller_37"
+    ],
+    [
+      "frame",
+      "roller_38"
+    ],
+    [
+      "frame",
+      "roller_39"
+    ],
+    [
+      "frame",
+      "roller_40"
+    ],
+    [
+      "frame",
+      "roller_41"
+    ],
+    [
+      "frame",
+      "roller_42"
+    ],
+    [
+      "frame",
+      "roller_43"
+    ],
+    [
+      "frame",
+      "scan_lamp"
+    ]
+  ],
+  "parts": [
+    {
+      "name": "frame",
+      "visual": "frame.obj",
+      "texture": "frame_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "frame_col_00.obj",
+        "frame_col_01.obj",
+        "frame_col_02.obj",
+        "frame_col_03.obj",
+        "frame_col_04.obj",
+        "frame_col_05.obj",
+        "frame_col_06.obj",
+        "frame_col_07.obj",
+        "frame_col_08.obj",
+        "frame_col_09.obj",
+        "frame_col_10.obj",
+        "frame_col_11.obj",
+        "frame_col_12.obj",
+        "frame_col_13.obj",
+        "frame_col_14.obj",
+        "frame_col_15.obj",
+        "frame_col_16.obj",
+        "frame_col_17.obj",
+        "frame_col_18.obj",
+        "frame_col_19.obj",
+        "frame_col_20.obj",
+        "frame_col_21.obj",
+        "frame_col_22.obj",
+        "frame_col_23.obj",
+        "frame_col_24.obj",
+        "frame_col_25.obj",
+        "frame_col_26.obj",
+        "frame_col_27.obj",
+        "frame_col_28.obj",
+        "frame_col_29.obj",
+        "frame_col_30.obj",
+        "frame_col_31.obj"
+      ],
+      "mass_kg": 41.18,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "parent": null,
+      "joint": null
+    },
+    {
+      "name": "scan_lamp",
+      "visual": "scan_lamp.obj",
+      "texture": null,
+      "texture_px": null,
+      "collision": [
+        "scan_lamp_col_00.obj"
+      ],
+      "mass_kg": 0.02,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "parent": "frame",
+      "joint": null,
+      "rgba": [
+        0.06,
+        0.3,
+        0.1,
+        1
+      ]
+    },
+    {
+      "name": "roller_00",
+      "visual": "roller_00.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_00_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.015,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_01",
+      "visual": "roller_01.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_01_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.04000000037252903,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_02",
+      "visual": "roller_02.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_02_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.06500000074505806,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_03",
+      "visual": "roller_03.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_03_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.09000000298023224,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_04",
+      "visual": "roller_04.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_04_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.11500000149011612,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_05",
+      "visual": "roller_05.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_05_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.14,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_06",
+      "visual": "roller_06.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_06_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.1650000059604645,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_07",
+      "visual": "roller_07.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_07_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.18999999701976777,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_08",
+      "visual": "roller_08.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_08_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.21500000298023225,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_09",
+      "visual": "roller_09.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_09_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.23999999403953554,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_10",
+      "visual": "roller_10.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_10_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.265,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_11",
+      "visual": "roller_11.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_11_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.2900000059604645,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_12",
+      "visual": "roller_12.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_12_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.31500001192092897,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_13",
+      "visual": "roller_13.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_13_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.33999998807907106,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_14",
+      "visual": "roller_14.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_14_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.36499999403953554,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_15",
+      "visual": "roller_15.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_15_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.39,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_16",
+      "visual": "roller_16.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_16_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.4150000059604645,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_17",
+      "visual": "roller_17.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_17_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.44000001192092897,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_18",
+      "visual": "roller_18.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_18_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.46499998807907106,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_19",
+      "visual": "roller_19.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_19_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.48999999403953554,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_20",
+      "visual": "roller_20.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_20_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.515,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_21",
+      "visual": "roller_21.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_21_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.5399999761581421,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_22",
+      "visual": "roller_22.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_22_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.565000011920929,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_23",
+      "visual": "roller_23.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_23_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.5899999880790711,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_24",
+      "visual": "roller_24.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_24_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.6150000238418579,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_25",
+      "visual": "roller_25.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_25_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.64,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_26",
+      "visual": "roller_26.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_26_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.6649999761581421,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_27",
+      "visual": "roller_27.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_27_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.690000011920929,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_28",
+      "visual": "roller_28.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_28_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.7149999880790711,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_29",
+      "visual": "roller_29.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_29_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.7400000238418579,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_30",
+      "visual": "roller_30.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_30_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.765,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_31",
+      "visual": "roller_31.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_31_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.7899999761581421,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_32",
+      "visual": "roller_32.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_32_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.815000011920929,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_33",
+      "visual": "roller_33.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_33_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.8399999880790711,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_34",
+      "visual": "roller_34.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_34_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.8650000238418579,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_35",
+      "visual": "roller_35.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_35_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.89,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_36",
+      "visual": "roller_36.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_36_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.9149999761581421,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_37",
+      "visual": "roller_37.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_37_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.940000011920929,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_38",
+      "visual": "roller_38.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_38_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.9649999880790711,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_39",
+      "visual": "roller_39.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_39_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          0.9900000238418579,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_40",
+      "visual": "roller_40.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_40_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          1.015,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_41",
+      "visual": "roller_41.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_41_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          1.039999976158142,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_42",
+      "visual": "roller_42.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_42_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          1.064999952316284,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    },
+    {
+      "name": "roller_43",
+      "visual": "roller_43.obj",
+      "texture": "roller_00_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "roller_43_col_00.obj"
+      ],
+      "mass_kg": 0.2,
+      "friction": 0.6,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "anchor_m": [
+          1.0900000476837157,
+          0.0,
+          0.93
+        ],
+        "range": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "limited": false,
+        "continuous": true,
+        "damping": 0.001,
+        "frictionloss": 0
+      }
+    }
+  ],
+  "bbox_mm": [
+    1105.00002,
+    600.00002,
+    1279.99997
+  ],
+  "triangles": 33146,
+  "source": "source.blend",
+  "preview": "preview.png"
+}

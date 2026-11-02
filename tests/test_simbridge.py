@@ -72,7 +72,9 @@ def test_arm_mapping_matches_crosscheck():
         selected = CROSSCHECK["arms"][side]["selected"]
         unit = ROBOT.raw["units"][side]["mapping"]["controller_mdh"]
         assert unit["sign"] == selected["signs"]
-        assert np.allclose(unit["offset_rad"], selected["offsets_rad"])
+        # wheel_robot_26.8.16_3 rounds pi/2 to 1.5708: the fit's offsets are
+        # micro-radians from the configured zeros.
+        assert np.allclose(unit["offset_rad"], selected["offsets_rad"], atol=1e-5)
     waist = ROBOT.raw["units"]["waist"]["mapping"]["controller_mdh"]
     assert waist["sign"] == CROSSCHECK["waist"]["selected"]["signs"]
 
@@ -98,17 +100,18 @@ def test_mdh_reproduces_urdf_with_selected_mapping():
         R_t, p_t = R_f.T, -R_f.T @ p_f
         R, p = fk_mdh(machine_params_mdh(machine, f"{side}_arm"), unit.to_sdk(Q))
         R, p = compose(R_b, p_b, R, p, R_t, p_t)
-        assert np.max(np.linalg.norm(p - p_u, axis=1)) < 1e-9
-        assert np.max(np.abs(R - R_u)) < 1e-9
+        # 1e-5: the URDF's rounded right angles (1.5708, 3.14).
+        assert np.max(np.linalg.norm(p - p_u, axis=1)) < 1e-5
+        assert np.max(np.abs(R - R_u)) < 1e-5
 
 
 def test_elbow_sign_and_limits():
     left = ROBOT.arms["left"]
-    # URDF elbow flexion is negative; controller flexion is positive.
-    assert left.to_sdk(np.r_[0, 0, 0, -1.0, 0, 0, 0])[3] == pytest.approx(1.0)
+    # wheel_robot_26.8.16_3 flexes the elbow positive, as the controller does.
+    assert left.to_sdk(np.r_[0, 0, 0, 1.0, 0, 0, 0])[3] == pytest.approx(1.0)
     lo, hi = np.rad2deg(left.sdk_limits[3])
     # URDF bound on one side, controller bound (minus the margin) on the other.
-    assert lo == pytest.approx(-7.39, abs=0.01) and hi == pytest.approx(
+    assert lo == pytest.approx(-14.84, abs=0.01) and hi == pytest.approx(
         147.943, abs=1e-3
     )
     q = np.linspace(-1, 1, 7)
@@ -183,8 +186,9 @@ def test_sdk_fk_equals_the_controller_mdh_model():
         for q in rng.uniform(unit.sdk_limits[:, 0], unit.sdk_limits[:, 1], (50, 7)):
             R, p = fk_mdh(table, q)
             T = KIN.fk(side, q)
-            assert np.allclose(T[:3, :3], R[0], atol=1e-12)
-            assert np.allclose(T[:3, 3], p[0], atol=1e-12)
+            # 2e-5: the URDF's rounded right angles (1.5708, 3.14).
+            assert np.allclose(T[:3, :3], R[0], atol=2e-5)
+            assert np.allclose(T[:3, 3], p[0], atol=2e-5)
 
 
 @needs_pinocchio
@@ -197,13 +201,17 @@ def test_fkb_is_the_shared_kinematics_flange_in_base_link():
             q = rng.uniform(unit.sdk_limits[:, 0], unit.sdk_limits[:, 1])
             torso = rng.uniform(waist.sdk_limits[:, 0], waist.sdk_limits[:, 1])
             body = dict(zip(waist.sim_joints, waist.to_sim(torso)))
-            grasp, R_wrist = KIN.kin.fk(side, unit.to_sim(q), body)
+            grasp, R_grasp = KIN.kin.fk(side, unit.to_sim(q), body)
             flange = KIN.flange_in_wrist[side]
             T = KIN.fkb(side, q, torso)
-            wrist = grasp - R_wrist @ KIN.tcp[side]
-            assert np.allclose(T[:3, :3], R_wrist @ flange[:3, :3], atol=1e-12)
+            wrist = homogeneous(R_grasp, grasp) @ np.linalg.inv(
+                KIN.grasp_in_wrist[side]
+            )
+            assert np.allclose(T[:3, :3], wrist[:3, :3] @ flange[:3, :3], atol=1e-12)
             assert np.allclose(
-                T[:3, 3] + KIN.kin.base, wrist + R_wrist @ flange[:3, 3], atol=1e-12
+                T[:3, 3] + KIN.kin.base,
+                wrist[:3, 3] + wrist[:3, :3] @ flange[:3, 3],
+                atol=1e-12,
             )
 
 
@@ -232,7 +240,7 @@ def test_ik_round_trip_inside_the_aligned_limits():
 def test_kinematics_follow_the_physical_joints_in_any_convention():
     raw = load_robot(convention="urdf_passthrough")
     passthrough = SdkKinematics(raw)
-    q_urdf = np.array([0.3, 0.2, -0.4, -1.2, 0.5, 0.3, -0.2])
+    q_urdf = np.array([0.3, 0.2, -0.4, 1.2, 0.5, 0.3, -0.2])
     left = ROBOT.arms["left"]
     for unit, other in zip(ROBOT.units.values(), raw.units.values()):
         physical = [np.sort(u.to_sim(u.sdk_limits.T).T, 1) for u in (unit, other)]
@@ -486,7 +494,7 @@ def test_stock_client_round_trip(server):
         time.sleep(0.02)
     assert client.GetJointState(0)[1][0] == pytest.approx(0.1)
     sim_q = runtime.backend.q["left_shoulder_pitch_joint"]
-    assert sim_q == pytest.approx(-0.1), "SDK j1 maps to minus URDF shoulder pitch"
+    assert sim_q == pytest.approx(0.1), "SDK j1 is URDF shoulder pitch"
     state = client.ReadJointState(0)
     assert state["torque"] == [] and state["torque_source"] == EFFORT_UNAVAILABLE
 

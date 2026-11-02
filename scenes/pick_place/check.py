@@ -10,7 +10,7 @@ import av
 import numpy as np
 
 from scenes.pick_place.task import GOALS
-from sim.build_task import TABLE_Z
+from sim.build_task import FINGERS, TABLE_Z
 
 
 def verify(folder):
@@ -19,6 +19,8 @@ def verify(folder):
     assert result["success"] and result["error"] is None
     assert result["physics"]["max_penetration_mm"] <= 1
     assert result["physics"]["max_joint_limit_error"] <= 0.002
+    # The contact audit (since 2026-10-25; older runs have no list).
+    assert not result["physics"].get("collisions")
     assert result["final_stable_control_frames"] >= 15
     for side in ("left", "right"):
         evidence = result["lift_evidence"][side]
@@ -39,17 +41,16 @@ def verify(folder):
     assert len(root.findall(".//freejoint")) == 2
     for side in ("left", "right"):
         wrist = root.find(f".//body[@name='{side}_wrist_roll_Link']")
-        assert wrist.find(f"geom[@name='{side}_wrist_roll_Link']") is None
-        # CAD hulls of the gripper, wherever they ride (links and jaw blocks
-        # move in their own bodies since the gripper linkage model).
+        # CAD hulls of the wrist flange and the gripper, wherever they ride
+        # (links and jaw blocks move in their own bodies: the gripper linkage).
         hulls = [
             g
             for g in wrist.iter("geom")
-            if g.get("name", "").startswith(f"{side}_wrist_part_")
+            if g.get("name", "").startswith((f"{side}_wrist_part_", f"{side}_gripper_"))
         ]
         assert len(hulls) >= 40 and all(g.get("type") == "mesh" for g in hulls)
-        for finger in (1, 2):
-            g = root.find(f".//geom[@name='{side}finger{finger}_Link']")
+        for finger in FINGERS[side]:
+            g = root.find(f".//geom[@name='{finger}']")
             assert g.get("type") == "mesh" and int(g.get("contype")) != 0
     videos = {}
     names = ["expert", *result["contract"]["cameras"]]

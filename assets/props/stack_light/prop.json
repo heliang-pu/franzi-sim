@@ -1,0 +1,181 @@
+{
+  "id": "stack_light",
+  "task": "electronics_line",
+  "units": "m",
+  "origin": "bottom_center",
+  "bbox_mm": [
+    100.00000149011612,
+    70.00000029802322,
+    439.9999976158142
+  ],
+  "triangles": 5536,
+  "budget_class": "medium",
+  "static": true,
+  "dimensions_mm": {
+    "bracket_xy": [
+      100,
+      60
+    ],
+    "bracket_thickness": 8,
+    "mast_diameter": 25,
+    "mast_height": 200,
+    "lens_diameter": 70,
+    "lens_height": 60,
+    "buzzer_height": 30,
+    "height": 440,
+    "lower_collar_height": 22
+  },
+  "parts": [
+    {
+      "name": "body",
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "body_col_00.obj",
+        "body_col_01.obj",
+        "body_col_02.obj",
+        "body_col_03.obj",
+        "body_col_04.obj"
+      ],
+      "mass_kg": 1.05,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.7,
+        "shininess": 0.7,
+        "reflectance": 0.05
+      },
+      "parent": null,
+      "joint": null,
+      "source_collision_objects": [
+        "COL__body__00",
+        "COL__body__01",
+        "COL__body__02",
+        "COL__body__03",
+        "COL__body__04"
+      ]
+    },
+    {
+      "name": "lens_green",
+      "visual": "lens_green.obj",
+      "texture": null,
+      "texture_px": null,
+      "collision": [
+        "lens_green_col_00.obj"
+      ],
+      "mass_kg": 0.15,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "body",
+      "joint": null,
+      "source_collision_objects": [
+        "COL__lens_green__00"
+      ],
+      "rgba": [
+        0.06,
+        0.3,
+        0.1,
+        1
+      ],
+      "emission": 0.0
+    },
+    {
+      "name": "lens_amber",
+      "visual": "lens_amber.obj",
+      "texture": null,
+      "texture_px": null,
+      "collision": [
+        "lens_amber_col_00.obj"
+      ],
+      "mass_kg": 0.15,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "body",
+      "joint": null,
+      "source_collision_objects": [
+        "COL__lens_amber__00"
+      ],
+      "rgba": [
+        0.4,
+        0.3,
+        0.05,
+        1
+      ],
+      "emission": 0.0
+    },
+    {
+      "name": "lens_red",
+      "visual": "lens_red.obj",
+      "texture": null,
+      "texture_px": null,
+      "collision": [
+        "lens_red_col_00.obj"
+      ],
+      "mass_kg": 0.15,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "parent": "body",
+      "joint": null,
+      "source_collision_objects": [
+        "COL__lens_red__00"
+      ],
+      "rgba": [
+        0.35,
+        0.06,
+        0.06,
+        1
+      ],
+      "emission": 0.0
+    }
+  ],
+  "recommended_instance_color_gain_range": [
+    0.97,
+    1.03
+  ],
+  "variants": [],
+  "notes": "Metres, Z up, front -X. Applied transforms in the shared prop frame. Cycles CPU 64-sample diffuse COLOR times (0.4 + 0.6 AO), sRGB8 albedo; PBR and artwork packed in source.blend. DejaVu Sans Bold, English only. Task 15 uses isolated finalization to protect existing props. A 22 mm lower socket collar reconciles the specified 200 mm mast and 440 mm approximate height. Two bracket collision boxes preserve the L rather than filling its notch. Collar has its own proxy. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification.",
+  "lamps": [
+    {
+      "part": "lens_green",
+      "on_rgba": [
+        0.18,
+        0.85,
+        0.25,
+        1
+      ],
+      "emission": 0.8
+    },
+    {
+      "part": "lens_amber",
+      "on_rgba": [
+        1,
+        0.68,
+        0.02,
+        1
+      ],
+      "emission": 0.8
+    },
+    {
+      "part": "lens_red",
+      "on_rgba": [
+        0.95,
+        0.06,
+        0.04,
+        1
+      ],
+      "emission": 0.8
+    }
+  ]
+}

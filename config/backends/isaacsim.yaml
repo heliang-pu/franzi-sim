@@ -1,12 +1,13 @@
 # Isaac Sim 4.5 / 5.x adapter -- DRAFT, never executed (Isaac Sim cannot run on this
-# macOS arm64 machine). Scene: assets/derived/pybullet (MuJoCo-identical colliders).
+# macOS arm64 machine). Scene: assets/derived/pybullet (MuJoCo-identical colliders),
+# whose generator, sdk/convert_pybullet_assets.py, was deleted on 2026-10-25.
 backend: isaacsim
 # NOT RUN. The user deferred Isaac Sim verification on 2026-10-24. Written for an
 # Isaac Sim 5.1.0 pip install on the GPU workstation (uv venv, Python 3.11, numpy
 # 1.26, PyYAML, Pillow); ISAAC_PYTHON names its interpreter. A headless start
 # needs the NVIDIA Omniverse EULA accepted (OMNI_KIT_ACCEPT_EULA=YES): that is the
-# user's decision, never set it silently. Start through run_isaacsim_4090.sh;
-# ffmpeg must be on PATH there.
+# user's decision, never set it silently. Start through run_isaacsim_4090.sh
+# (run_isaacsim_pro6000.sh on the pro6000); ffmpeg must be on PATH there.
 python: ${ISAAC_PYTHON}
 robot: config/robot/franzi_sdk.yaml
 connection: config/connections/sim_isaacsim.yaml

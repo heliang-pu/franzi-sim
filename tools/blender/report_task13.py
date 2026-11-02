@@ -54,7 +54,7 @@ text = "\n\n".join([
     "Images: 81 baked albedos downsampled using Lanczos; 38 byte-identical atlas copies removed; all 86 previews are 512 square. Only 69 reviewed albedos and 84 reviewed previews use 256-colour Floyd-Steinberg palettes. The two floor previews remain RGB. Parcel/carton labels, legend plates, zone signs, CNC screen/panel, stacking-plan sheets and station-plate print atlases remain RGB.",
     "Visual QA: 69 before/after actual OBJ/UV close-render pairs at 640x480 showed no visible banding; 84 preview comparisons were also reviewed. Parcel-label and CNC-screen renders at 0.5 m remain readable. Review sheets and metrics are under tools/blender/_qa/task13/.",
     "Rebuild: all twelve build_task entry points call the shared finalizer; source saving has save_version=0. A real isolated Task 0 rebuild exercised 2048 Cycles baking, Lanczos output at 1024, 512 previews, approved palette output and repeated source saving without backups. Its validator passes. All 45 production props were validated without rebaking their preserved sources.",
-    "Reproduce: /Users/puheliang/miniforge3/envs/inovance-fineart/bin/python -B tools/blender/compact_props.py --apply\nThen: /Users/puheliang/miniforge3/envs/inovance-fineart/bin/python -B tools/blender/validate_props.py",
+    "Reproduce: $PROP_PYTHON -B tools/blender/compact_props.py --apply\nThen: $PROP_PYTHON -B tools/blender/validate_props.py",
     "Full validator table:\n" + (HERE / "task13_validation.txt").read_text().strip(),
     "Unfinished required work: none. Precision-format exceptions are recorded above and in the individual prop notes.",
 ]) + "\n"

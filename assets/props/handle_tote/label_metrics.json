@@ -1,0 +1,32 @@
+{
+  "blue": {
+    "text": "BIN-A07",
+    "glyph_height_mm": 22,
+    "glyph_width_mm": 86.0,
+    "horizontal_scale": 0.6505295007564297
+  },
+  "grey": {
+    "text": "BIN-A07",
+    "glyph_height_mm": 22,
+    "glyph_width_mm": 86.0,
+    "horizontal_scale": 0.6505295007564297
+  },
+  "red": {
+    "text": "NG",
+    "glyph_height_mm": 22,
+    "glyph_width_mm": 48.15,
+    "horizontal_scale": 1.0
+  },
+  "yellow": {
+    "text": "RECHECK",
+    "glyph_height_mm": 22,
+    "glyph_width_mm": 86.0,
+    "horizontal_scale": 0.5643044619422573
+  },
+  "green": {
+    "text": "OK",
+    "glyph_height_mm": 22,
+    "glyph_width_mm": 48.15,
+    "horizontal_scale": 1.0
+  }
+}

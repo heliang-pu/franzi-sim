@@ -16,8 +16,9 @@ numbers; neither the controller's IK nor MoveL or Cartesian teleop is used.
     cart.line({"left": p + [0.04, 0, 0.05]})       # straight line, teleop queue
 
 Targets are grasp points ({side}_grasp, frames.tcp in
-config/robot/franzi_sdk.yaml) in the simulation's world frame: base_link sits at
-the franzi.xml offset (``CartesianArm.kin.base``) with world-aligned axes. The
+config/robot/franzi_sdk.yaml) in the simulation's world frame: the base frame
+sits robot_kinematics.BASE_HEIGHT above the floor (``CartesianArm.kin.base``)
+with world-aligned axes. The
 grasp frame keeps its current rotation unless ``rotations`` gives a 3x3 per
 side. The measured waist joints enter every solve. With raise_on_error=True the
 stock client may raise on a rejected call before this module sees the status.

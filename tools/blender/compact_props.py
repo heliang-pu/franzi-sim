@@ -40,10 +40,11 @@ def category(path):
     return "other"
 
 
-def inventory(root=ASSETS):
+def inventory(root=ASSETS, selected=None):
     categories = dict.fromkeys(("textures", "obj", "previews", "source.blend", "blend1", "other"), 0)
     props = {}
-    for path in sorted(root.rglob("*")):
+    folders = selected if selected is not None else [root]
+    for path in sorted(path for folder in folders for path in folder.rglob("*")):
         if not path.is_file():
             continue
         size = path.stat().st_size
@@ -155,8 +156,9 @@ def write_json_if_changed(path, data):
         path.write_text(text)
 
 
-def update_manifests(root):
-    for path in sorted(root.glob("*/prop.json")):
+def update_manifests(root, selected=None):
+    folders = selected if selected is not None else {p.parent for p in root.glob("*/prop.json")}
+    for path in sorted(folder / "prop.json" for folder in folders):
         data = json.loads(path.read_text())
         fix_texture_sizes(data, path.parent)
         note = (" Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px "
@@ -181,9 +183,10 @@ def canonical_order(path):
     return priorities.get(path.parent.name, 2), path.as_posix()
 
 
-def deduplicate(root):
+def deduplicate(root, selected=None):
+    folders = selected if selected is not None else {p.parent for p in root.glob("*/prop.json")}
     groups = {}
-    for path in sorted(root.glob("*/*.png")):
+    for path in sorted(path for folder in folders for path in folder.glob("*.png")):
         if is_baked(path) and path.parent.name != "factory_floor":
             groups.setdefault(hashlib.sha256(path.read_bytes()).digest(), []).append(path.resolve())
     replacements = {}
@@ -204,13 +207,18 @@ def deduplicate(root):
                 return Path(os.path.relpath(replacements[resolved], folder)).as_posix()
         return value
 
-    for path in sorted(root.glob("*/prop.json")):
+    for path in sorted(folder / "prop.json" for folder in folders):
         write_json_if_changed(path, rewrite(json.loads(path.read_text()), path.parent))
     records = []
     for path, canonical in sorted(replacements.items()):
         records.append({"removed": str(path.relative_to(root)),
                         "shared": str(canonical.relative_to(root)), "bytes": path.stat().st_size})
-        path.unlink()
+        # Unselected props may reference this file. A scoped run cannot inspect
+        # their manifests, so retain aliases; global compaction may remove them.
+        if selected is None:
+            path.unlink()
+        else:
+            records[-1]["retained_for_external_references"] = True
     return records
 
 
@@ -360,10 +368,16 @@ def round_obj(path, root=ASSETS):
         path.write_text(result)
     final = read_obj(path)
     assert np.array_equal(final.vertices, points) and np.array_equal(final.faces, data.faces)
+
+    def written(values):
+        # The values as the writer above formats them: np.round(v, 4) can differ
+        # from f"{v:.4f}" by one unit in the last place on a decimal tie.
+        return np.vectorize(lambda v: float(f"{v:.4f}"))(values)
+
     if len(data.uv):
-        assert np.array_equal(final.uv[final.uv_faces], np.round(data.uv, 4)[data.uv_faces])
+        assert np.array_equal(final.uv[final.uv_faces], written(data.uv)[data.uv_faces])
     if len(data.normals):
-        assert np.array_equal(final.normals[final.normal_faces], np.round(data.normals, 4)[data.normal_faces])
+        assert np.array_equal(final.normals[final.normal_faces], written(data.normals)[data.normal_faces])
     # Face/index topology and non-coordinate directives are byte-for-byte equal.
     assert preserved == [line for line in output if not line.split() or line.split()[0] not in ("v", "vt", "vn")]
     return {"file": str(path.relative_to(root)),
@@ -405,23 +419,32 @@ def main():
     parser.add_argument("--step", choices=("all", "downscale", "deduplicate", "optimize", "previews", "obj", "palette"), default="all")
     parser.add_argument("--png", type=Path, help="Optimise one freshly exported PNG (used by prop_lib)")
     args = parser.parse_args()
+    root = args.root.resolve()
+    selected = None
+    if args.props:
+        if any(Path(name).name != name or name in (".", "..") for name in args.props):
+            parser.error("--props requires direct prop folder names")
+        selected = {root / name for name in args.props}
+        if any(not (folder / "prop.json").is_file() for folder in selected):
+            parser.error("every selected prop must have prop.json")
     if args.png:
         path = args.png.resolve()
+        if selected is not None and not any(path.is_relative_to(folder) for folder in selected):
+            parser.error("--png must be inside --props")
         size = (1024, 1024) if is_baked(path) and path.parent.name != "factory_floor" and max(png_size(path)) > 1024 else None
         save_png(path, resize=size)
         return
-    root = args.root.resolve()
     if not args.apply:
-        print(json.dumps(inventory(root), indent=2))
+        print(json.dumps(inventory(root, selected), indent=2))
         return
-    selected = {root / name for name in args.props} if args.props else set(p.parent for p in root.glob("*/prop.json"))
-    paths = sorted(path for folder in selected for path in folder.rglob("*") if path.is_file())
+    folders = selected if selected is not None else {p.parent for p in root.glob("*/prop.json")}
+    paths = sorted(path for folder in folders for path in folder.rglob("*") if path.is_file())
     report = {}
     if args.step in ("all", "downscale"):
         report["downscaled"] = downscale(paths)
-        update_manifests(root)
+        update_manifests(root, selected)
     if args.step in ("all", "deduplicate"):
-        report["deduplicated"] = deduplicate(root)
+        report["deduplicated"] = deduplicate(root, selected)
     if args.step in ("all", "optimize"):
         report["optimized_pngs"] = [save_png(path) for path in paths if path.suffix == ".png" and path.exists()]
     if args.step in ("all", "previews"):
@@ -433,15 +456,15 @@ def main():
     if args.step in ("all", "palette"):
         report["palette_approved"] = apply_palette_policy(root, selected)
     if args.step == "all":
-        report["deduplicated_after_encoding"] = deduplicate(root)
-    update_manifests(root)
+        report["deduplicated_after_encoding"] = deduplicate(root, selected)
+    update_manifests(root, selected)
     QA.mkdir(parents=True, exist_ok=True)
     destination = QA / ("compression.json" if not args.props else "last_rebuild_compression.json")
     if args.step != "all":
         destination = QA / f"{args.step}.json"
     destination.write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps({key: len(value) for key, value in report.items()}))
-    print(json.dumps(inventory(root)["categories"]))
+    print(json.dumps(inventory(root, selected)["categories"]))
 
 
 if __name__ == "__main__":

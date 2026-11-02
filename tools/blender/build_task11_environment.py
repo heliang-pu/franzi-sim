@@ -23,6 +23,11 @@ ROOT = HERE.parents[1]
 OUTPUT = ROOT / "assets" / "props"
 QA = HERE / "_qa" / "task11"
 IDS = ("workbench", "factory_floor", "safety_fence", "background_rack")
+# The workbench's finished working surface, mm. 900 since 2026-10-25 (was 800):
+# the robot cannot bend at the waist, and at 800 its top-down grasps reached
+# only x 0.37-0.41 m. Everything above the lower frame rail moves up by LIFT.
+BENCH_TOP = 900
+LIFT = BENCH_TOP - 800
 
 
 def floor_artwork():
@@ -409,7 +414,7 @@ def pegboard(material):
         return lookup[key]
 
     for row in range(12):
-        z = 845 + row * 50
+        z = 845 + LIFT + row * 50
         for col in range(24):
             y = -575 + col * 50
             outer, inner = [], []
@@ -428,8 +433,8 @@ def pegboard(material):
                                                        (335, *inner[j]), (333, *inner[j]))))
                 a, b = outer[i], outer[j]
                 boundary = (abs(abs(a[0]) - 600) < 1e-5 and abs(abs(b[0]) - 600) < 1e-5
-                            or abs(a[1] - b[1]) < 1e-5 and (abs(a[1] - 820) < 1e-5
-                                                                         or abs(a[1] - 1420) < 1e-5))
+                            or abs(a[1] - b[1]) < 1e-5 and (abs(a[1] - 820 - LIFT) < 1e-5
+                                                                         or abs(a[1] - 1420 - LIFT) < 1e-5))
                 if boundary:
                     faces.append(tuple(vertex(p) for p in ((333, *a), (335, *a), (335, *b), (333, *b))))
     return props._mesh_object("Perforated 1200 x 600 sheet / real holes", vertices, faces,
@@ -466,13 +471,13 @@ def build_workbench():
     frame = []
     for x in (-280, 280):
         for y in (-530, 530):
-            frame.append(box("45 mm steel leg", (45, 45, 700), (x, y, 398), steel))
+            frame.append(box("45 mm steel leg", (45, 45, 700 + LIFT), (x, y, 398 + LIFT / 2), steel))
             frame.append(props.cylinder("Levelling rubber foot", 28, 10, (x, y, 5),
                                          bevel_mm=1.5, vertices=24, material=rubber))
             frame.append(props.cylinder("M16 levelling spindle", 8, 40, (x, y, 30),
                                          bevel_mm=.5, vertices=16, material=zinc))
             frame.append(props.hexagonal_prism("Levelling locknut", 24, 8, (x, y, 44), material=zinc))
-    for z in (175, 724):
+    for z in (175, 724 + LIFT):
         for x in (-280, 280):
             frame.append(box("Long frame rail", (45, 1105, 40), (x, 0, z), steel))
         for y in (-530, 530):
@@ -483,58 +488,67 @@ def build_workbench():
     for y in (-514, 514):
         frame.append(box("Shelf return lip", (550, 2, 18), (0, y, 188), steel, edge=.7))
     for y in (-575, 575):
-        frame.append(box("Rear pegboard upright", (28, 28, 650), (334, y, 1095), steel))
+        frame.append(box("Rear pegboard upright", (28, 28, 650), (334, y, 1095 + LIFT), steel))
     frame_obj = merge(frame, "frame")
     tabletop = merge([
-        box("40 mm structural top", (696, 1200, 40), (2, 0, 778), topmat),
-        box("Black PVC front edge", (4, 1200, 40), (-348, 0, 778), pvc, edge=1),
-        box("2 mm ESD mat", (696, 1196, 2), (0, 0, 799), esd, edge=.5),
+        box("40 mm structural top", (696, 1200, 40), (2, 0, 778 + LIFT), topmat),
+        box("Black PVC front edge", (4, 1200, 40), (-348, 0, 778 + LIFT), pvc, edge=1),
+        box("2 mm ESD mat", (696, 1196, 2), (0, 0, 799 + LIFT), esd, edge=.5),
     ], "tabletop")
     backing = [pegboard(boardmat)]
-    for z in (828, 1412):
+    for z in (828 + LIFT, 1412 + LIFT):
         backing.append(box("Pegboard horizontal surround", (16, 1200, 16), (333, 0, z), steel))
     for y in (-592, 592):
-        backing.append(box("Pegboard vertical surround", (16, 16, 568), (333, y, 1120), steel))
+        backing.append(box("Pegboard vertical surround", (16, 16, 568), (333, y, 1120 + LIFT), steel))
     # Open-ended spanners are concave solids, not painted silhouettes.
     wrench = [(-13, -93), (-20, -80), (-17, -58), (-7, -50), (-7, 50), (-18, 63),
               (-21, 82), (-13, 98), (-8, 94), (-10, 77), (0, 70), (10, 77), (8, 94),
               (13, 98), (21, 82), (18, 63), (7, 50), (7, -50), (17, -58), (20, -80),
               (13, -93), (8, -89), (10, -73), (0, -65), (-10, -73), (-8, -89)]
-    for y, z, angle in ((-440, 1180, -8), (-300, 1160, 12)):
+    for y, z, angle in ((-440, 1180 + LIFT, -8), (-300, 1160 + LIFT, 12)):
         backing.append(flat_tool("Open-ended steel spanner", wrench, (312, y, z), 5, toolsteel, angle))
         backing.append(rod("Pegboard hook", (333, y, z + 105), (309, y, z + 105), 2, toolsteel))
     for y, color in ((-110, red), (20, blue)):
-        backing.append(rod("Screwdriver blade", (311, y, 1050), (311, y, 1200), 3, toolsteel, 16))
-        backing.append(box("Screwdriver grip", (22, 24, 92), (311, y, 1240), color, edge=5))
-        backing.append(rod("Screwdriver hanging hook", (333, y, 1295), (300, y, 1295), 2, toolsteel))
-    backing.append(box("Hammer handle", (22, 22, 225), (309, 205, 1122.5), blue, edge=4))
-    backing.append(box("Hammer steel head", (34, 125, 36), (307, 205, 1240), toolsteel, edge=3))
-    backing.append(rod("Hammer hook", (333, 205, 1270), (297, 205, 1270), 2, toolsteel))
+        backing.append(rod("Screwdriver blade", (311, y, 1050 + LIFT), (311, y, 1200 + LIFT), 3,
+                           toolsteel, 16))
+        backing.append(box("Screwdriver grip", (22, 24, 92), (311, y, 1240 + LIFT), color, edge=5))
+        backing.append(rod("Screwdriver hanging hook", (333, y, 1295 + LIFT), (300, y, 1295 + LIFT), 2,
+                           toolsteel))
+    backing.append(box("Hammer handle", (22, 22, 225), (309, 205, 1122.5 + LIFT), blue, edge=4))
+    backing.append(box("Hammer steel head", (34, 125, 36), (307, 205, 1240 + LIFT), toolsteel, edge=3))
+    backing.append(rod("Hammer hook", (333, 205, 1270 + LIFT), (297, 205, 1270 + LIFT), 2, toolsteel))
     for side in (-1, 1):
-        backing.append(beam("Pliers jaws", (309, 395, 1190), (309, 395 + side * 17, 1238), 10, 8, toolsteel))
-        backing.append(beam("Pliers red handle", (309, 395, 1190), (309, 395 + side * 27, 1100), 15, 12, red))
-    backing.append(rod("Pliers steel pivot", (300, 395, 1190), (318, 395, 1190), 8, toolsteel, 24))
-    backing.append(rod("Pliers hook", (333, 395, 1260), (298, 395, 1260), 2, toolsteel))
+        backing.append(beam("Pliers jaws", (309, 395, 1190 + LIFT),
+                            (309, 395 + side * 17, 1238 + LIFT), 10, 8, toolsteel))
+        backing.append(beam("Pliers red handle", (309, 395, 1190 + LIFT),
+                            (309, 395 + side * 27, 1100 + LIFT), 15, 12, red))
+    backing.append(rod("Pliers steel pivot", (300, 395, 1190 + LIFT), (318, 395, 1190 + LIFT), 8,
+                       toolsteel, 24))
+    backing.append(rod("Pliers hook", (333, 395, 1260 + LIFT), (298, 395, 1260 + LIFT), 2, toolsteel))
     for y, length in ((-480, 85), (-400, 100), (-310, 120)):
-        backing.append(rod("Hex key long leg", (311, y, 950), (311, y, 950 + length), 3, toolsteel))
-        backing.append(rod("Hex key short leg", (311, y, 950), (311, y + 28, 950), 3, toolsteel))
+        backing.append(rod("Hex key long leg", (311, y, 950 + LIFT), (311, y, 950 + LIFT + length), 3,
+                           toolsteel))
+        backing.append(rod("Hex key short leg", (311, y, 950 + LIFT), (311, y + 28, 950 + LIFT), 3,
+                           toolsteel))
     board_obj = merge(backing, "pegboard_tools")
-    collision = props.box("COL tabletop", (700, 1200, 42), (0, 0, 779), bevel_mm=0)
+    collision = props.box("COL tabletop", (700, 1200, 42), (0, 0, 779 + LIFT), bevel_mm=0)
+    top = BENCH_TOP
     complete(folder, [record("frame", frame_obj, 45),
                       record("tabletop", tabletop, 26, PLASTIC, .55, [collision], "frame"),
                       record("pegboard_tools", board_obj, 9, parent="frame")],
-             {"bench_xyz": [700, 1200, 800], "top_substrate_thickness": 40, "esd_mat_thickness": 2,
-              "finished_top_z": 800, "top_substrate_z": [758, 798], "pegboard_yz": [1200, 600],
-              "pegboard_z": [820, 1420], "pegboard_holes": 288, "pegboard_hole_diameter": 6,
+             {"bench_xyz": [700, 1200, top], "top_substrate_thickness": 40, "esd_mat_thickness": 2,
+              "finished_top_z": top, "top_substrate_z": [top - 42, top - 2], "pegboard_yz": [1200, 600],
+              "pegboard_z": [820 + LIFT, 1420 + LIFT], "pegboard_holes": 288, "pegboard_hole_diameter": 6,
               "pegboard_pitch": 50, "lower_shelf_top_z": 199},
-             "Finished ESD working surface is Z800: the exact 40 mm top lies at Z758..798, "
+             f"Finished ESD working surface is Z{top}: the exact 40 mm top lies at Z{top - 42}..{top - 2}, "
              "with a separate 2 mm grey-green mat above it. Black PVC is the -X front edge. "
-             "The 1200 x 600 rear pegboard is on +X at Z820..1420, with 288 real through-holes "
-             "and steel spanners, screwdrivers, hammer, pliers and hex keys facing the robot. "
-             "Overall bbox includes the pegboard; 800 mm describes the bench working height. "
+             f"The 1200 x 600 rear pegboard is on +X at Z{820 + LIFT}..{1420 + LIFT}, with 288 real "
+             "through-holes and steel spanners, screwdrivers, hammer, pliers and hex keys facing the robot. "
+             f"Overall bbox includes the pegboard; {top} mm describes the bench working height (raised "
+             "from 800 on 2026-10-25 so that the fixed-waist robot reaches further over it). "
              "The task explicitly requests only ONE tabletop collision box; legs, lower shelf, "
              "feet and pegboard are visual-only and intentionally omitted from collision. "
-             "Its top is exactly Z800, including the mat, with nominal XY 700 x 1200. "
+             f"Its top is exactly Z{top}, including the mat, with nominal XY 700 x 1200. "
              "Keep tools/background behind the robot manipulation workspace.")
 
 

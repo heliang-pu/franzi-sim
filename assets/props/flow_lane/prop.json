@@ -1,0 +1,136 @@
+{
+  "id": "flow_lane",
+  "task": "tote_sorting",
+  "units": "m",
+  "origin": "ground_pickup_end_center",
+  "static": true,
+  "budget_class": "large",
+  "variants": [],
+  "dimensions_mm": {
+    "lane_width": 340,
+    "lane_horizontal_length": 800,
+    "slope_degrees": 3,
+    "low_top": 1050,
+    "high_top": 1091.926223426433,
+    "stop_inner_x": 0,
+    "stop_top": 1080,
+    "guide_start_x": 220,
+    "guide_straight_start_x": 260,
+    "guide_inner_width": 320,
+    "guide_height": 40,
+    "upright_x": [
+      60,
+      740
+    ],
+    "upright_y": [
+      -200,
+      200
+    ],
+    "footprint_xy_bounds": [
+      [
+        -30,
+        800
+      ],
+      [
+        -224,
+        224
+      ]
+    ]
+  },
+  "recommended_placement_m": [
+    0.5,
+    0,
+    0
+  ],
+  "notes": "Lane friction must win over the goods: MuJoCo geom priority 1; PhysX friction combine mode min. Friction 0.03 is below tan(3 degrees) = 0.0524 so gravity moves the tote. Geometry in the common prop frame, Z up, front -X. CPU Cycles 64-sample diffuse colour times (0.4 + 0.6 AO); Smart UV 66 degrees. Full PBR in source.blend. Lane is one fixed low-friction part and one inclined slab collider. Its three rows of yellow D30 wheels are visual only and tangent to the support plane, as section 6.1 prescribes; these are not powered hinged rollers.  Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification.",
+  "mass_kg": 30,
+  "conveyor": {
+    "type": "gravity_plane",
+    "surface_part": "lane",
+    "roller_parts": [],
+    "direction": [
+      -0.9986295347545738,
+      0,
+      -0.052335956242943835
+    ],
+    "roller_top_m": 1.05,
+    "roller_radius_m": 0.015,
+    "slope_degrees": 3,
+    "top_height_endpoints_m": [
+      1.05,
+      1.0919262234264329
+    ],
+    "drive": "gravity"
+  },
+  "parts": [
+    {
+      "name": "frame",
+      "visual": "frame.obj",
+      "texture": "frame_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "frame_col_00.obj",
+        "frame_col_01.obj",
+        "frame_col_02.obj",
+        "frame_col_03.obj",
+        "frame_col_04.obj",
+        "frame_col_05.obj",
+        "frame_col_06.obj",
+        "frame_col_07.obj",
+        "frame_col_08.obj",
+        "frame_col_09.obj",
+        "frame_col_10.obj",
+        "frame_col_11.obj",
+        "frame_col_12.obj",
+        "frame_col_13.obj",
+        "frame_col_14.obj",
+        "frame_col_15.obj",
+        "frame_col_16.obj",
+        "frame_col_17.obj",
+        "frame_col_18.obj",
+        "frame_col_19.obj",
+        "frame_col_20.obj",
+        "frame_col_21.obj",
+        "frame_col_22.obj",
+        "frame_col_23.obj",
+        "frame_col_24.obj"
+      ],
+      "mass_kg": 24,
+      "friction": 0.4,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "parent": null,
+      "joint": null
+    },
+    {
+      "name": "lane",
+      "visual": "lane.obj",
+      "texture": "lane_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "lane_col_00.obj"
+      ],
+      "mass_kg": 6,
+      "friction": 0.03,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "parent": "frame",
+      "joint": null,
+      "contact_priority": 1
+    }
+  ],
+  "bbox_mm": [
+    830.73297,
+    448.00001,
+    1282.50003
+  ],
+  "triangles": 27070,
+  "source": "source.blend",
+  "preview": "preview.png"
+}

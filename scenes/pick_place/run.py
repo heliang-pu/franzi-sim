@@ -18,10 +18,15 @@ from pathlib import Path
 import mujoco
 import numpy as np
 
+from robot_kinematics import URDF
 from scenes.pick_place.task import GOALS, PAD_DROP, SOURCES, build
-from sim.build_task import ROOT, TABLE_Z
+from sim import tabletop as tt
+from sim.build_task import FINGERS, TABLE_Z
 from sim.camera_rig import POLICY_CAMERAS
-from sim.episode import Scene
+from sim.episode import PhysicsError, Scene
+
+# Closure on the 45 mm parts: the jaws 42.9 mm apart, a 2 mm squeeze.
+GRIP = 0.548
 
 
 class PickPlaceScene(Scene):
@@ -41,7 +46,7 @@ class PickPlaceScene(Scene):
 
     def jaw_contacts(self, side):
         target = self.m.body(side + "_part").id
-        jaws = {self.m.body(f"{side}finger{i}_Link").id: i for i in [1, 2]}
+        jaws = {self.m.body(f).id: i for i, f in enumerate(FINGERS[side], 1)}
         result = set()
         for c in self.d.contact:
             b = [int(self.m.geom_bodyid[g]) for g in c.geom]
@@ -68,7 +73,7 @@ class PickPlaceScene(Scene):
     def sample(self):
         """One trace record: the measured state and the command about to apply."""
         return {
-            "t": float(self.d.time),
+            "t": self.clock(),
             "phase": self.phase,
             "subtask": self.instruction,
             "state": self.state().tolist(),
@@ -100,56 +105,47 @@ class PickPlaceScene(Scene):
 
 
 def expert(scene):
+    """From the default posture, each arm in turn picks its part, puts it on
+    its pad and moves back: one arm and one object per subtask, the other arm
+    holding (user, 2026-10-25). The subtask text is the trace's subtask, the
+    stage name its finer phase."""
     s = scene
-    s.stage("ready", "Raise both open grippers clear of the table.")
-    s.move({"left": [0.15, 0.37, 0.99], "right": [0.15, -0.37, 0.99]}, seconds=3.0)
-    s.stage("approach", "Approach the blue and orange parts with both arms.")
-    s.move({side: [*SOURCES[side], TABLE_Z + 0.16] for side in SOURCES}, seconds=2.0)
-    s.stage("align", "Lower both open jaws around the parts.")
-    s.move(
-        {side: [*SOURCES[side], TABLE_Z + 0.0275 + PAD_DROP] for side in SOURCES},
-        seconds=2.0,
-        linear=True,
-    )
-    s.stage("grasp", "Close both grippers; verify two jaw contacts per object.")
-    s.move(grips={"left": 0.548, "right": 0.548}, seconds=1.5)
-    s.move(seconds=0.5)
-    for side in SOURCES:
+    tt.start_home(s)
+    opened = 1 - tt.HOME_OPENING / tt.JAW_SPAN
+    for side, color in (("left", "blue"), ("right", "orange")):
+        source, goal = SOURCES[side], GOALS[side]
+        pick = f"Pick up the {color} box with the {side} hand."
+        s.stage("approach", pick)
+        s.move({side: [*source, TABLE_Z + 0.16]}, seconds=2.0)
+        s.stage("align", pick)
+        s.move({side: [*source, TABLE_Z + 0.0275 + PAD_DROP]}, seconds=2.0, linear=True)
+        s.stage("grasp", pick)
+        s.move(grips={side: GRIP}, seconds=1.5)
+        s.move(seconds=0.5)
         if len(s.jaw_contacts(side)) != 2:
             raise RuntimeError(f"{side}: bilateral grasp not established")
-    s.stage("lift", "Lift both parts using jaw friction only.")
-    s.move(
-        {side: [*SOURCES[side], TABLE_Z + 0.15] for side in SOURCES},
-        seconds=2.5,
-        linear=True,
-    )
-    for side in SOURCES:
+        s.stage("lift", pick)
+        s.move({side: [*source, TABLE_Z + 0.15]}, seconds=2.5, linear=True)
         if s.object_info(side)["xyz"][2] < TABLE_Z + 0.10:
             raise RuntimeError(f"{side}: lift failed")
-    s.stage("transfer", "Carry the two parts to the central kit positions.")
-    s.move(
-        {side: [*GOALS[side], TABLE_Z + 0.15] for side in GOALS},
-        seconds=3.0,
-        linear=True,
-    )
-    s.stage("place", "Lower both parts onto their wide target pads.")
-    s.move(
-        {side: [*GOALS[side], TABLE_Z + 0.006 + 0.0275 + PAD_DROP] for side in GOALS},
-        seconds=2.5,
-        linear=True,
-    )
-    s.stage("release", "Open both grippers and leave the parts supported on the pads.")
-    s.move(grips={"left": 0.0, "right": 0.0}, seconds=1.5)
-    s.stage("retract", "Retract both hands without touching the placed parts.")
-    s.move(
-        {side: [*GOALS[side], TABLE_Z + 0.15] for side in GOALS},
-        seconds=2.0,
-        linear=True,
-    )
-    s.stage("finish", "Both kit parts must be stable and clear of the robot.")
-    # Slow enough that the swing back from the far pads does not push the
-    # upright thigh, which rests on its lower joint limit, past that limit.
-    s.move({"left": [0.15, 0.37, 0.99], "right": [0.15, -0.37, 0.99]}, seconds=3.0)
+        place = f"Put the {color} box on the {color} pad with the {side} hand."
+        s.stage("transfer", place)
+        s.move({side: [*goal, TABLE_Z + 0.15]}, seconds=3.0, linear=True)
+        s.stage("place", place)
+        s.move(
+            {side: [*goal, TABLE_Z + 0.006 + 0.0275 + PAD_DROP]},
+            seconds=2.5,
+            linear=True,
+        )
+        s.stage("release", place)
+        s.move(grips={side: opened}, seconds=1.5)
+        back = f"Move the {side} arm back to its start pose."
+        s.stage("retract", back)
+        s.move({side: [*goal, TABLE_Z + 0.15]}, seconds=2.0, linear=True)
+        s.stage("finish", back)
+        # Slow enough that the swing back from the far pad does not push the
+        # upright thigh, which rests on its lower joint limit, past that limit.
+        s.move({side: tt.READY[side]}, seconds=3.0)
     s.move(seconds=1.0)
 
 
@@ -160,13 +156,13 @@ def main():
     args = p.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     scene = PickPlaceScene(args.output, args.record)
-    error = None
+    error, void = None, False
     start = time.monotonic()
     try:
         expert(scene)
     except (RuntimeError, ValueError) as e:
-        error = str(e)
-        print("STOP:", error, flush=True)
+        error, void = str(e), isinstance(e, PhysicsError)
+        print("VOID:" if void else "STOP:", error, flush=True)
     finally:
         scene.close()
     objects = {side: scene.object_info(side) for side in SOURCES}
@@ -177,15 +173,17 @@ def main():
         and all(
             scene.lift_evidence[s]["airborne_bilateral_steps"] >= 100 for s in SOURCES
         )
+        and not scene.collisions()
     )
     result = {
         "success": bool(success),
         "controller": "privileged IK expert, not FineART inference",
         "host": "local Mac",
         "mujoco_version": mujoco.__version__,
-        "duration_s": float(scene.d.time),
+        "duration_s": scene.clock(),
         "wall_time_s": time.monotonic() - start,
         "error": error,
+        "void": void,
         "final_objects": objects,
         "lift_evidence": scene.lift_evidence,
         "final_stable_control_frames": scene.stable_frames,
@@ -193,6 +191,7 @@ def main():
             "max_penetration_mm": scene.maxdepth * 1000,
             "deepest_geoms": scene.deepest,
             "max_joint_limit_error": scene.maxlimit,
+            "collisions": scene.collisions(),
         },
         "contract": {
             "action_dim": 16,
@@ -201,12 +200,11 @@ def main():
             "cameras": list(POLICY_CAMERAS),
             "control_hz": 25,
             "physics_hz": 500,
+            "full": scene.full_contract(),
         },
         "collision_setup": scene.setup,
         "camera_rig": scene.camera_metadata,
-        "source_urdf_sha256": hashlib.sha256(
-            (ROOT / "assets/franzi_source/wheel_robot_4.0.urdf").read_bytes()
-        ).hexdigest(),
+        "source_urdf_sha256": hashlib.sha256(URDF.read_bytes()).hexdigest(),
     }
     (args.output / "summary.json").write_text(json.dumps(result, indent=2))
     (args.output / "trace.json").write_text(json.dumps(scene.trace, indent=2))
@@ -217,7 +215,9 @@ def main():
             action=[x["action"] for x in scene.trace],
             timestamp=[x["t"] for x in scene.trace],
             subtask=[x["phase"] for x in scene.trace],
+            **scene.full_arrays(),
         )
+    scene.write_full(args.output)
     print(json.dumps(result, indent=2), flush=True)
 
 

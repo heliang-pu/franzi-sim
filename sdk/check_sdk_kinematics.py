@@ -23,7 +23,7 @@ from scipy.optimize import least_squares
 from simbridge import ROOT
 from simbridge.robot import urdf_limits
 
-URDF = ROOT / "assets/franzi_source/wheel_robot_4.0.urdf"
+URDF = ROOT / "assets/franzi_source/wheel_robot_26.8.16_3.urdf"
 IMAGE = ROOT / "sdk_review/controller_image_probe_v2/files/image"
 PERSISTENT = IMAGE / "inocfg/inbc_for_humanoid"
 APP_CONFIG = IMAGE / "inodata/config11"

@@ -28,7 +28,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1] / "assets" / "props"
 QA = HERE / "_qa" / "task10"
 IDS = ("bearing_housing_c010", "bearing_housing_c020", "bearing_housing_c030",
-       "bearing_6204", "dowel_pin", "pin_fixture", "din_rail_kit")
+       "bearing_6204", "bearing_shaft_fixture", "dowel_pin", "pin_fixture", "din_rail_kit")
 
 
 def load(path):
@@ -169,23 +169,26 @@ def run(prop_id):
                       worst_upper_segment_error_mm=float(np.max(np.abs(np.asarray(individual) - target))),
                       collision_pieces=len(meshes), measure_z_mm=32.5)
     elif prop_id == "bearing_6204":
+        # 24 ring sectors with the ID20 bore open (2026-10-25). Radii are good
+        # to compact_props' 0.005 mm coordinate rounding.
         points = np.concatenate([m.vertices for m in meshes]) * 1000
         r = np.linalg.norm(points[:, :2], axis=1)
-        assert r.max() <= 23.5 + 1e-9, r.max()
-        near(r.max(), 23.5, .00001)
-        at_nominal = points[np.abs(r - 23.5) < .00001]
-        angles = np.mod(np.arctan2(at_nominal[:, 1], at_nominal[:, 0]), 2 * math.pi)
-        lattice = angles * 48 / (2 * math.pi)
-        near(lattice, np.round(lattice), .00001)
-        assert len(np.unique(np.mod(np.round(lattice).astype(int), 48))) == 48
+        assert len(meshes) == 24 and all(len(m.vertices) <= 64 for m in meshes)
+        near(r.max(), 23.5, .005)
+        bore = face_axis_distance(meshes, 7)
+        near(bore, 10, .005)
         near(parts[0]["mass_kg"], .106, 1e-12)
-        # The exact split union must still have the unsplit prism's analytic volume.
-        area_factor = 24 * math.sin(2 * math.pi / 48)
-        expected = area_factor * (23.5 ** 2 * 12.8 + 2 * .6 / 3 * (22.9 ** 2 + 22.9 * 23.5 + 23.5 ** 2))
-        near(sum(abs(m.volume) for m in meshes) * 1e9, expected, .01)
-        assert all(len(m.vertices) <= 64 for m in meshes)
-        record.update(max_collision_radius_mm=float(r.max()), exact_union_volume_mm3=expected,
-                      collision_pieces=len(meshes), mass_kg=.106, circle_sides=48)
+        record.update(max_collision_radius_mm=float(r.max()), bore_radius_mm=bore,
+                      collision_pieces=len(meshes), mass_kg=.106)
+    elif prop_id == "bearing_shaft_fixture":
+        radius = data["shaft_diameter_mm"] / 2
+        near(data["bbox_mm"], [70, 110, 54], .001)
+        assert len(meshes) == 4 and all(len(m.vertices) <= 64 for m in meshes)
+        shaft = meshes[2].vertices * 1000
+        near(np.linalg.norm(shaft[:, :2], axis=1).max(), radius, .005)
+        near(shaft[:, 2].min(), 34, .005)
+        near(shaft[:, 2].max(), 53, .005)
+        record.update(shaft_radius_mm=radius, collision_pieces=len(meshes))
     elif prop_id == "dowel_pin":
         assert len(meshes) == 1 and len(meshes[0].vertices) == 64
         points = meshes[0].vertices * 1000
@@ -198,7 +201,7 @@ def run(prop_id):
                       collision_pieces=1, mass_kg=.025)
     elif prop_id == "pin_fixture":
         rows = []
-        assert [v["clearance_mm"] for v in data["variants"]] == [.05, .10, .20]
+        assert [v["clearance_mm"] for v in data["variants"]] == [.05, .10, .20, 1.00]
         for variant in data["variants"]:
             collisions = [load(folder / f) for p in variant["parts"] for f in p["collision"]]
             assert len(collisions) == 64

@@ -1,6 +1,6 @@
 """Independent Task 06 checks of exported geometry, UVs and MuJoCo seating.
 
-Run with /Users/puheliang/miniforge3/envs/inovance-fineart/bin/python -B.
+Run with $PROP_PYTHON -B (a Python with numpy, scipy, trimesh and Pillow).
 This is an asset integration smoke test, not a robot kitting success-rate test.
 """
 

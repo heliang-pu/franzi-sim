@@ -164,6 +164,12 @@ class RobotConfig:
         self.control = raw["control"]
         self.frames = raw["frames"]
 
+    @property
+    def position_margin(self):
+        """The margin (rad) the SDK limits keep inside both the URDF and the
+        controller bounds."""
+        return self._margin
+
     def _unit(self, name, spec):
         joints = tuple(spec["sim_joints"])
         n = len(joints)

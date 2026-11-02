@@ -31,7 +31,6 @@ simbridge/sdk_kinematics.py SDK 运动学接口：调用共享运动学 robot_ki
 simbridge/runtime.py    拥有仿真器的线程（进程主线程）：命令队列、每步一致快照、渲染请求只在该线程执行
 simbridge/backends/     适配器，按名称懒加载：mujoco_backend.py、isaacsim_backend.py（草稿）
 sdk/check_sdk_kinematics.py 离线验证工具：控制器 MDH 与 URDF 的运动学对照 → config/robot/kinematic_crosscheck.json
-sdk/convert_pybullet_assets.py 从 MuJoCo 场景导出带同一套碰撞体的 URDF 场景（Isaac Sim 草稿用；名字沿用已下线的 PyBullet 后端）
 sdk/make_sdk_program.py     生成验收用的 SDK 坐标关节程序 → config/sdk_acceptance/program.json
 sdk/sdk_acceptance.py       只用原厂 SDK 的验收程序（所有后端同一份）
 sdk/verify_backends.py      启动各后端服务、运行验收、按类别打分 → outputs/<run>/report.json
@@ -72,9 +71,9 @@ tests/test_simbridge.py 不依赖引擎的单元/集成测试
 
 肘关节方向等映射问题的结论（`sdk/check_sdk_kinematics.py`，结果在 `config/robot/kinematic_crosscheck.json`）：
 
-- 镜像持久化参数 `machine_params.json` 的 `bio_para` 与 `config11/mdh.json` 的 MDH 表完全相同。按 Craig 改进 DH（`θ = q + theta_offset`）解释，它与源 URDF 的手臂链**运动学完全一致**：500 组随机关节角上位置误差 ≤ 1.3e-14 m、姿态误差 ≤ 2.1e-14 rad。同一张表按标准 DH 解释，最好也有 0.072 m 误差（反证了约定）。
-- 对 128 种正负号组合拟合偏置和基座/法兰变换，得到 14 个运动学上完全等价的解（腕部等对称性所致），只靠正解无法唯一确定；再用镜像关节范围筛选，只剩一个：**左右臂 sign = [-1, +1, -1, -1, -1, -1, +1]，偏置全为 0**。肘关节：URDF −150°～7.45° 映射为 SDK −7.45°～150°，与镜像的 −15°～148° 一致，即屈肘在 SDK 中为正。
-- 第 1、7 关节的零位偏置会被基座/法兰坐标吸收，正解无法辨识；0 是唯一与范围一致的值，标为「范围推断」。腰部：正解精确，4 个等价解中按范围选 [1,1,1,1]，但腰俯仰范围冲突（URDF ±30°，镜像 −75°～30°）。头部：镜像里没有 MDH，未标定，按 URDF 原值透传。
+- 镜像持久化参数 `machine_params.json` 的 `bio_para` 与 `config11/mdh.json` 的 MDH 表完全相同。按 Craig 改进 DH（`θ = q + theta_offset`）解释，它与源 URDF 的手臂链运动学一致：对 `wheel_robot_26.8.16_3`，500 组随机关节角上位置误差 ≤ 3.3e-6 m、姿态误差 ≤ 1.4e-5 rad（新 URDF 导出时把 π/2 一类的角度取整成 1.5708、3.14，所以差到微米级；上一版 `wheel_robot_4.0` 是 1e-14 级）。同一张表按标准 DH 解释，最好也有 0.075 m 误差（反证了约定）。
+- 对 128 种正负号组合拟合偏置和基座/法兰变换，得到 12 个运动学上完全等价的解（腕部等对称性所致），只靠正解无法唯一确定；再用镜像关节范围筛选，只剩一个：**左右臂 sign 全为 +1，偏置为 0**（拟合值不超过 3.8e-6 rad），手臂各坐标系与 MDH 坐标系重合。肘关节：URDF −14.9°～150.1° 与镜像的 −15°～148° 一致，屈肘为正。上一版 `wheel_robot_4.0` 的 URDF 每个关节绕不同的轴，sign 是 [-1, +1, -1, -1, -1, -1, +1]。
+- 第 1、7 关节的零位偏置会被基座/法兰坐标吸收，正解无法辨识；0 是唯一与范围一致的值，标为「范围推断」。腰部：正解精确，4 个等价解中按范围选 [1,1,1,1]；新 URDF 的腰俯仰范围（−72°～29.8°）与镜像（−72°～30°）一致，上一版的范围冲突（URDF ±30°）已不存在。头部：镜像里没有 MDH，未标定，按 URDF 原值透传。
 - 镜像中 `mdh_repeat_exact*.json` 的关节/笛卡尔样本自相矛盾（起止关节角几乎相同，笛卡尔位置却差几十厘米），不能作为正解真值，未使用。
 - 限位：SDK 层按「仿真模型范围 ∩ 镜像控制器范围」（控制器一侧留 0.001 rad 余量）拒收越界目标（`-3`）。`build_task.align_joint_limits` 把派生 MuJoCo 场景的关节范围裁到同一交集；MuJoCo 适配器加载时检查模型范围在 URDF 范围以内、且包含 SDK 接受的全部目标。
 
@@ -99,7 +98,7 @@ tests/test_simbridge.py 不依赖引擎的单元/集成测试
 - A0 在 torso_Link 中、法兰在 wrist_roll_Link 中的位姿取自 `kinematic_crosscheck.json`。
 - 4×4 矩阵按列优先的 16 个数传输，平移单位 m，按控制器的 float32 精度收发。
 - 位姿 `[x, y, z, rz, ry, rx]`，`R = Rx(rx)·Ry(ry)·Rz(rz)`（外旋 zyx，等价于 SciPy `from_euler("zyx", [rz, ry, rx])`），读回时 `ry ∈ [−π/2, π/2]`。
-- 逆解用 `Kinematics(margin=0.0001)`：模拟控制器的逆解，不留规划余量。
+- 逆解模拟控制器的逆解，不留规划余量，但解要在 MoveJ 接受的范围里：`Kinematics(margin=SDK 位置余量 + 0.0001)`。SDK 层在 URDF 一侧也留 0.001 rad；新 URDF 的腕部 roll 限位 1.57 比控制器的 1.5708 紧，原来用 0.0001 时 IKb 给出 1.5698，MoveJ 拒收（-3）。
 
 `MoveL`、笛卡尔点动和遥操作不实现：真机上它们会用控制器自己的逆解。没有 Pinocchio 的服务端（例如 GPU 工作站上的 Isaac Sim 环境）照常启动，运动学接口明确返回 UNSUPPORTED。
 
@@ -109,11 +108,11 @@ tests/test_simbridge.py 不依赖引擎的单元/集成测试
 - 手册把腰末端当作 torso_Link，实际低 0.0157 m。
 - 手册把 A0 放在 URDF 肩关节原点，而 MDH 的 A0 在肩部三轴交点，再向外 0.0725 m。
 
-所以真机上的 `FKb`/`IKb` 很可能与仿真不同；按上面的决定，真机的笛卡尔目标应在主机侧用 `robot_kinematics` 求解（见下一节）。另外，镜像的 SDK 服务端内嵌了一份 `wheel_robot_4.0.urdf`，36 个关节与 `assets/franzi_source` 完全相同，用于它的质心求解器。
+所以真机上的 `FKb`/`IKb` 很可能与仿真不同；按上面的决定，真机的笛卡尔目标应在主机侧用 `robot_kinematics` 求解（见下一节）。另外，镜像的 SDK 服务端内嵌了一份 `wheel_robot_4.0.urdf`，36 个关节与本仓库上一版的源 URDF 完全相同，用于它的质心求解器。
 
 验证（`tests/test_simbridge.py` 和验收打分）：
 
-- 经共享运动学算出的 `Fk` 与镜像 MDH 表在同一 SDK 关节值下一致到 1e-12，说明坐标系、映射和单位都对得上。
+- 经共享运动学算出的 `Fk` 与镜像 MDH 表在同一 SDK 关节值下一致到 2e-5（新 URDF 的取整角度；上一版 1e-12），说明坐标系、映射和单位都对得上。
 - `FKb` 与 `robot_kinematics` 的法兰位姿一致到 1e-12。
 - IK/IKb 往返在 1e-5 m 以内；欧拉角与 SciPy 互转误差 2e-13。
 - 验收打分时用 trace 中的 SDK 关节角和腰角经共享运动学算出抓取点，再与 MuJoCo 自己的抓取点比较（见下面的验收结果）。
@@ -160,13 +159,11 @@ cart.line({"left": p + [0.04, 0, 0.05], "right": ...}, speed=0.05)  # 直线，�
 python -m simbridge.server --backend config/backends/mujoco.yaml --output outputs/<新目录> [--record]
 # MuJoCo，引擎拥有主循环
 python -m simbridge.server --backend config/backends/mujoco_owned_loop.yaml --output outputs/<新目录>
-# Isaac Sim 草稿的场景：派生场景或相机改动后，从 MuJoCo 场景重新导出
-python -m sdk.convert_pybullet_assets
 ```
 
 - 服务端只监听连接配置中的地址（默认回环），60 秒无请求退出。
 - 输出目录须不存在。服务端写 `ready.json`（后端、能力声明、映射、端口）、`trace.json`（25 Hz 状态、设定点、模式、夹爪、物体真值）、`camera_log.json`、`server_result.json`（故障、RPC 记录、实时率），`--record` 时写 `session.mp4`。
-- `sdk/convert_pybullet_assets.py` 导出到 `assets/derived/pybullet/`（可重建，不入库）。它没有为夹爪连杆重跑：URDF 没有多项式关节耦合（mimic 关节是线性的），从动连杆会变成自由的。它的输出保留旧的固定夹爪，等 Isaac 草稿建模连杆时再改。
+- Isaac Sim 草稿后端（`isaacsim_backend.py`，从没运行过）读 `assets/derived/pybullet/` 里带 MuJoCo 碰撞体的 URDF 场景。生成它的 `sdk/convert_pybullet_assets.py` 基于 wheel_robot_4.0 的 `franzi.xml` 和 URDF，迁移到 wheel_robot_26.8.16_3 时删掉了（用户 2026-10-25 确定），所以这个草稿暂时没有场景来源。正式的 Isaac Sim 移植见 [isaac.md](isaac.md)，它直接从编译好的 MuJoCo 模型构建。
 
 同一份验收程序跑每个后端（现在是 MuJoCo 的两种循环）：
 
@@ -180,25 +177,32 @@ python -m pytest tests -q
 
 ## 验收结果
 
-同一份 `sdk/sdk_acceptance.py`（只调用未修改的原厂 SDK）连接服务端，只换连接配置；结果按类别记录，不合成一个通过率。最新一次是 `outputs/sdk_backends_v12/`（2026-10-24；夹爪按 CAD 连杆运动，腕部 D405 在新的倾斜相机块上；任务来源 `outputs/expert_wrist_block/`），汇总在 `report.json`：
+同一份 `sdk/sdk_acceptance.py`（只调用未修改的原厂 SDK）连接服务端，只换连接配置；结果按类别记录，不合成一个通过率。最新一次是 pro6000 上的 `outputs/sdk_backends_urdf_v5/`（2026-10-25；机器人模型 `wheel_robot_26.8.16_3`，腕部 D405 在转接座上；逆解初值按新关节约定修正后，任务来源 `outputs/pp_seeds_rec/`，两只手按 subtask 轮流做；没有录像），汇总在 `report.json`。修正前的 `outputs/sdk_backends_urdf_v4/` 各类也全部通过，只有任务误差（框架驱动 0.37 / 0.34 mm，引擎自有循环 0.37 / 0.37 mm）和两种循环的差别（见下）不同：
 
 | 类别 | MuJoCo（框架驱动） | MuJoCo（引擎自有循环） |
 |---|---|---|
 | 通信兼容：协议、返回格式、四路相机、未实现接口明确报错 | 28/28 | 28/28 |
-| 控制语义：接收≠完成、-3/-5/-8/-10、单/双臂遥操作、软急停、使能 | 37/37 | 37/37 |
-| 运动学接口：Fk/FkTool/IK/FKb/IKb 自洽，位姿约定，工具坐标，-3/-6 | 23/23 | 23/23 |
+| 控制语义：接收≠完成、-3/-5/-8/-10、单/双臂遥操作、软急停、使能 | 39/39 | 39/39 |
+| 运动学接口：Fk/FkTool/IK/FKb/IKb 自洽，位姿约定，工具坐标，-3/-6 | 24/24 | 24/24 |
 | 运动学映射：全程 SDK 值 = sign·仿真值 + offset | 偏差 0 | 偏差 0 |
-| 共享运动学（SDK 关节角 + 腰角）对 MuJoCo 抓取点 | 7.3e-16 m | 7.9e-16 m |
-| 物理表现：双臂到位、重力力矩、夹爪 750/250/1000、软急停制动、Home、IKb + MoveJ 抬高 3 cm | 10/10（抬高误差 0.16 mm） | 10/10（0.16 mm） |
-| 整段最大接触穿透 | 0.16 mm | 0.16 mm |
-| 故障处理：把左手压进桌面 | 5/5，手指越限审计触发，物理冻结并经 SDK 报告 | 5/5，同左 |
-| 完整任务（经 SDK 重放专家关节目标）：SDK 侧 | 4/4，抬起后夹爪报 2（夹持） | 4/4 |
-| 完整任务：仿真真值（到位、静止、脱离、≥ 0.4 s 双爪悬空） | 成功，误差 0.28 / 0.11 mm | 成功，0.27 / 0.11 mm |
-| 录像时实时率 | 0.29 | 0.26 |
+| 共享运动学（SDK 关节角 + 腰角）对 MuJoCo 抓取点 | 1.3e-9 m | 1.3e-9 m |
+| 物理表现：双臂到位、重力力矩、夹爪 750/250/1000、软急停制动、Home、IKb + MoveJ 抬高 3 cm | 10/10 | 10/10 |
+| 整段最大接触穿透 | 0.19 mm | 0.19 mm |
+| 故障处理：把左手压进桌面 | 5/5，大腿越限审计触发，物理冻结并经 SDK 报告 | 5/5，同左 |
+| 完整任务（经 SDK 重放专家关节目标）：SDK 侧 | 5/5，每次抬起后抬起那只手的夹爪报 2（夹持） | 5/5 |
+| 完整任务：仿真真值（到位、静止、脱离、≥ 0.4 s 双爪悬空） | 成功，误差 0.37 / 0.39 mm | 成功，0.37 / 0.39 mm |
+| 实时率（无录像） | 0.99 | 0.99 |
 
-- v12 与 v11 的检查项相同，任务程序的动作也相同：重新生成的 `program.json` 只换了来源运行名和机器人配置哈希。变的是腕部相机块：两路腕部画面换成新视角，新相机块和 D405 外壳多了碰撞体；物理结果与 v11 一致。更早各版见 [history.md](history.md#原厂-sdk-验收)。
-- MuJoCo 两种循环给同一个 SDK 目标后，仿真关节角相差不超过 0.96 mrad，手部与相机坐标相差不超过 0.95 mm。差别来自首条指令落在不同的仿真时刻（开场头部转向还没结束），不是循环方式本身：首条指令只差 2 ms 时，结果只差 4.7 µm。
-- 每个后端目录有 `server/session.mp4`（总览相机加四路 SDK 相机小图和状态栏；v12 分别是 1336 帧和 1332 帧，25 FPS），以及：
+- 新模型上改了这些：
+  - 验收程序改用 subtask 专家的运行重新生成，每段写明哪只手在动。
+  - 从 SDK 零位直接走关节直线到默认姿态时，夹块会插进桌面，所以程序加了 `lift_pose`。零位和工作姿态之间的移动（core、运动学检查、Home 和任务开头）都经过它，生成器的扫描检查也覆盖这些线段。
+  - IK 接口的解要落在 MoveJ 接受的范围里（见上节）。
+  - IKb 往返的容差放宽到 1 mrad：冗余的肘部摆角上能差 1.3e-4 rad。
+  - 工具坐标检查之前，先把手臂移回 pose_a：IK 从当前关节出发，手臂停在抬高 3 cm 的位置时，会解到摆角上相差 25 mrad 的另一个解。
+  - 两个后端的对比改取 pose_a 上的样本，原来取的是第一个 MoveJ 之后，现在第一个 MoveJ 是去抬手姿态。
+- 旧模型上最后一次是 `outputs/sdk_backends_v12/`（2026-10-24，本机），各类都全部通过；它和更早各版见 [history.md](history.md#原厂-sdk-验收)。
+- MuJoCo 两种循环给同一个 SDK 目标（稳定后的 pose_a）后，仿真关节角相差不超过 0.17 mrad，手部与相机坐标相差不超过 57 µm（v4 是 8.9 µrad 和 6.4 µm；v12 是 0.96 mrad 和 0.95 mm，那时首条指令落在头部转向还没结束的时刻）。差别是两种循环的跟踪误差，没有阈值。
+- 带 `--record` 时，每个后端目录有 `server/session.mp4`（总览相机加四路 SDK 相机小图和状态栏，25 FPS）；任何时候都有：
   - `config/`：本次使用的后端、连接、机器人配置快照；
   - `client/sdk_calls.json`：每次 SDK 调用的参数、返回和耗时；`client/verification.json`：检查项；`client/*.png`：经原厂图像 API 取得的图像；
   - `server/ready.json`：能力声明与映射；`server/trace.json`：25 Hz 状态、设定点、模式、夹爪、物体真值；`server/camera_log.json`；`server/server_result.json`：故障、全部 RPC、实时率。
@@ -208,7 +212,7 @@ python -m pytest tests -q
 1. 在 `simbridge/backends/<引擎>_backend.py` 实现 `SimBackend`（`backends/base.py`）：`load / capabilities / dt / apply / step / read / render / close`，可选 `run_owned_loop`、`task_state`、`tracked_frames`。只说仿真关节名和 SI 单位；`step()` 每步做穿透和越限审计，超阈值抛 `PhysicsFault`；做不到的能力在 `capabilities()` 里声明为不支持，方法本身抛异常。
 2. 在 `simbridge/backends/__init__.py` 的 `REGISTRY` 登记模块名和实现/验证状态（懒加载，不影响只用 MuJoCo 的环境）。
 3. 新建 `config/backends/<名>.yaml`（解释器、机器人配置、连接配置、运行参数）和 `config/connections/sim_<名>.yaml`。
-4. 需要时增加资产转换（参考 `sdk/convert_pybullet_assets.py`：碰撞体从 MuJoCo 派生场景导出，保证各引擎碰撞定义一致）。
+4. 需要时增加资产转换：碰撞体从 MuJoCo 派生场景导出，保证各引擎碰撞定义一致（`isaac/export.py` 就是这样做的）。
 5. 运行 `sdk/verify_backends.py --backends <名>`。协议、服务、控制、映射层都不需要修改；业务代码里不应出现按后端名判断的分支。
 
 ## 仍未完成或未验证
@@ -218,4 +222,24 @@ python -m pytest tests -q
 - 运动学接口：用共享运动学回答，不复现控制器自己的逆解和分支选择；flan2tool 初值和 `GetCurCartesianPose` 的坐标系是推断；真机控制器的 `FKb` 若按手册常量计算，会与仿真差 0.273 m（见上），需要在真机上核对。
 - 轨迹规划、制动和夹爪速度是本仿真的策略（见上），不是原厂控制器的算法；新增引擎时动力学结果允许不同，验收只要求接口语义一致。
 - Isaac Sim：2026-10-24 按用户决定暂缓验证。适配器是为 GPU 工作站上的 Isaac Sim 5.1.0 写的，解释器由环境变量 `ISAAC_PYTHON` 指定（`config/backends/isaacsim.yaml`、`sdk/run_isaacsim_4090.sh`）；无头启动需要接受 NVIDIA Omniverse EULA（`OMNI_KIT_ACCEPT_EULA=YES`），须由用户决定。继续时把本工程同步到工作站，先做适配器文档列出的上机检查，再把工作站上服务端的 18400、18500 两个端口转发到本机，在本机运行同一份 `sdk/sdk_acceptance.py`，结果放进 `outputs/<运行目录>/isaacsim/` 后用 `sdk/verify_backends.py --backends isaacsim --rescore` 打分。工作站上的 Python 没有 Pinocchio，运动学接口会明确报 UNSUPPORTED。
+- Isaac Sim 运行环境，2026-10-24 实测：
+  - 用的是一个独立的速度测试脚本，按适配器的方式搭场景、驱动机器人，不是适配器本身。
+  - EULA：用户已接受。4090 那套（isaac-fan）写入了 `kit/EULA_ACCEPTED`。
+  - 两台工作站上都有一份不属于任何软件包的 `/etc/vulkan/icd.d/nvidia_icd.json`，同一块 GPU 因此被枚举两次。多卡模式下 Isaac Sim 5.1 会崩；4090 崩在导入 URDF 之后的 `cuMemPoolSetAccess`。
+    - 启动时要设 `VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/nvidia_icd.json`，并在 SimulationApp 里设 `multi_gpu: False`。
+    - 两个启动脚本默认都设了 `VK_ICD_FILENAMES`；适配器的 SimulationApp 没有设 `multi_gpu: False`，pro6000 上的冒烟测试只靠前者就过了这一步。
+  - pro6000 上，Isaac Sim 5.1 的 RTX 在 595 驱动下一开始渲染就崩；5.x 没有更新的版本。按用户决定，驱动换成了 580.178.04，与 4090 相同。
+    - 换驱动后第一次运行要编译着色器，大约几分钟，这期间相机拿不到图。
+  - pro6000 上用 5.1 跑本场景：500 Hz 的 CPU PhysX，每个物理步做重力前馈、读接触报告和关节；每 25 Hz 渲染一次并读回所有相机。
+    - 纯物理：0.79 倍实时。
+    - 4 路 640×480 策略相机：0.62 倍。每拍 64 ms，其中物理 52.5、渲染 10.6、读回 1.1，GPU 占用 13%。
+    - 4 路 1920×1080：0.56 倍。16 路 640×480：0.48 倍。32 路：0.34 倍。
+    - 64 路时 RTX 渲染图报错（`AccumulateDepth`），进程卡死。
+    - 瓶颈在 CPU 侧的物理。
+  - Isaac Sim 6.x 去掉了 `URDFParseAndImportFile`。World、Articulation 和 Camera 还在，但已标为弃用。
+  - pro6000 上有一份工程副本和一套 Isaac Sim 5.1，EULA 已由用户接受；用 `ISAAC_PYTHON=<Isaac Sim 的 python> sdk/run_isaacsim_pro6000.sh <新目录>` 启动。
+  - 2026-10-24 用这个脚本做了冒烟测试。适配器从启动 Isaac、导入 URDF、搭场景、设物理、装相机，到初始化关节视图都过了，最后停在 `_configure_drives` 的限位核对上：`left_shoulder_pitch_joint: PhysX limits [-3.489, 2.4425] differ from the URDF`。
+    - 原因是派生 URDF 里写的已是与控制器取交集后的范围，而核对拿的是 `config/robot/franzi_sdk.yaml` 的原始 URDF 范围，并且要求两者相等。
+    - 10 个手臂关节都有这种差别，例如肩俯仰上限 2.44246 对 2.617、肘俯仰下限 −2.58209 对 −2.62。
+    - 应改用 MuJoCo 适配器的规则：不宽于 URDF，也不窄于 SDK 接受的范围。
 - Isaac Lab：可复用同一份派生 URDF、驱动参数、碰撞分组和相机约定，但它的向量化 GPU 主循环需要另写薄适配层，而且 GPU 管线对凸包有 64 顶点上限（74 个碰撞凸包超出），会破坏与 MuJoCo 的碰撞一致性。

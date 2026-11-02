@@ -1,0 +1,136 @@
+{
+  "id": "tote_cart",
+  "task": "line_replenish tote_sorting",
+  "units": "m",
+  "origin": "bottom_center",
+  "static": true,
+  "budget_class": "medium",
+  "variants": [
+    {
+      "name": "blue",
+      "textures": {
+        "frame": "frame_albedo.png"
+      }
+    },
+    {
+      "name": "red",
+      "textures": {
+        "frame": "frame_albedo_v1.png"
+      }
+    },
+    {
+      "name": "green",
+      "textures": {
+        "frame": "frame_albedo_v2.png"
+      }
+    }
+  ],
+  "dimensions_mm": {
+    "deck_xy": [
+      260,
+      520
+    ],
+    "deck_top": 800,
+    "lower_shelf_top": 300,
+    "upright_xy": [
+      25,
+      25
+    ],
+    "caster_diameter": 75,
+    "caster_height": 100,
+    "handle_top": 950,
+    "footprint_xy": [
+      260,
+      520
+    ],
+    "upright_centers_xy": [
+      [
+        -102.5,
+        -222.5
+      ],
+      [
+        -102.5,
+        222.5
+      ],
+      [
+        102.5,
+        -222.5
+      ],
+      [
+        102.5,
+        222.5
+      ]
+    ]
+  },
+  "recommended_placement_m": {
+    "line_replenish": [
+      0.37,
+      0,
+      0
+    ],
+    "tote_sorting": [
+      {
+        "position": [
+          0,
+          0.5,
+          0
+        ],
+        "yaw_degrees": 90
+      },
+      {
+        "position": [
+          0,
+          -0.5,
+          0
+        ],
+        "yaw_degrees": -90
+      }
+    ]
+  },
+  "notes": "Geometry in the common prop frame, Z up, front -X. CPU Cycles 64-sample diffuse colour times (0.4 + 0.6 AO); Smart UV 66 degrees. Full PBR in source.blend. Y uprights are inset an extra 10 mm to keep complete 75 mm caster envelopes inside the deck. Caster boxes and three handle proxies are the task-prescribed simplifications.  Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification.",
+  "mass_kg": 18,
+  "parts": [
+    {
+      "name": "frame",
+      "visual": "frame.obj",
+      "texture": "frame_albedo.png",
+      "texture_px": 1024,
+      "collision": [
+        "frame_col_00.obj",
+        "frame_col_01.obj",
+        "frame_col_02.obj",
+        "frame_col_03.obj",
+        "frame_col_04.obj",
+        "frame_col_05.obj",
+        "frame_col_06.obj",
+        "frame_col_07.obj",
+        "frame_col_08.obj",
+        "frame_col_09.obj",
+        "frame_col_10.obj",
+        "frame_col_11.obj",
+        "frame_col_12.obj",
+        "frame_col_13.obj",
+        "frame_col_14.obj",
+        "frame_col_15.obj",
+        "frame_col_16.obj"
+      ],
+      "mass_kg": 18,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.3,
+        "reflectance": 0.0
+      },
+      "parent": null,
+      "joint": null
+    }
+  ],
+  "bbox_mm": [
+    259.99999,
+    519.99998,
+    949.99999
+  ],
+  "triangles": 14372,
+  "source": "source.blend",
+  "preview": "preview.png"
+}

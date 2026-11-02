@@ -3,9 +3,9 @@
 For each seed it runs the expert headless (run.run) and keeps the run.
 For the first seeds it also counts, from segmentation renders, the unoccluded
 pixels of every part and of every cell frame in the head and body cameras: once
-the head gaze has settled with the arms still hanging, and again at the ready
-pose. The first seeds also get preview sheets (overview plus the four policy
-cameras at the ready pose). Writes report.json; the per-run files are as
+the head gaze has settled with the arms still hanging, and again in the
+default posture (tabletop.start_home). The first seeds also get preview sheets
+(overview plus the four policy cameras in that posture). Writes report.json; the per-run files are as
 run.py writes them.
 """
 
@@ -15,11 +15,13 @@ from pathlib import Path
 
 import mujoco
 import numpy as np
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 
 from scenes.kitting import task as kt
-from scenes.kitting.run import KitScene, go_ready, run
+from scenes.kitting.run import KitScene, run
+from sim import tabletop as tt
 from sim.camera_rig import POLICY_CAMERAS
+from sim.episode import overlay_font
 
 VIEW_CAMERAS = ("head_d435", "body_d435")
 FRAME_BARS = ("near", "far", "inner", "outer")
@@ -44,7 +46,7 @@ def pixel_counts(scene, renderer):
 def sheet(scene, renderer, wide, title):
     """Overview (1280 x 720) above the four policy cameras (640 x 480 each)."""
     canvas = Image.new("RGB", (1280, 720 + 960), (20, 27, 38))
-    font = ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial.ttf", 20)
+    font = overlay_font(20)
     draw = ImageDraw.Draw(canvas)
     wide.update_scene(scene.d, camera="overview")
     canvas.paste(Image.fromarray(wide.render()), (0, 0))
@@ -61,7 +63,7 @@ def sheet(scene, renderer, wide, title):
 
 def views(output, seed, kin, preview):
     """Settling and visibility for seed: part drift while the gaze settles, and
-    pixel counts then and at the ready pose. Optionally saves a preview."""
+    pixel counts then and at the default posture. Optionally saves a preview."""
     spec = kt.sample_episode(seed, kin)
     output.mkdir(parents=True, exist_ok=False)
     scene = KitScene(output, spec)
@@ -86,12 +88,11 @@ def views(output, seed, kin, preview):
             ),
             "settled": pixel_counts(scene, renderer),
         }
-        scene.stage("ready", "Raise both open grippers behind the kit trays.")
-        go_ready(scene, spec, {s: kt.grip_open(0.04) for s in kt.SIDES})
-        scene.move(seconds=0.5)
+        # The default posture, where the recordings start.
+        tt.start_home(scene)
         result["ready"] = pixel_counts(scene, renderer)
         if preview:
-            title = f"seed {seed} | ready pose | {spec['instruction']}"
+            title = f"seed {seed} | default posture | {spec['instruction']}"
             sheet(scene, renderer, wide, title).save(
                 output.parent / f"preview_seed{seed:03d}.png"
             )

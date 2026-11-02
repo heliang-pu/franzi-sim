@@ -1,6 +1,6 @@
 # Same MuJoCo scene, but the adapter owns the stepping loop (simulator-owned mode).
 backend: mujoco
-python: /Users/puheliang/miniforge3/envs/inovance-fineart/bin/python
+# No python key: the server runs under the interpreter of verify_backends.
 robot: config/robot/franzi_sdk.yaml
 connection: config/connections/sim_mujoco.yaml
 runtime:

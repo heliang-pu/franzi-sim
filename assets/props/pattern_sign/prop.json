@@ -420,6 +420,120 @@
         ]
       },
       "preview": "preview_plan_03.png"
+    },
+    {
+      "name": "plan_04",
+      "textures": {
+        "plan_sheet": "plan_sheet_albedo_v3.png"
+      },
+      "stacking_plan": {
+        "name": "plan_04",
+        "title": "ROBOT / SKU-B",
+        "description": "2 x 2 cross stack, 40 mm finger gaps",
+        "layers": [
+          [
+            {
+              "number": 1,
+              "sku": "SKU-B",
+              "center_xy_mm": [
+                -60,
+                -60
+              ],
+              "size_xy_mm": [
+                120,
+                80
+              ]
+            },
+            {
+              "number": 2,
+              "sku": "SKU-B",
+              "center_xy_mm": [
+                60,
+                -60
+              ],
+              "size_xy_mm": [
+                120,
+                80
+              ]
+            },
+            {
+              "number": 3,
+              "sku": "SKU-B",
+              "center_xy_mm": [
+                -60,
+                60
+              ],
+              "size_xy_mm": [
+                120,
+                80
+              ]
+            },
+            {
+              "number": 4,
+              "sku": "SKU-B",
+              "center_xy_mm": [
+                60,
+                60
+              ],
+              "size_xy_mm": [
+                120,
+                80
+              ]
+            }
+          ],
+          [
+            {
+              "number": 5,
+              "sku": "SKU-B",
+              "center_xy_mm": [
+                -60,
+                -60
+              ],
+              "size_xy_mm": [
+                80,
+                120
+              ]
+            },
+            {
+              "number": 6,
+              "sku": "SKU-B",
+              "center_xy_mm": [
+                60,
+                -60
+              ],
+              "size_xy_mm": [
+                80,
+                120
+              ]
+            },
+            {
+              "number": 7,
+              "sku": "SKU-B",
+              "center_xy_mm": [
+                -60,
+                60
+              ],
+              "size_xy_mm": [
+                80,
+                120
+              ]
+            },
+            {
+              "number": 8,
+              "sku": "SKU-B",
+              "center_xy_mm": [
+                60,
+                60
+              ],
+              "size_xy_mm": [
+                80,
+                120
+              ]
+            }
+          ]
+        ]
+      },
+      "preview": "preview_plan_04.png"
     }
   ],
   "dimensions_mm": {
@@ -440,7 +554,7 @@
       283
     ]
   },
-  "notes": "A4-size 210Y x297Z x3X clear acrylic inserted 10 mm into an actual slot in the 220Y x60X x20Z base. Separate untextured acrylic part uses uniform rgba [0.85,0.90,0.95,0.25]; the opaque paper sheet is a separate part, never an alpha texture. Three original numbered 2x2 layer-one plans and 90-degree-rotated layer-two cartons, with fictional NOVA Logistics footer. Compact SKU-B, mixed SKU-A/B and clearance SKU-B plans have distinct packing footprints. All eight numbered cartons in each plan fit within a 300X x400Y pallet; mixed layer 2 is rearranged after rotating individual cartons because a rigid 90-degree rotation of the 320 mm long layer would overhang the 300 mm pallet. SPEC CONFLICT: one convex box cannot cover both the 60 mm deep base and 3 mm thin sign without large empty-space collisions. The single requested box therefore follows the acrylic; the out-of-workspace stationary base is visual-only. Slot and paper are not collision geometry. Masses are modelling estimates. The base is oriented with its 220 mm width along robot-left Y. Metres, Z up, front -X, common bottom-centre prop frame, applied transforms. Triangulated OBJ with normals, 30-degree split smoothing and weighted normals; nonoverlapping Smart UV 66-degree atlases with 0.01 island margins. Each opaque rigid part has one RGB8 sRGB albedo, CPU Cycles 64 DIFFUSE COLOR * (0.4 + 0.6 * AO), excluding direct illumination and highlights. Full procedural Principled PBR and original artwork are packed in source.blend. 1024-square previews: CPU Cycles 64, neutral grey, three lights, front-left above. Instance colour variation may be multiplied by 0.97-1.03 in simulation.  Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification. Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder.",
+  "notes": "A4-size 210Y x297Z x3X clear acrylic inserted 10 mm into an actual slot in the 220Y x60X x20Z base. Separate untextured acrylic part uses uniform rgba [0.85,0.90,0.95,0.25]; the opaque paper sheet is a separate part, never an alpha texture. Four original numbered 2x2 layer-one plans and 90-degree-rotated layer-two cartons, with fictional NOVA Logistics footer. Compact SKU-B, mixed SKU-A/B and clearance SKU-B plans have distinct packing footprints; plan_04 (2026-10-25) leaves 40 mm finger gaps between the gripped 80 mm faces for the robot's 95 mm jaws. All eight numbered cartons in each plan fit within a 300X x400Y pallet; mixed layer 2 is rearranged after rotating individual cartons because a rigid 90-degree rotation of the 320 mm long layer would overhang the 300 mm pallet. SPEC CONFLICT: one convex box cannot cover both the 60 mm deep base and 3 mm thin sign without large empty-space collisions. The single requested box therefore follows the acrylic; the out-of-workspace stationary base is visual-only. Slot and paper are not collision geometry. Masses are modelling estimates. The base is oriented with its 220 mm width along robot-left Y. Metres, Z up, front -X, common bottom-centre prop frame, applied transforms. Triangulated OBJ with normals, 30-degree split smoothing and weighted normals; nonoverlapping Smart UV 66-degree atlases with 0.01 island margins. Each opaque rigid part has one RGB8 sRGB albedo, CPU Cycles 64 DIFFUSE COLOR * (0.4 + 0.6 * AO), excluding direct illumination and highlights. Full procedural Principled PBR and original artwork are packed in source.blend. 512-square previews: CPU Cycles 64, neutral grey, three lights, front-left above. Instance colour variation may be multiplied by 0.97-1.03 in simulation.  Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px except the unchanged-resolution factory-floor repeat tile; previews are 512 square. PNG encoding uses RGB8 or reviewed 256-colour Floyd-Steinberg palettes; source artwork pixels and source.blend are retained. Shared PNG paths resolve from this prop folder. Task 13 compact OBJ exception: positions use 5 decimal metres where safe; necessary vertices retain up to 6 decimals to preserve nonzero triangles, strict collision convexity and the 0.005 mm Euclidean movement bound. Independent fixed-5 rounding cannot satisfy all three. Normals/UVs use 4 decimals; every original triangle, position index and per-corner attribute value is retained. Equal rounded UV records share indices and visual OBJ indices use shorter equivalent relative notation. No collision remeshing, reindexing or simplification.",
   "build_blender_version": "5.2.0 LTS",
   "static": true,
   "artwork_material": "Original NOVA stacking-plan artwork",
@@ -761,6 +875,113 @@
             "size_xy_mm": [
               120,
               80
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "name": "plan_04",
+      "title": "ROBOT / SKU-B",
+      "description": "2 x 2 cross stack, 40 mm finger gaps",
+      "layers": [
+        [
+          {
+            "number": 1,
+            "sku": "SKU-B",
+            "center_xy_mm": [
+              -60,
+              -60
+            ],
+            "size_xy_mm": [
+              120,
+              80
+            ]
+          },
+          {
+            "number": 2,
+            "sku": "SKU-B",
+            "center_xy_mm": [
+              60,
+              -60
+            ],
+            "size_xy_mm": [
+              120,
+              80
+            ]
+          },
+          {
+            "number": 3,
+            "sku": "SKU-B",
+            "center_xy_mm": [
+              -60,
+              60
+            ],
+            "size_xy_mm": [
+              120,
+              80
+            ]
+          },
+          {
+            "number": 4,
+            "sku": "SKU-B",
+            "center_xy_mm": [
+              60,
+              60
+            ],
+            "size_xy_mm": [
+              120,
+              80
+            ]
+          }
+        ],
+        [
+          {
+            "number": 5,
+            "sku": "SKU-B",
+            "center_xy_mm": [
+              -60,
+              -60
+            ],
+            "size_xy_mm": [
+              80,
+              120
+            ]
+          },
+          {
+            "number": 6,
+            "sku": "SKU-B",
+            "center_xy_mm": [
+              60,
+              -60
+            ],
+            "size_xy_mm": [
+              80,
+              120
+            ]
+          },
+          {
+            "number": 7,
+            "sku": "SKU-B",
+            "center_xy_mm": [
+              -60,
+              60
+            ],
+            "size_xy_mm": [
+              80,
+              120
+            ]
+          },
+          {
+            "number": 8,
+            "sku": "SKU-B",
+            "center_xy_mm": [
+              60,
+              60
+            ],
+            "size_xy_mm": [
+              80,
+              120
             ]
           }
         ]

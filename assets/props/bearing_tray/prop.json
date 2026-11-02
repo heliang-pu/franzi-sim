@@ -1,0 +1,67 @@
+{
+  "id": "bearing_tray",
+  "task": "bearing_assembly",
+  "units": "m",
+  "origin": "bottom_center",
+  "budget_class": "medium",
+  "bbox_mm": [
+    100.000001,
+    100.000001,
+    10.0
+  ],
+  "triangles": 188,
+  "source": "source.blend",
+  "preview": "preview.png",
+  "inspection": "inspection.png",
+  "parts": [
+    {
+      "name": "body",
+      "mass_kg": 0.2,
+      "parent": null,
+      "joint": null,
+      "texture_px": 2048,
+      "friction": 0.5,
+      "mujoco_material": {
+        "specular": 0.3,
+        "shininess": 0.4,
+        "reflectance": 0.0
+      },
+      "visual": "body.obj",
+      "texture": "body_albedo.png",
+      "collision": [
+        "body_col_00.obj"
+      ],
+      "source_visual_object": "body",
+      "source_collision_objects": [
+        "COL__body__000"
+      ]
+    }
+  ],
+  "variants": [],
+  "dimensions_mm": {
+    "outer_xyz": [
+      100,
+      100,
+      10
+    ],
+    "marking_circle_diameter": 48
+  },
+  "notes": "Metres, Z up, robot front -X, shared bottom-centre frame; applied transforms. CPU Cycles 64 diffuse colour times mix(1, AO, 0.6); PBR source retained. Inspection render 1024 square; preview thumbnail 512 for the unchanged validator. Flat upper support surface; no recess or raised rim to obstruct fingertips.",
+  "static": true,
+  "recommended_placement_m": {
+    "origins": [
+      [
+        0.38,
+        0.3,
+        0.9
+      ],
+      [
+        0.38,
+        -0.3,
+        0.9
+      ]
+    ]
+  },
+  "preview_variant": "default",
+  "preview_source": "Delivered OBJ meshes and exported albedos; 1024 native inspection, 512 thumbnail."
+}

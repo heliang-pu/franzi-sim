@@ -160,15 +160,9 @@ def expert(s):
     s.move(grips={"right": tt.grip_open(w1)}, seconds=1.0)
     s.stage("leave_pot", "Raise the right hand out of the pot.")
     move({"right": food["rise"]}, 1.5)
-    # Lid back with the left hand while the right serves the other ingredient.
-    lid = tt.pick_place(
-        "left",
-        base(s, "lid"),
-        kt.KNOB_Z,
-        knob,
-        kt.lid_on_pot(base(s, "pot")),
-        kt.LID_LIFT,
-    )
+    # The right hand serves the other ingredient, and only then does the left
+    # hand cover the pot and press the button: one after the other (user
+    # request 2026-10-25; they first ran at the same time).
     serve = tt.pick_place(
         "right",
         base(s, second),
@@ -178,63 +172,37 @@ def expert(s):
         kt.LIFT,
         0.06,
     )
-    s.stage("approach_2", f"Reach for the lid's knob again and for the {second}.")
-    move(
-        {"left": lid["pregrasp"], "right": serve["pregrasp"]},
-        grips={"right": tt.grip_open(w2)},
-    )
-    s.stage("align_2", f"Lower the open grippers around the knob and the {second}.")
-    move({"left": lid["grasp"], "right": serve["grasp"]}, 1.5)
-    s.stage(
-        "grasp_2", f"Close the left hand on the knob and the right on the {second}."
-    )
-    s.move(
-        grips={
-            "left": tt.grip_closed(knob, kt.LID_SQUEEZE),
-            "right": tt.grip_closed(w2),
-        },
-        seconds=1.0,
-    )
+    s.stage("approach_2", f"Reach for the {second} with the right hand.")
+    move({"right": serve["pregrasp"]}, grips={"right": tt.grip_open(w2)})
+    s.stage("align_2", f"Lower the open right gripper around the {second}.")
+    move({"right": serve["grasp"]}, 1.5)
+    s.stage("grasp_2", f"Close the right hand on the {second}.")
+    s.move(grips={"right": tt.grip_closed(w2)}, seconds=1.0)
     s.move(seconds=0.5)
-    tt.check_grasp(s, "lid", "left")
     tt.check_grasp(s, second, "right")
-    s.stage("lift_2", f"Lift the lid and the {second}.")
-    tt.lift(
+    s.stage("lift_2", f"Lift the {second}.")
+    tt.lift(s, move, {"right": serve["lift"]}, {second: 0.06})
+    s.stage("serve", f"Carry the {second} over the plate.")
+    move({"right": serve["above"]})
+    s.stage("place_plate", f"Set the {second} on the plate.")
+    move({"right": serve["place"]})
+    s.stage("release_plate", f"Let go of the {second}.")
+    s.move(grips={"right": tt.grip_open(w2)}, seconds=1.0)
+    s.stage("leave_plate", "Back the right hand away from the plate.")
+    move({"right": serve["retreat"]}, 1.5)
+    cover_and_press(
         s,
         move,
-        {"left": lid["lift"], "right": serve["lift"]},
-        {"lid": 0.04, second: 0.06},
-    )
-    s.stage("carry", f"Carry the lid over the pot and the {second} over the plate.")
-    move({"left": lid["above"], "right": serve["above"]})
-    s.stage("cover", f"Put the lid on the pot and the {second} on the plate.")
-    move({"left": lid["place"], "right": serve["place"]})
-    s.stage("release", f"Let go of the lid and the {second}.")
-    s.move(grips={"left": tt.grip_open(knob), "right": tt.grip_open(w2)}, seconds=1.0)
-    s.stage("back_off", "Back both hands away.")
-    move({"left": lid["retreat"], "right": serve["retreat"]}, 1.5)
-    # The button, with the left hand's closed fingertips.
-    poses = tt.press_poses(kt.button_top(s.d.xpos[s.button_body]), "left")
-    s.stage(
-        "to_button", "Bring the closed left hand over the button; return the right arm."
-    )
-    move(
-        {"left": poses["above"], "right": tt.READY["right"]}, 2.5, grips={"left": 0.95}
-    )
-    s.stage("press", "Press the button.")
-    tt.press(s, move, "left", poses, s.button_depth, kt.PRESS, kt.PRESSED)
-    s.stage("release_button", "Let the button spring back up.")
-    move({"left": poses["above"]}, 1.0)
-    s.stage(
-        "finish",
+        knob,
+        tt.grip_open(w2),
         f"Return both arms; the {first} stays in the covered pot and the {second} "
         "on the plate.",
     )
-    move(tt.READY, 3.0, grips={"left": tt.grip_open(knob), "right": tt.grip_open(w2)})
-    s.move(seconds=1.0)
 
 
-def cover_and_press(s, move, knob, closing_grip):
+def cover_and_press(
+    s, move, knob, closing_grip, finish="Return both arms; the pot stays covered."
+):
     """The left hand puts the lid back on the pot from its rest and presses
     the button; the right arm returns to the ready point meanwhile."""
     lid = tt.pick_place(
@@ -275,7 +243,7 @@ def cover_and_press(s, move, knob, closing_grip):
     tt.press(s, move, "left", poses, s.button_depth, kt.PRESS, kt.PRESSED)
     s.stage("release_button", "Let the button spring back up.")
     move({"left": poses["above"]}, 1.0)
-    s.stage("finish", "Return both arms; the pot stays covered.")
+    s.stage("finish", finish)
     move(tt.READY, 3.0, grips={"left": tt.grip_open(knob), "right": closing_grip})
     s.move(seconds=1.0)
 

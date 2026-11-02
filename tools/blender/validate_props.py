@@ -1,6 +1,6 @@
 """Validate exported props with numpy/trimesh, without importing Blender.
 
-Run with /Users/puheliang/miniforge3/envs/inovance-fineart/bin/python.
+Run with $PROP_PYTHON (a Python with numpy, scipy, trimesh and Pillow).
 Convexity is checked in both directions: hull/piece >= .99 alone also passes
 every concave solid, so we additionally require piece/hull >= .99 and convex
 face half-spaces. OBJ geometry is read directly to keep the prop frame intact.

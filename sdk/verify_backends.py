@@ -194,7 +194,9 @@ def video_info(path):
 def run_backend(name, out, args):
     cfg_path = ROOT / "config/backends" / f"{name}.yaml"
     cfg = yaml.safe_load(cfg_path.read_text())
-    python = os.path.expandvars(cfg["python"])  # e.g. ${ISAAC_PYTHON}
+    # A backend in another environment names its interpreter (isaacsim:
+    # ${ISAAC_PYTHON}); the MuJoCo ones run under this one.
+    python = os.path.expandvars(cfg.get("python", sys.executable))
     if "$" in python:
         raise SystemExit(f"{name}: set the environment variable in {cfg['python']}")
     out.mkdir(parents=True)
@@ -260,7 +262,15 @@ def score(name, cfg, out, client_code):
         for f in result["faults"]
         if probe_start is None or f["sim_time"] < probe_start
     ]
-    first_move = next(e["sim_time"] for e in events if e["event"] == "MoveJ")
+    # pose_a: the core checks' first dual MoveJ, or their second where the
+    # program first lifts the hands to its lift_pose (make_sdk_program.py).
+    program = json.loads((ROOT / "config/sdk_acceptance/program.json").read_text())
+    dual = [
+        e["sim_time"]
+        for e in events
+        if e["event"] == "MoveJ" and e["units"] == ["left", "right"]
+    ]
+    first_move = dual[1 if "lift_pose" in program else 0]
     pose = settled_sample(trace, first_move + 0.1)
     outcomes = {}
     for call in result["rpc_calls"]:

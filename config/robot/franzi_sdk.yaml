@@ -16,7 +16,7 @@ sdk:
   axis_count: 20
 
 sim_model:
-  urdf: assets/franzi_source/wheel_robot_4.0.urdf
+  urdf: assets/franzi_source/wheel_robot_26.8.16_3.urdf
 
 joint_convention:
   # controller_mdh: SDK numbers mean what the archive controller MDH means.
@@ -50,13 +50,17 @@ units:
       [[-140, 200], [-30, 180], [-170, 170], [-15, 148], [-170, 170], [-60, 60], [-90, 90]]
     mapping:
       controller_mdh: &arm_mapping
-        sign: [-1, 1, -1, -1, -1, -1, 1]
+        # wheel_robot_26.8.16_3 (2026-10-25) is exported in the controller's joint
+        # convention: every arm joint maps one to one. wheel_robot_4.0 needed
+        # sign [-1, 1, -1, -1, -1, -1, 1]; the new export flips exactly those five
+        # axes, with the same zero posture.
+        sign: [1, 1, 1, 1, 1, 1, 1]
         offset_rad: [0, 0, 0, 0, 0, 0, 0]
         status:
           - "j1 shoulder_pitch: fk_sign, range_offset"
           - "j2 shoulder_roll: fk_sign, fk_offset"
           - "j3 shoulder_yaw: fk_sign, fk_offset"
-          - "j4 elbow_pitch: fk_sign, fk_offset (URDF -150..7.45 deg -> SDK -7.45..150)"
+          - "j4 elbow_pitch: fk_sign, fk_offset (URDF -15..150 deg = SDK)"
           - "j5 wrist_yaw: fk_sign, fk_offset"
           - "j6 wrist_pitch: fk_sign, fk_offset"
           - "j7 wrist_roll: fk_sign, range_offset"
@@ -129,16 +133,17 @@ limits:
 
 grippers:
   left:
-    sim_joints: [leftfinger1_joint, leftfinger2_joint]
-    finger_links: [leftfinger1_Link, leftfinger2_Link]
+    # The finger that closes with a positive slide first (wheel_robot_26.8.16_3).
+    sim_joints: [left_finger02_joint, left_finger01_joint]
+    finger_links: [left_finger02_Link, left_finger01_Link]
     directions: [1, -1]
     finger_stroke_m: 0.0475
     # One closure unit per second = 0.0475 m/s per finger (planning YAML: 0.05).
     max_closure_rate_per_s: 1.0
     arrival_tolerance: 25
   right:
-    sim_joints: [rightfinger1_joint, rightfinger2_joint]
-    finger_links: [rightfinger1_Link, rightfinger2_Link]
+    sim_joints: [right_finger01_joint, right_finger02_joint]
+    finger_links: [right_finger01_Link, right_finger02_Link]
     directions: [1, -1]
     finger_stroke_m: 0.0475
     max_closure_rate_per_s: 1.0
@@ -155,14 +160,16 @@ cameras:
   streams:
     head: {sim: head_d435, device: D435, parent_link: head_pitch_Link}
     waist: {sim: body_d435, device: D435, parent_link: torso_Link}
-    wrist_left: {sim: left_wrist_d405, device: D405, parent_link: left_wrist_roll_Link}
-    wrist_right: {sim: right_wrist_d405, device: D405, parent_link: right_wrist_roll_Link}
+    wrist_left: {sim: left_wrist_d405, device: D405, parent_link: left_gripper_link}
+    wrist_right: {sim: right_wrist_d405, device: D405, parent_link: right_gripper_Link}
   status: >-
     URDF sensor mounts, the wrist D405s carried onto the tilted wrist block
     (sim/wrist_mount.py); simulated pinhole intrinsics, not calibrated
 
 frames:
-  world: fixed base; base_link origin 0.0872648 m above the floor (source MuJoCo model)
+  world: >-
+    fixed base; the URDF root (base_link, lying on its back: x up, y forward)
+    0.3351148 m above the floor, which puts the wheels on it (sim/franzi_model.py)
   arm_base: >-
     Controller MDH frame 0 of each arm, located at the shoulder centre; pose in
     torso_Link is recorded in kinematic_crosscheck.json (selected/frames), valid
@@ -170,7 +177,15 @@ frames:
   flange: controller MDH frame 7 (wrist centre, z along wrist roll); see crosscheck
   tcp:
     sim_site: "{side}_grasp"
-    position_in_wrist_roll_link_m: {left: [-0.03045, -0.00175, -0.245], right: [-0.03045, 0.00175, -0.245]}
+    # The open pads' centre in the gripper link; x along the jaws, z from the pads
+    # toward the wrist, and the wrist D405 on +y for the left hand, -y for the
+    # right: wheel_robot_4.0's grasp site carried over, turned 180 degrees about
+    # the hand because the new gripper carries its D405 on the opposite face.
+    # So a hand rotation means what it meant: the 45-degree grasp keeps the
+    # camera on top of the hand.
+    parent_link: {left: left_gripper_link, right: right_gripper_Link}
+    position_m: {left: [-0.00175, 0.0001, 0.174105], right: [-0.00175, 0.0001, 0.174004]}
+    rotation: {left: [[0, 1, 0], [1, 0, 0], [0, 0, -1]], right: [[0, -1, 0], [-1, 0, 0], [0, 0, -1]]}
     status: simulation grasp centre between the fingers; controller flan2tool unknown
 
 kinematics:
