@@ -15,6 +15,9 @@ the ten scenes' Isaac demonstrations, one multi-task model:
 - serve.py serves a checkpoint to isaac.policy's closed-loop episodes, and
   subtasks.py scores its subtask texts on the held-out episodes.
 
+act_train.py and act_serve.py do the same for ACT, the baseline of another kind
+that tells a weak fine-tune from data nothing could succeed on.
+
 These run in their own env (torch built for the GPU, LeRobot at the model
 card's commit), not in the project env, so nothing else imports them.
 """

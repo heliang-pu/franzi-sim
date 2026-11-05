@@ -60,6 +60,108 @@
       "method": "Pillow resize to 1280 px wide (LANCZOS), lossy WebP quality 80, method 6",
       "width": 1280,
       "made_on": "2026-10-25"
+    },
+    "act_tray_push_ok.webp": {
+      "source": "act_tray_push_step30000_h25/tray_push/seed_10000/ on the pro6000 (a closed-loop test's run folder, in a frozen snapshot): body_d435.mp4 and left_wrist_d405.mp4",
+      "episode": "ACT step 30000, 25 actions per chunk; seed 10000; success in 12.2 s",
+      "views": "body_d435 and left_wrist_d405 side by side, 320x240 each",
+      "window_s": [
+        0,
+        12.2
+      ],
+      "step": 6,
+      "speed": "3x",
+      "width": 640,
+      "frames": 51,
+      "sha256_source": {
+        "body_d435": "39d31f92bec7d546f1478b13c636904881e4f39fcb8143e051a747b8cff106ac",
+        "left_wrist_d405": "dd8a09ba976335e21baad212366c9d476d6a452e767fa41514f63f15a5099be7"
+      }
+    },
+    "act_tote_ok.webp": {
+      "source": "act_clean_step80000_ens/tote_transfer/seed_10000/ on the pro6000 (a closed-loop test's run folder, in a frozen snapshot): body_d435.mp4 and left_wrist_d405.mp4",
+      "episode": "ACT on the simplified tote_transfer, step 80000, temporal ensemble; seed 10000; success in 22.8 s",
+      "views": "body_d435 and left_wrist_d405 side by side, 320x240 each",
+      "window_s": [
+        0,
+        22.8
+      ],
+      "step": 6,
+      "speed": "3x",
+      "width": 640,
+      "frames": 95,
+      "sha256_source": {
+        "body_d435": "b7913a6d374889e8af53915fd61c46549d6b8a7cad5209b66eca4b4ad5dc2205",
+        "left_wrist_d405": "8b3d3846a25b293d7835fabe7e928b2a3ad34d595163b2f627c1b1194bd49fa9"
+      }
+    },
+    "act_tote_drop.webp": {
+      "source": "act_clean_step80000_ens/tote_transfer/seed_10016/ on the pro6000 (a closed-loop test's run folder, in a frozen snapshot): body_d435.mp4 and left_wrist_d405.mp4",
+      "episode": "the same model, seed 10016 (its one failure of 20): gripped off-centre, the flange falls back at t = 17.2-18.2 s, the hand goes on empty; time limit",
+      "views": "body_d435 and left_wrist_d405 side by side, 320x240 each",
+      "window_s": [
+        9,
+        25
+      ],
+      "step": 6,
+      "speed": "3x",
+      "width": 640,
+      "frames": 67,
+      "sha256_source": {
+        "body_d435": "4c57dce1e4f890208d77c4e62b3a7b1b0d37b6d816dc3eb495a0226e47722c0a",
+        "left_wrist_d405": "5a1f142994d7a02eff75298ec950baee4c316edda7d3d7a87b652551bde050f0"
+      }
+    },
+    "act_insertion_fail.webp": {
+      "source": "act_precision_insertion_step100000_h50/precision_insertion/seed_10000/ on the pro6000 (a closed-loop test's run folder, in a frozen snapshot): body_d435.mp4 and left_wrist_d405.mp4",
+      "episode": "ACT step 100000, 50 actions per chunk; seed 10000: the bearing arrives 3.8 mm off the shaft's axis, let go at t = 20 s it rolls 60 mm away; time limit",
+      "views": "body_d435 and left_wrist_d405 side by side, 320x240 each",
+      "window_s": [
+        5,
+        26
+      ],
+      "step": 8,
+      "speed": "4x",
+      "width": 640,
+      "frames": 66,
+      "sha256_source": {
+        "body_d435": "d4a5a76aecf495dd27899056384c25c08b9d4a587c49322865fdc2d7695d3dee",
+        "left_wrist_d405": "5a1c8c2a0481d3e744266af5368607eadaf9d53e1047d01248c7c88445cde823"
+      }
+    },
+    "act_panel_fail.webp": {
+      "source": "act_panel_operation_step60000_h50/panel_operation/seed_10001/ on the pro6000 (a closed-loop test's run folder, in a frozen snapshot): body_d435.mp4 and right_wrist_d405.mp4",
+      "episode": "ACT step 60000, 50 actions per chunk; seed 10001: selector on AUTO, START not pressed; time limit",
+      "views": "body_d435 and right_wrist_d405 side by side, 320x240 each",
+      "window_s": [
+        2,
+        36
+      ],
+      "step": 8,
+      "speed": "4x",
+      "width": 640,
+      "frames": 107,
+      "sha256_source": {
+        "body_d435": "8af394a462adaf7817d5d464537520cc982e1a3fa5e4ee0eeb50fb6e8405e3b3",
+        "right_wrist_d405": "40c3ce2412d1c38554664e790a2f0e9c0c356cd81ac54647527332bb339bd39f"
+      }
+    },
+    "fineart_tray_fail.webp": {
+      "source": "eval_franzi_v4_step20000_s5/tray_push/seed_10000/ on the pro6000 (a closed-loop test's run folder, in a frozen snapshot): body_d435.mp4 and left_wrist_d405.mp4",
+      "episode": "FineART-VLA franzi_v4 step 20000, 25 actions per chunk; seed 10000: the tray stops 4 cm short of the stop, the parts slid 7 cm inside it; time limit",
+      "views": "body_d435 and left_wrist_d405 side by side, 320x240 each",
+      "window_s": [
+        0,
+        30
+      ],
+      "step": 8,
+      "speed": "4x",
+      "width": 640,
+      "frames": 94,
+      "sha256_source": {
+        "body_d435": "c723a783c1bc8e07050167135d56257fdc61591e7f6236398e0dc9676f366cd7",
+        "left_wrist_d405": "16bf274f668e5f5eef9b5400e64d1faf464e4e2ba2be5116115e9943432ab3a9"
+      }
     }
   }
 }

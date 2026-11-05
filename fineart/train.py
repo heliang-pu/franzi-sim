@@ -43,10 +43,10 @@ IMAGES = [f"observation.images.{camera}" for camera in CAMERAS]
 
 def load(model, tokenizer, device, training, checkpointing=True, freeze_vision=False):
     """The policy and its processors from a checkpoint folder. freeze_vision
-    keeps the vision tower (SigLIP) fixed."""
+    keeps the vision tower (SigLIP) fixed; without it, a checkpoint saved with
+    the tower frozen trains it again."""
     config = PreTrainedConfig.from_pretrained(str(model))
-    if freeze_vision:
-        config.freeze_vision_encoder = True
+    config.freeze_vision_encoder = freeze_vision
     config.device = "cpu"
     config.dtype = torch.bfloat16
     config.compile_model = False
@@ -77,6 +77,23 @@ def load(model, tokenizer, device, training, checkpointing=True, freeze_vision=F
     return policy, pre, post
 
 
+def parameter_groups(policy, vision_scale):
+    """The policy's optimizer groups, with the vision tower in its own group at
+    vision_scale times the learning rate when that isn't 1."""
+    groups = policy.get_optim_params()
+    if vision_scale == 1:
+        return groups
+    assert len(groups) == 1, "per-group learning rates are set in the config too"
+    backend = {k: v for k, v in groups[0].items() if k != "params"}
+    tower = policy.model.paligemma_with_expert.paligemma.model.vision_tower
+    vision = {id(p) for p in tower.parameters()}
+    rest = [p for p in policy.parameters() if id(p) not in vision]
+    return [
+        {"params": rest, **backend},
+        {"params": list(tower.parameters()), "lr_scale": vision_scale, **backend},
+    ]
+
+
 def to_device(raw, device):
     """Moves the uint8 frames to the GPU and scales them to [0, 1] there."""
     for key in IMAGES:
@@ -100,8 +117,6 @@ def save(policy, optimizer, source, target, step, args):
     shutil.copytree(
         source / "action_tokenizer", target / "action_tokenizer", dirs_exist_ok=True
     )
-    for old in target.parent.glob("step_*/optimizer.pt"):
-        old.unlink()
     torch.save(
         {
             "step": step,
@@ -123,6 +138,11 @@ def save(policy, optimizer, source, target, step, args):
         },
     }
     (target / "training_state.json").write_text(json.dumps(report, indent=2))
+    # Only the newest checkpoint keeps the optimizer state. The others lose theirs
+    # once this one is complete, so a run killed mid-save can still resume.
+    for old in target.parent.glob("step_*/optimizer.pt"):
+        if old.parent != target:
+            old.unlink()
 
 
 @torch.no_grad()
@@ -197,6 +217,12 @@ def main():
         "--freeze-vision", action="store_true", help="keep the vision tower fixed"
     )
     parser.add_argument(
+        "--vision-lr-scale",
+        type=float,
+        default=1.0,
+        help="the vision tower's learning rate over --lr",
+    )
+    parser.add_argument(
         "--max-skips",
         type=int,
         default=50,
@@ -261,7 +287,7 @@ def main():
         collate_fn=lerobot_collate_fn,
     )
     optimizer = torch.optim.AdamW(
-        policy.get_optim_params(),
+        parameter_groups(policy, args.vision_lr_scale),
         lr=args.lr,
         betas=(0.9, 0.95),
         eps=1e-8,
@@ -349,7 +375,7 @@ def main():
             progress = (local - args.warmup) / max(span, 1)
             factor = 0.1 + 0.9 * 0.5 * (1 + math.cos(math.pi * progress))
         for group in optimizer.param_groups:
-            group["lr"] = args.lr * factor
+            group["lr"] = args.lr * factor * group.get("lr_scale", 1.0)
         optimizer.zero_grad(set_to_none=True)
         metrics = {}
         for micro in range(args.accumulate):

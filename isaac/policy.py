@@ -76,10 +76,12 @@ def apply(s, action):
 
 
 class Remote:
-    """A policy behind fineart.serve."""
+    """A policy behind a server with fineart.serve's protocol."""
 
     def __init__(self, server, seed):
         self.connection = Client(address(server), authkey=AUTHKEY)
+        self.connection.send({"op": "info"})
+        self.name = self.connection.recv().get("policy", "FineART-VLA")
         self.seed = seed
         self.calls = []
 
@@ -242,7 +244,7 @@ def main():
         result.update(
             controller="replay of a recorded run"
             if args.replay
-            else "FineART-VLA via fineart.serve",
+            else f"{policy.name if policy else 'no policy'} via the policy server",
             termination=termination,
             policy={
                 "server": None if args.replay else args.server,
