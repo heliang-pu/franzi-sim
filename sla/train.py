@@ -17,6 +17,9 @@ many steps.
 --memory-frames > 1 trains with MEM's video memory (sla.mem): each camera sees that
 many frames, --memory-stride ticks apart. It adds no parameter, so --base can be a
 memoryless checkpoint's params (the paper's weaker MEM-Posttrain-Only).
+
+--resume restores the checkpoint into this run's shardings (resharded()), so a run
+saved with one --fsdp can go on with another, DDP (--fsdp 1) included.
 """
 
 import argparse
@@ -163,7 +166,56 @@ def main():
     # Imported here: it starts by setting JAX's allocator through the environment.
     from scripts import train_align
 
+    resharded(train_align)
     train_align.main(train_config(args))
+
+
+def resharded(train_align):
+    """SLA's resume, restoring into the run's own shardings. Its restore targets are
+    bare shapes and orbax, given no restore arguments, keeps the sharding each array
+    was saved with: a run saved with FSDP 8 failed under DDP at its first step (pjit's
+    sharding mismatch). The targets now carry the run's shardings, and orbax gets
+    restore arguments built from them."""
+    import jax
+    import orbax.checkpoint as ocp
+    from openpi.shared import array_typing as at
+
+    checkpoints = train_align._checkpoints
+    init = train_align.init_train_state
+
+    def init_train_state(config, init_rng, mesh, *, resume):
+        state, shardings = init(config, init_rng, mesh, resume=resume)
+        if resume:
+            state = jax.tree.map(
+                lambda s, sharding: jax.ShapeDtypeStruct(
+                    s.shape, s.dtype, sharding=sharding, weak_type=s.weak_type
+                ),
+                state,
+                shardings,
+            )
+        return state, shardings
+
+    def restore_state(checkpoint_manager, state, data_loader, step=None):
+        del data_loader
+        with at.disable_typechecking():
+            train_state, params = checkpoints._split_params(state)
+            items = {"train_state": train_state, "params": {"params": params}}
+            restored = checkpoint_manager.restore(
+                step,
+                items=items,
+                restore_kwargs={
+                    name: {
+                        "restore_args": ocp.checkpoint_utils.construct_restore_args(
+                            item
+                        )
+                    }
+                    for name, item in items.items()
+                },
+            )
+        return checkpoints._merge_params(restored["train_state"], restored["params"])
+
+    train_align.init_train_state = init_train_state
+    checkpoints.restore_state = restore_state
 
 
 if __name__ == "__main__":
