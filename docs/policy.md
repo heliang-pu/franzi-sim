@@ -81,5 +81,7 @@ XPolicyLab 用 `pip install --no-deps` 装在 commit `6baccd5`（`git+https://gi
 - **ACT**（tray_push 第 30000 步，种子 10000）：两条通道都成功，都是 12.16 s、13 次查询。轨迹不逐位相同（动作最多差 7.8 mrad）：同一个状态下第 0 拍的第一块动作就差 2.3e-4，因为 Isaac 的 RTX 画面每次运行都有噪声，而 ACT 看画面。推理本身是对的：同一个进程里把相同的输入分别交给旧的 `act_serve` 和新的 `policy.act` 模型，三块动作逐位相同。
 - **FineART**（franzi_v4 第 20000 步）：同一个进程里相同输入，旧的 `fineart.serve` 和新的 `policy.fineart` 模型在 5 次查询上逐位相同，包括第 0 拍生成子任务、第 25 和 50 拍沿用、第 75 拍带记忆重新生成、第 100 拍沿用，生成的子任务文字也一样。新通道的闭环在 tray_push 种子 10000 上跑满 50 s（50 次查询，编译后每次约 0.17 s），和 FineART 一贯的结果一样到时间上限。
 - **评测驱动**：`eval_client.evaluate` 用 ACT 跑 tray_push 种子 10001–10002，2/2 成功，`report.json` 格式和原来相同。
+- **SLA**（franzi_sla_v1 第 8000 步，带长场景调度器）：同一个进程里共用一份加载好的模型，相同输入下旧的 `sla.serve` 和新的 `policy.sla` 模型 15 次查询全部逐位相同，逆解误差也一样：短场景用指令作提示 5 次，长场景（lidded_tote 的指令）走调度器 6 次，子任务相同；MEM 视频记忆按 6 帧、间隔 25 拍、horizon 50 查询 4 次，新的一边靠 observe 在第 25、75、125 拍补帧，旧的一边照 isaac/policy.py 的队列发历史帧。
+  闭环（种子 10000，horizon 25，lenient）：新通道 tray_push 成功（15.7 s），lidded_tote 完成但手指碰了周转箱和工位板（83.2 s）；调度器依次给出开盖、把零件放到工位板、合盖三步；两个回合同时共用一个服务端。旧通道同一种子 tray_push 两次都到时间上限，lidded_tote 在 v1 的检查里成功（88.1 s），重跑一次是完成但有碰撞（87.3 s）：同一条通道前后两次结局就不同（RTX 画面的噪声），所以单个回合不能拿来比两条通道，等价性看上面同一进程的对比。
 
 对比时发现旧通道有一个问题：`isaac/policy.py` 加 SLA 的视频记忆后，把服务端信息里的 `memory` 当成视频记忆的配置，而 `fineart.serve` 的 `memory` 是“是否用记忆配方”的布尔值，于是所有带记忆配方的 FineART 检查点在旧通道上都报 `TypeError`（已告诉负责它的会话）。新通道里仿真端只读 `observe_every`，没有这个冲突。旧通道的 FineART 基线因此改在验证前的基线副本里跑。
