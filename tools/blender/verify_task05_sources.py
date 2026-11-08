@@ -10,6 +10,8 @@ sys.dont_write_bytecode = True
 import bpy
 import numpy as np
 from mathutils import Matrix, Vector
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from prop_paths import PROPS
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -202,7 +204,7 @@ def main():
     args = parser.parse_args(sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else [])
     report = []
     for prop_id in args.props:
-        folder = ROOT / "assets" / "props" / prop_id
+        folder = PROPS / prop_id
         try:
             data = json.loads((folder / "prop.json").read_text())
             bpy.ops.wm.open_mainfile(filepath=str(folder / "source.blend"))

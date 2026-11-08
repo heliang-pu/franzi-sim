@@ -19,9 +19,10 @@ from PIL import Image, ImageDraw, ImageFont
 from validate_props import read_obj
 from verify_task01_tote_transfer import convex_contains, section_hits
 from verify_task05_exports import check_uv_overlap
+from prop_paths import PROPS
 
 HERE = Path(__file__).resolve().parent
-ROOT = HERE.parents[1] / "assets" / "props"
+ROOT = PROPS
 IDS = ("foam_kit_tray", "hex_blank", "flanged_bushing", "l_bracket", "spur_gear")
 MASS = (.6, .149, .128, .120, .029)
 REPORT = {}

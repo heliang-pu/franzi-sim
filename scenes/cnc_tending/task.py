@@ -54,11 +54,12 @@ on the arm's kinematics. All were checked on wheel_robot_26.8.16_3 (version 4).
 import numpy as np
 from scipy.spatial.transform import Rotation, Slerp
 
+from robots.franzi.gripper_linkage import contact_drop
+from robots.franzi.scene import ARM_JOINTS
+from robots.franzi.scene import build as robot_scene
+from sim import TABLE_Z
 from sim import prop_assets as pa
 from sim import tabletop as tt
-from sim.build_task import ARM_JOINTS, TABLE_Z
-from sim.build_task import build as robot_scene
-from sim.gripper_linkage import contact_drop
 from sim.workcell import industrial_cell, stand
 
 NAME = "cnc_tending"

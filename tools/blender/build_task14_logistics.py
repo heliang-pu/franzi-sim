@@ -54,6 +54,7 @@ import bpy
 from mathutils import Matrix, Vector
 import prop_lib as p
 from build_task01_tote_transfer import finish_mesh
+from prop_paths import PROPS
 
 IDS = ('tote_cart', 'line_feed_conveyor', 'takeaway_conveyor', 'induction_conveyor',
        'flow_lane', 'recheck_shelf', 'station_sign')
@@ -103,7 +104,7 @@ class Build:
     def __init__(self, name: str, task: str, mass: float, origin: str = 'bottom_center') -> None:
         p.reset_scene()
         bpy.ops.outliner.orphans_purge(do_recursive=True)
-        self.folder = p.ROOT / 'assets/props' / name
+        self.folder = PROPS / name
         self.folder.mkdir(parents=True, exist_ok=True)
         self.parts, self.visuals = [], []
         self.data = dict(id=name, task=task, units='m', origin=origin, static=True,
@@ -502,7 +503,7 @@ def main() -> None:
     builders=dict(zip(IDS,(build_cart,build_line,build_takeaway,build_induction,build_flow,build_shelf,build_sign)))
     if not args.finalize_only:
         for name in dict.fromkeys(args.props): builders[name]()
-    completed = [name for name in args.props if (p.ROOT / 'assets' / 'props' / name / 'prop.json').is_file()]
+    completed = [name for name in args.props if (PROPS / name / 'prop.json').is_file()]
     subprocess.run([str(p.VALIDATOR_PYTHON), '-B', str(HERE / 'check_task14_logistics.py'),
                     '--repair-collisions', '--props', *completed], check=True)
     p._DELIVERED_PROPS.update(completed)

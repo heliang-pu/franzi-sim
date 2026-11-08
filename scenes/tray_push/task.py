@@ -39,10 +39,10 @@ first draw).
 
 import numpy as np
 
+from robots.franzi.gripper_linkage import contact_drop
+from robots.franzi.scene import build as robot_scene
 from sim import prop_assets as pa
 from sim import tabletop as tt
-from sim.build_task import build as robot_scene
-from sim.gripper_linkage import contact_drop
 from sim.workcell import BENCH_FRONT_X, BENCH_Z, industrial_cell
 
 NAME = "tray_push"

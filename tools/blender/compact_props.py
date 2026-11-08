@@ -10,7 +10,6 @@ Collision files additionally retain enough precision to stay strictly convex.
 import argparse
 import hashlib
 import json
-import os
 import struct
 import sys
 from pathlib import Path
@@ -19,10 +18,9 @@ sys.dont_write_bytecode = True
 
 from PIL import Image
 from PIL.PngImagePlugin import PngInfo
+from prop_paths import PROPS, folders, label, locate, prop_dir, reference
 
 HERE = Path(__file__).resolve().parent
-ROOT = HERE.parents[1]
-ASSETS = ROOT / "assets" / "props"
 QA = HERE / "_qa" / "task13"
 POSITION_ERROR_M = 0.000005
 OBJ_MARKER = "# Prop compact format v1; topology preserved"
@@ -40,17 +38,16 @@ def category(path):
     return "other"
 
 
-def inventory(root=ASSETS, selected=None):
+def inventory(selected=None):
     categories = dict.fromkeys(("textures", "obj", "previews", "source.blend", "blend1", "other"), 0)
     props = {}
-    folders = selected if selected is not None else [root]
-    for path in sorted(path for folder in folders for path in folder.rglob("*")):
+    chosen = selected if selected is not None else folders().values()
+    for path in sorted(path for folder in chosen for path in folder.rglob("*")):
         if not path.is_file():
             continue
         size = path.stat().st_size
         categories[category(path)] += size
-        name = path.relative_to(root).parts[0]
-        row = props.setdefault(name, {"total": 0, "without_source": 0})
+        row = props.setdefault(path.parent.name, {"total": 0, "without_source": 0})
         row["total"] += size
         if path.name != "source.blend":
             row["without_source"] += size
@@ -109,13 +106,13 @@ def quantize_png(path):
         result.save(path, optimize=True, bits=8)
 
 
-def apply_palette_policy(root, selected=None):
+def apply_palette_policy(selected=None):
     policy = HERE / "compact_texture_policy.json"
     if not policy.is_file():
         return []
     changed = []
     for relative in json.loads(policy.read_text())["images"]:
-        path = root / relative
+        path = locate(relative)
         if path.is_file() and (selected is None or path.parent in selected):
             quantize_png(path)
             changed.append(relative)
@@ -139,9 +136,9 @@ def fix_texture_sizes(data, folder):
     """Include replacement-part manifests inside variants, not just top-level parts."""
     if isinstance(data, dict):
         if data.get("texture") and "texture_px" in data:
-            width, height = png_size(folder / data["texture"])
+            width, height = png_size(locate(data["texture"], folder))
             if width != height:
-                raise ValueError(f"Non-square atlas: {folder / data['texture']}")
+                raise ValueError(f"Non-square atlas: {locate(data['texture'], folder)}")
             data["texture_px"] = width
         for child in data.values():
             fix_texture_sizes(child, folder)
@@ -156,9 +153,9 @@ def write_json_if_changed(path, data):
         path.write_text(text)
 
 
-def update_manifests(root, selected=None):
-    folders = selected if selected is not None else {p.parent for p in root.glob("*/prop.json")}
-    for path in sorted(folder / "prop.json" for folder in folders):
+def update_manifests(selected=None):
+    chosen = selected if selected is not None else {p.parent for p in PROPS.glob("*/prop.json")}
+    for path in sorted(folder / "prop.json" for folder in chosen):
         data = json.loads(path.read_text())
         fix_texture_sizes(data, path.parent)
         note = (" Task 13 delivery: baked albedos are Lanczos-downsampled to at most 1024 px "
@@ -183,10 +180,13 @@ def canonical_order(path):
     return priorities.get(path.parent.name, 2), path.as_posix()
 
 
-def deduplicate(root, selected=None):
-    folders = selected if selected is not None else {p.parent for p in root.glob("*/prop.json")}
+def deduplicate(selected=None, root=None):
+    """Point equal baked PNGs at one copy. root: a folder whose props stand for
+    every prop (the compaction regression's scratch folder)."""
+    every = root.glob("*/prop.json") if root else PROPS.glob("*/prop.json")
+    chosen = selected if selected is not None else {p.parent for p in every}
     groups = {}
-    for path in sorted(path for folder in folders for path in folder.glob("*.png")):
+    for path in sorted(path for folder in chosen for path in folder.glob("*.png")):
         if is_baked(path) and path.parent.name != "factory_floor":
             groups.setdefault(hashlib.sha256(path.read_bytes()).digest(), []).append(path.resolve())
     replacements = {}
@@ -202,17 +202,17 @@ def deduplicate(root, selected=None):
         if isinstance(value, list):
             return [rewrite(child, folder) for child in value]
         if isinstance(value, str) and value.endswith(".png"):
-            resolved = (folder / value).resolve()
+            resolved = locate(value, folder).resolve()
             if resolved in replacements:
-                return Path(os.path.relpath(replacements[resolved], folder)).as_posix()
+                return reference(replacements[resolved], folder.resolve())
         return value
 
-    for path in sorted(folder / "prop.json" for folder in folders):
+    for path in sorted(folder / "prop.json" for folder in chosen):
         write_json_if_changed(path, rewrite(json.loads(path.read_text()), path.parent))
     records = []
     for path, canonical in sorted(replacements.items()):
-        records.append({"removed": str(path.relative_to(root)),
-                        "shared": str(canonical.relative_to(root)), "bytes": path.stat().st_size})
+        records.append({"removed": label(path), "shared": label(canonical),
+                        "bytes": path.stat().st_size})
         # Unselected props may reference this file. A scoped run cannot inspect
         # their manifests, so retain aliases; global compaction may remove them.
         if selected is None:
@@ -273,7 +273,7 @@ def compact_visual_indices(text):
     return "\n".join(output) + "\n"
 
 
-def round_obj(path, root=ASSETS):
+def round_obj(path):
     """Keep every face, its order, vertex index and object/material directive.
 
     Independent five-decimal rounding can move a vertex by sqrt(3)*5 um and
@@ -380,7 +380,7 @@ def round_obj(path, root=ASSETS):
         assert np.array_equal(final.normals[final.normal_faces], written(data.normals)[data.normal_faces])
     # Face/index topology and non-coordinate directives are byte-for-byte equal.
     assert preserved == [line for line in output if not line.split() or line.split()[0] not in ("v", "vt", "vn")]
-    return {"file": str(path.relative_to(root)),
+    return {"file": label(path),
             "before": before, "after": path.stat().st_size, "vertices": len(original),
             "collision": collision, "max_vertex_change_mm": float(displacement.max() * 1000),
             "higher_precision_vertices": int((decimals > 5).sum()),
@@ -388,13 +388,13 @@ def round_obj(path, root=ASSETS):
             "preserved_topology_sha256": hashlib.sha256("\n".join(preserved).encode()).hexdigest()}
 
 
-def record_precision_notes(root, records):
+def record_precision_notes(records):
     by_prop = {}
     for record in records:
         if record["higher_precision_vertices"]:
             by_prop.setdefault(Path(record["file"]).parts[0], []).append(record)
     for name, rows in by_prop.items():
-        path = root / name / "prop.json"
+        path = prop_dir(name) / "prop.json"
         if not path.exists():
             continue
         data = json.loads(path.read_text())
@@ -414,17 +414,15 @@ def record_precision_notes(root, records):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--apply", action="store_true")
-    parser.add_argument("--root", type=Path, default=ASSETS)
     parser.add_argument("--props", nargs="+")
     parser.add_argument("--step", choices=("all", "downscale", "deduplicate", "optimize", "previews", "obj", "palette"), default="all")
     parser.add_argument("--png", type=Path, help="Optimise one freshly exported PNG (used by prop_lib)")
     args = parser.parse_args()
-    root = args.root.resolve()
     selected = None
     if args.props:
         if any(Path(name).name != name or name in (".", "..") for name in args.props):
             parser.error("--props requires direct prop folder names")
-        selected = {root / name for name in args.props}
+        selected = {prop_dir(name) for name in args.props}
         if any(not (folder / "prop.json").is_file() for folder in selected):
             parser.error("every selected prop must have prop.json")
     if args.png:
@@ -435,36 +433,36 @@ def main():
         save_png(path, resize=size)
         return
     if not args.apply:
-        print(json.dumps(inventory(root, selected), indent=2))
+        print(json.dumps(inventory(selected), indent=2))
         return
-    folders = selected if selected is not None else {p.parent for p in root.glob("*/prop.json")}
-    paths = sorted(path for folder in folders for path in folder.rglob("*") if path.is_file())
+    chosen = selected if selected is not None else {p.parent for p in PROPS.glob("*/prop.json")}
+    paths = sorted(path for folder in chosen for path in folder.rglob("*") if path.is_file())
     report = {}
     if args.step in ("all", "downscale"):
         report["downscaled"] = downscale(paths)
-        update_manifests(root, selected)
+        update_manifests(selected)
     if args.step in ("all", "deduplicate"):
-        report["deduplicated"] = deduplicate(root, selected)
+        report["deduplicated"] = deduplicate(selected)
     if args.step in ("all", "optimize"):
         report["optimized_pngs"] = [save_png(path) for path in paths if path.suffix == ".png" and path.exists()]
     if args.step in ("all", "previews"):
         report["previews"] = [save_png(path, resize=(512, 512)) for path in paths
                               if path.suffix == ".png" and path.name.startswith("preview") and path.exists()]
     if args.step in ("all", "obj"):
-        report["obj"] = [round_obj(path, root) for path in paths if path.suffix == ".obj"]
-        record_precision_notes(root, report["obj"])
+        report["obj"] = [round_obj(path) for path in paths if path.suffix == ".obj"]
+        record_precision_notes(report["obj"])
     if args.step in ("all", "palette"):
-        report["palette_approved"] = apply_palette_policy(root, selected)
+        report["palette_approved"] = apply_palette_policy(selected)
     if args.step == "all":
-        report["deduplicated_after_encoding"] = deduplicate(root, selected)
-    update_manifests(root, selected)
+        report["deduplicated_after_encoding"] = deduplicate(selected)
+    update_manifests(selected)
     QA.mkdir(parents=True, exist_ok=True)
     destination = QA / ("compression.json" if not args.props else "last_rebuild_compression.json")
     if args.step != "all":
         destination = QA / f"{args.step}.json"
     destination.write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps({key: len(value) for key, value in report.items()}))
-    print(json.dumps(inventory(root, selected)["categories"]))
+    print(json.dumps(inventory(selected)["categories"]))
 
 
 if __name__ == "__main__":

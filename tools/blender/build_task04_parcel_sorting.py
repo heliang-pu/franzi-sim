@@ -15,7 +15,7 @@ from pathlib import Path
 sys.dont_write_bytecode = True
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-OUTPUT = HERE.parents[1] / "assets" / "props"
+OUTPUT = props.PROPS
 IDS = ("belt_conveyor", "sort_bin", "parcel_box_s", "parcel_box_m", "parcel_pouch")
 BIN_Y, BIN_Z, SIGN_Z = 240, 100, 150  # sort_bin body width and height, sign centre (mm)
 # D since 2026-10-25: the scene has four bins, two per arm, as a bin shared at

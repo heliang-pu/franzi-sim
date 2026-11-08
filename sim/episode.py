@@ -30,17 +30,11 @@ import mujoco
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
-from robot_kinematics import BODY_JOINTS, Kinematics, controller_rates
-from sim.build_task import (
-    ARM_JOINTS,
-    BASE_JOINTS,
-    BASE_LIFT,
-    FINGER_JOINTS,
-    build,
-    fmt,
-)
-from sim.camera_rig import POLICY_CAMERAS, assert_mounts, install_cameras
-from sim.gripper_linkage import dependent_joints
+from robots.franzi.camera_rig import POLICY_CAMERAS, assert_mounts, install_cameras
+from robots.franzi.gripper_linkage import dependent_joints
+from robots.franzi.kinematics import BODY_JOINTS, Kinematics, controller_rates
+from robots.franzi.scene import ARM_JOINTS, BASE_JOINTS, BASE_LIFT, FINGER_JOINTS, build
+from sim import fmt
 
 TORSO_SERVOS = (
     "calf_pitch_joint",

@@ -15,7 +15,7 @@ from pathlib import Path
 sys.dont_write_bytecode = True
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-OUTPUT = HERE.parents[1] / "assets" / "props"
+OUTPUT = props.PROPS
 
 
 def draw_esd_mask(path):

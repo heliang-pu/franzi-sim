@@ -16,10 +16,11 @@ from PIL import Image
 from scipy.optimize import linprog
 from scipy.spatial import ConvexHull
 from validate_props import read_obj
+from prop_paths import PROPS
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-ASSETS = ROOT / 'assets/props'
+ASSETS = PROPS
 QA = HERE / '_qa/task19'
 IDS = ('induction_conveyor', 'line_feed_conveyor', 'takeaway_conveyor', 'flow_lane',
        'tote_cart', 'parcel_cube_80', 'parcel_cube_75', 'parcel_cube_85', 'infeed_table')

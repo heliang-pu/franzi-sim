@@ -66,7 +66,7 @@ from build_task01_tote_transfer import (
 )
 from build_task07_lidded_tote import grip_smudges, rounded_strip
 
-FOLDER = props.ROOT / "assets" / "props" / "handle_tote"
+FOLDER = props.PROPS / "handle_tote"
 QA = HERE / "_qa" / "task18"
 
 

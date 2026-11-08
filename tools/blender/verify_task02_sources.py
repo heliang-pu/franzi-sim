@@ -16,7 +16,7 @@ import prop_lib as props
 def main():
     results = {}
     for prop_id in ("control_console", "panel_devices"):
-        folder = props.ROOT / "assets" / "props" / prop_id
+        folder = props.PROPS / prop_id
         data = json.loads((folder / "prop.json").read_text())
         bpy.ops.wm.open_mainfile(filepath=str(folder / "source.blend"))
         checks = {}
@@ -53,7 +53,7 @@ def main():
     # Reproduce the earlier sequential-build transition without any bakes.
     bpy.ops.wm.read_factory_settings(use_empty=True)
     cleared = bpy.data.filepath == ""
-    with bpy.data.libraries.load(str(props.ROOT / "assets/props/panel_devices/source.blend")) as (_, target):
+    with bpy.data.libraries.load(str(props.PROPS / "panel_devices" / "source.blend")) as (_, target):
         target.objects = ["bezel"]
     results["sequential_build_transition"] = {
         "saved_filepath_cleared": cleared, "library_append_succeeds": target.objects[0] is not None}

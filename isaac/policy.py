@@ -34,9 +34,14 @@ time_limit or incomplete.
 --replay serves a recorded run's own commands instead of a policy: the check
 of this harness, since a replay of an expert run of the same seed must succeed
 again.
+A server whose info reply asks for memory (sla.serve with MEM's video memory,
+sla.mem) gets each query's history too: the named cameras' frames that many
+ticks apart, from every tick's frames, the first one standing in for any before
+the episode's start.
 """
 
 import argparse
+import collections
 import importlib
 import json
 import traceback
@@ -48,9 +53,10 @@ import yaml
 
 from fineart.protocol import AUTHKEY, PORT, SUBTASK_EVERY, address, pack, unpack
 from isaac import runtime
+from sla import mem
 
 ROOT = Path(__file__).resolve().parents[1]
-STREAMS = yaml.safe_load((ROOT / "config/robot/franzi_sdk.yaml").read_text())[
+STREAMS = yaml.safe_load((ROOT / "robots/franzi/config/franzi_sdk.yaml").read_text())[
     "cameras"
 ]["streams"]
 CAMERAS = ("head", "waist", "wrist_left", "wrist_right")  # the datasets' names
@@ -81,9 +87,25 @@ class Remote:
     def __init__(self, server, seed):
         self.connection = Client(address(server), authkey=AUTHKEY)
         self.connection.send({"op": "info"})
-        self.name = self.connection.recv().get("policy", "FineART-VLA")
+        info = self.connection.recv()
+        self.name = info.get("policy", "FineART-VLA")
         self.seed = seed
         self.calls = []
+        # {"frames", "stride", "cameras"} for a policy with video memory (sla.serve);
+        # fineart.serve's "memory" is a bool, its subtask-memory recipe, not this.
+        memory = info.get("memory")
+        self.memory = memory if isinstance(memory, dict) else None
+        self.seen = None
+        if self.memory:
+            span = (self.memory["frames"] - 1) * self.memory["stride"] + 1
+            self.seen = collections.deque(maxlen=span)
+
+    def see(self, frames):
+        """Keeps one tick's frames for the history, if the policy wants one."""
+        if self.seen is not None:
+            self.seen.append(
+                {c: frames[STREAMS[c]["sim"]] for c in self.memory["cameras"]}
+            )
 
     def __call__(self, s, tick, state, frames, subtask, memory):
         request = {
@@ -95,6 +117,13 @@ class Remote:
             "memory": memory,
             "seed": self.seed * 100000 + tick,
         }
+        if self.seen:
+            ticks = list(self.seen)
+            picks = mem.history(ticks, self.memory["frames"], self.memory["stride"])
+            request["history"] = {
+                c: [pack(ticks[i][c]) for i in picks[:-1]]
+                for c in self.memory["cameras"]
+            }
         self.connection.send(request)
         reply = self.connection.recv()
         if "error" in reply:
@@ -134,6 +163,8 @@ def drive(s, policy, limit, horizon, subtask_every):
     s.stage("policy", "")
     queue, subtask, memory, asked, tick = [], None, None, None, 0
     while s.stable_frames < 15 and s.clock() < limit:
+        if getattr(policy, "seen", None) is not None:
+            policy.see(s.capture())
         if not queue:
             frames = s.capture()
             state = to_sdk(s.kin, s.state())

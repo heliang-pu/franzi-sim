@@ -64,7 +64,7 @@ python -m scenes.tote_transfer.check --output outputs/bench_check/tote_transfer
 
 ## 共用模块
 
-- `sim/prop_assets.py`：读 `assets/props/<id>/prop.json`，把道具装进场景。
+- `sim/prop_assets.py`：按编号找到道具的 `prop.json`，把道具装进场景。只有一个场景用的道具在那个场景的 `scenes/<场景>/assets/<id>/`（24 个），几个场景共用的和还没有场景用的在共用库 `assets/props/<id>/`（51 个）。
   - 每个部件一个物体，名字以 `_part` 结尾（这样 `Scene` 不会把它当成机器人）。
   - 视觉网格带烘焙贴图，没有质量和碰撞。
   - 碰撞凸体带摩擦，部件质量按凸体体积分配。
@@ -85,7 +85,7 @@ python -m scenes.tote_transfer.check --output outputs/bench_check/tote_transfer
   - 机床按启动后虎钳自动夹紧也还没做。成品开始时放在张开的虎钳里。
 - **分拣格口的分区牌在相机里只是一条色带。** 分区牌压低到箱沿上方、面朝机器人，两路 D435 都从斜上方看它，字母看不清。包裹面单上的分区色块和字母从上方看得很清楚，格口的位置也是固定的，所以不影响任务；以后要随机格口位置时，得把牌子朝上倾斜。
 - **腰部固定。** 搬周转箱只能前后和上下移动；要做左右转运，得把腰部偏航加进动作空间，这需要你决定。
-- **道具体积。** 贴图最大 1024²：每个构建脚本最后都会调用 `tools/blender/compact_props.py`，它压缩贴图、合并重复的贴图、截短 OBJ 坐标的位数。`assets/props/` 不含 `source.blend` 约 90 MB，各道具的 `source.blend` 另有 54 MB。`tools/blender/_qa/` 里是构建时的检查渲染。
+- **道具体积。** 贴图最大 1024²：每个构建脚本最后都会调用 `tools/blender/compact_props.py`，它压缩贴图、合并重复的贴图、截短 OBJ 坐标的位数。2026-10-25 时道具不含 `source.blend` 约 90 MB，各道具的 `source.blend` 另有 54 MB。`tools/blender/_qa/` 里是构建时的检查渲染。
 
 ## 2026-10-25 改版
 
@@ -252,7 +252,7 @@ python -m scenes.tote_transfer.check --output outputs/bench_check/tote_transfer
 
 **新机器人模型（2026-10-25）。** 机器人换成 `wheel_robot_26.8.16_3`（用户决定）：夹爪成了单独的连杆，离手腕远 12 mm，装法转了 90°；5 个手臂关节方向反了；腕部 D405 换了支架。换模型后料箱转运、托盘推送、配盘、精密插装各有一个关键点够不到，料箱转运、托盘推送、配盘、带盖箱的采样器在种子 0 上找不到能规划的布局。10 个专家在新模型上重写（每个场景一个 agent），都通过了：场景检查（每个关键点够得到、夹取探测干净），MuJoCo 种子 0–19，Isaac 种子 0–2 闭环。全部 230 个回合 subtask 检查都通过，没有碰撞，没有作废，都是第一次采样就能规划（pro6000 上 `outputs/<场景>_urdf3/`）。
 
-之后共享代码修了两处（2026-10-25，inovance-sim）：`robot_kinematics.ik()` 内置的三个初值改成新关节方向，`tabletop.TIP` 从 17 mm 改成实测的 13.4 mm。默认姿态因此沿肘部摆动挪了约 2°，所有轨迹都变了。10 个场景在冻结快照里重新验证（`outputs/reval/`），专家代码一行没改：
+之后共享代码修了两处（2026-10-25，inovance-sim）：`robots.franzi.kinematics.ik()` 内置的三个初值改成新关节方向，`tabletop.TIP` 从 17 mm 改成实测的 13.4 mm。默认姿态因此沿肘部摆动挪了约 2°，所有轨迹都变了。10 个场景在冻结快照里重新验证（`outputs/reval/`），专家代码一行没改：
 
 - 场景检查都通过（检查的逆解改成从默认姿态和前面的关键点出发，见「运行检查」）；
 - MuJoCo 种子 0–19 都成功（200 集），Isaac 种子 0–2 都成功（30 集）；
@@ -277,7 +277,7 @@ Isaac 上 `cnc_tending` 的 0.97 mm 是交接台上松手后的接触流形倾�
 
 新模型上的主要改动：
 - **共同的：** 放下前重新量零件（特权），送到离支撑面 0.5 mm 以内再松手：PhysX 里夹着的零件不往下滑（见 [isaac.md](isaac.md)「和 MuJoCo 的差别」）。最后 0.5 mm 以内的阶段不算搬运阶段，因为 PhysX 把 0.5 mm 以内的物体对算作接触。以关节值存的姿态和按关节正负选逆解分支的规则都按新关节方向重新推。
-- `tote_transfer`：手绕竖直轴转 180°（腕部相机朝中线），在 READY 原地按 15° 一步的逆解链转过去；越过箱沿的搬运改走关节空间，搬运高度 1.055 m。原来够不到 `grasp_flange` 只是因为 `robot_kinematics.ik()` 内置的初值还是旧关节方向的。
+- `tote_transfer`：手绕竖直轴转 180°（腕部相机朝中线），在 READY 原地按 15° 一步的逆解链转过去；越过箱沿的搬运改走关节空间，搬运高度 1.055 m。原来够不到 `grasp_flange` 只是因为 `robots.franzi.kinematics.ik()` 内置的初值还是旧关节方向的。
 - `panel_operation`：握持姿态从抬肘变成肘向外（新夹爪沿腕部俯仰轴开合）；预握点、预按点从 80 mm 缩到 40 mm；按 START 的手腕角由采样器挑；接近的关节行程限 5 rad 以内。
 - `tray_push`：推点挪到托盘中线另一侧（x ≈ 0.43）；收回先直线走 65%，再关节空间回到起始关节。
 - `parcel_sorting`：包裹摆平后直接放到格口底面；内侧格口仍要朝中线转 20°。

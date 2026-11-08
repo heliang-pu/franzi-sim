@@ -10,9 +10,10 @@ from pathlib import Path
 import numpy as np
 from validate_props import read_obj
 from convexify_task02_collisions import collision_files
+from prop_paths import PROPS
 
 HERE=Path(__file__).resolve().parent
-ROOT=HERE.parents[1]/'assets'/'props'
+ROOT=PROPS
 
 
 def main() -> None:

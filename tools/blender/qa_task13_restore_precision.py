@@ -18,7 +18,7 @@ import numpy as np
 import prop_lib as props
 
 QA = HERE / "_qa" / "task13"
-ASSETS = props.ROOT / "assets" / "props"
+ASSETS = props.PROPS
 rows = json.loads((QA / "obj.json").read_text())["obj"]
 changed = {row["file"] for row in rows if row["max_vertex_change_mm"] > 1e-9}
 restored = []

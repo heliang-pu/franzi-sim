@@ -21,7 +21,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--layout", choices=list("ABC"), default="A")
     args = parser.parse_args(sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else [])
-    folder = props.ROOT / "assets" / "props" / "control_console"
+    folder = props.PROPS / "control_console"
     metadata = json.loads((folder / "prop.json").read_text())
     variant = next(v for v in metadata["variants"] if v["name"] == args.layout)
     props.reset_scene()

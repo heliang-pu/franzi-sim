@@ -6,7 +6,8 @@ from pathlib import Path
 
 sys.dont_write_bytecode = True
 
-from compact_props import ASSETS, HERE, QA, inventory
+from compact_props import HERE, QA, inventory
+from prop_paths import PROPS
 from validate_props import validate_prop
 
 
@@ -24,7 +25,7 @@ before = json.loads((QA / "inventory_before.json").read_text())
 after = inventory()
 audit = json.loads((QA / "verification.json").read_text())["audit"]
 loader = json.loads((QA / "loader_checks.json").read_text())
-results = [validate_prop(path.parent) for path in sorted(ASSETS.glob("*/prop.json"))]
+results = [validate_prop(path.parent) for path in sorted(PROPS.glob("*/prop.json"))]
 assert not any(result.errors for result in results)
 size_rows = [["Prop", "Before MB", "After MB", "Validator"]]
 details = []

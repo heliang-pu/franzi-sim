@@ -17,20 +17,7 @@ except ImportError:
     sys.path.append(os.environ['PROJECT_SITE_PACKAGES'])
     import mujoco
 import numpy as np
-# prop_assets only needs ROOT and fmt from build_task, whose top-level imports
-# otherwise require unrelated robot Pinocchio. Extract the unchanged fmt function
-# from that source for this isolated prop test; never stub the asset loader itself.
-import ast
-import importlib.util
-import types
-if importlib.util.find_spec('pinocchio') is None:
-    helper=types.ModuleType('sim.build_task')
-    helper.ROOT=ROOT
-    helper.np=np
-    tree=ast.parse((ROOT/'sim/build_task.py').read_text())
-    node=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='fmt')
-    exec(compile(ast.Module(body=[node],type_ignores=[]),'sim/build_task.py','exec'),helper.__dict__)
-    sys.modules['sim.build_task']=helper
+# prop_assets needs only sim's ROOT and fmt, not the robot (Pinocchio).
 from sim import prop_assets
 
 IDS = ('plc_module','module_tray','test_fixture','ng_bin','product_box','accessory_box','stack_light','line_console')

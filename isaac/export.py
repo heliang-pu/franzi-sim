@@ -28,9 +28,9 @@ import mujoco
 import numpy as np
 from PIL import Image
 
+from robots.franzi.camera_rig import POLICY_CAMERAS
+from robots.franzi.scene import ARM_JOINTS, FINGER_JOINTS
 from sim import bench_check
-from sim.build_task import ARM_JOINTS, FINGER_JOINTS
-from sim.camera_rig import POLICY_CAMERAS
 from sim.episode import Scene
 
 # The base is fixed in every scene, so the wheel and steering joints are welded

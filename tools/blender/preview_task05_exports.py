@@ -14,7 +14,7 @@ IDS = ("carton_250x200x150", "carton_300x200x200", "carton_220x180x120", "roller
 
 
 def render(prop_id):
-    folder = props.ROOT / "assets" / "props" / prop_id
+    folder = props.PROPS / prop_id
     data = json.loads((folder / "prop.json").read_text())
     props.reset_scene()
     bpy.ops.outliner.orphans_purge(do_recursive=True)

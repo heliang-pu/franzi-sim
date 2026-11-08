@@ -21,7 +21,7 @@ from mathutils import Matrix
 
 import prop_lib as props
 
-OUTPUT = props.ROOT / "assets" / "props"
+OUTPUT = props.PROPS
 DRAFT = math.tan(math.radians(2))
 WALL = 3 / math.cos(math.radians(2))
 

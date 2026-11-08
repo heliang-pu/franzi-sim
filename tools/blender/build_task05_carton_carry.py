@@ -16,7 +16,7 @@ from pathlib import Path
 sys.dont_write_bytecode = True
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-OUTPUT = HERE.parents[1] / "assets" / "props"
+OUTPUT = props.PROPS
 CARTONS = {
     "carton_250x200x150": (200, 250, 150),
     "carton_300x200x200": (200, 300, 200),

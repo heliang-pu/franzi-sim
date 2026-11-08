@@ -15,7 +15,7 @@ sys.dont_write_bytecode = True
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 ROOT = HERE.parents[1]
-OUTPUT = ROOT / 'assets/props'
+OUTPUT = props.PROPS
 QA = HERE / '_qa/task17'
 PARCELS = {'parcel_cube_80': (80, 70, 60), 'parcel_cube_75': (75, 75, 75),
            'parcel_cube_85': (85, 65, 55)}
@@ -179,7 +179,7 @@ def render_1024(objects: list, path: Path, *, back: bool = False) -> None:
         scene.render.filepath = str(path)
         bpy.ops.render.render(write_still=True,scene=scene.name)
         props._optimize_png(path)
-        if path.parent.parent == OUTPUT:
+        if path.parent == OUTPUT / path.parent.name:
             props._DELIVERED_PROPS.add(path.parent.name)
             QA.mkdir(parents=True,exist_ok=True)
             shutil.copyfile(path,QA/f'{path.parent.name}_{path.stem}_1024.png')

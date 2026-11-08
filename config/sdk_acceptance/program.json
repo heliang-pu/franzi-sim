@@ -1,6 +1,6 @@
 {
  "joint_convention": "controller_mdh",
- "robot_config_sha256": "cfd9554e895f02cc0138346b527b785de6c480d062b9d598ebd290b7331d5f8e",
+ "robot_config_sha256": "ac29e94bddffcdc7b08a7c836522878da0777c44a725e6c24bdabb4f69da4b8e",
  "lift_pose": {
   "left": [
    -1.311491,

@@ -1,7 +1,7 @@
 """The industrial work cell around the robot in the benchmark scenes: factory
 floor, background fences and racks, the workbench, and plain steel stands.
 
-industrial_cell() takes the robot scene from build_task and swaps its grey floor
+industrial_cell() takes the robot scene (robots.franzi.scene) and swaps its grey floor
 plane and plain table for the Blender-built factory floor (with its own
 collision plane) and, unless bench=False, the workbench. The bench top is at
 BENCH_Z, and its front edge sits at x = 0.20 (the table's was 0.18), clear of
@@ -16,8 +16,8 @@ had to stand at the edge of reach.
 
 import xml.etree.ElementTree as ET
 
+from sim import fmt
 from sim import prop_assets as pa
-from sim.build_task import fmt
 
 BENCH_Z = 0.90  # the workbench prop's finished top
 BENCH_FRONT_X = 0.20
@@ -26,7 +26,7 @@ STEEL_RGBA = "0.33 0.36 0.40 1"
 
 
 def industrial_cell(root, bench=True, background=True):
-    """Replace build_task's floor and table with the factory floor, the
+    """Replace the robot scene's floor and table with the factory floor, the
     workbench (optional) and the background."""
     world = root.find("worldbody")
     for geom in list(world.findall("geom")):

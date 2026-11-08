@@ -13,7 +13,7 @@ from mathutils import Vector
 import prop_lib as props
 
 HERE = Path(__file__).resolve().parent
-OUTPUT = props.ROOT / 'assets' / 'props'
+OUTPUT = props.PROPS
 PLASTIC = dict(specular=.3, shininess=.4, reflectance=0.)
 METAL = dict(specular=.7, shininess=.7, reflectance=.05)
 

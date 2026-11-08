@@ -12,11 +12,12 @@ import numpy as np
 from PIL import Image
 
 from validate_props import read_obj, validate_prop
+from prop_paths import PROPS
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 QA = HERE / "_qa" / "task12"
-FOLDER = ROOT / "assets" / "props" / "foam_kit_tray"
+FOLDER = PROPS / "foam_kit_tray"
 
 
 def texture_sample(obj, image, point):
@@ -55,7 +56,7 @@ def main():
         if hashlib.sha256(target.read_bytes()).hexdigest() != digest:
             changed.append(relative)
     assert set(changed) <= permitted, f"Unexpected asset changes: {set(changed) - permitted}"
-    current_files = {str(p.relative_to(ROOT)) for p in (ROOT / "assets" / "props").rglob("*") if p.is_file()}
+    current_files = {str(p.relative_to(ROOT)) for p in PROPS.rglob("*") if p.is_file()}
     added = current_files - baseline.keys()
     assert added == {str((FOLDER / "body_albedo_v1.png").relative_to(ROOT))}, added
     data = json.loads((FOLDER / "prop.json").read_text())

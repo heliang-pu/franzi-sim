@@ -40,7 +40,7 @@
 - 脚本放在 `tools/blender/`：公用函数 `prop_lib.py`，每个任务一个 `build_taskNN_<任务名>.py`，检查脚本 `validate_props.py`。检查脚本和画贴图的子进程用环境变量 `PROP_PYTHON` 指定的 Python 运行，它要装 numpy、scipy、trimesh 和 Pillow（比如项目环境）。
 - Linux 上用 PATH 里的 `blender`。
 - 带字的贴图用 `tools/blender/fonts/` 里的 DejaVu Sans（常规、粗体），只写英文（这个字体没有中文字形）。这样同一个道具在 Mac 和 Linux 上建出来一样。2026-10-25 以前的道具用的是 macOS 字体，只能在 Mac 上重建。
-- 只在 `tools/blender/` 和 `assets/props/` 下新建、修改文件；不要执行任何会改动仓库状态的 git 命令（commit、push、checkout、reset、stash 等）。
+- 只在 `tools/blender/` 和道具所在的文件夹（`assets/props/` 或 `scenes/<场景>/assets/`，见 1.3）下新建、修改文件；不要执行任何会改动仓库状态的 git 命令（commit、push、checkout、reset、stash 等）。
 
 ### 1.2 坐标、单位、原点
 
@@ -53,7 +53,7 @@
 
 ### 1.3 文件和目录
 
-每个道具一个文件夹 `assets/props/<编号>/`：
+每个道具一个文件夹，按场景整理（2026-11-07）：只有一个场景用的道具在那个场景里，`scenes/<场景>/assets/<编号>/`；几个场景共用的、以及还没有场景用的（比如重新设计用的新道具）在共用库 `assets/props/<编号>/`。编号在两处合起来不重复。道具引用别的道具的文件（共用贴图）一律写 `../<编号>/<文件>`，不管那个道具放在哪里都按编号找到（`tools/blender/prop_paths.py` 和 `sim/prop_assets.py`）；被别的道具引用贴图的（`panel_devices`、`small_tote`、`parcel_box_s`、`parcel_box_m`）留在共用库。新道具默认进共用库；要直接建进某个场景，先在那里建好空文件夹。下面各任务原话里的 `assets/props/<编号>` 是当时的位置，搬进场景的道具在构建脚本里经 `prop_paths.PROPS` 自动找到新位置。
 
 ```
 source.blend                 Blender 源文件（保留完整 PBR 材质）

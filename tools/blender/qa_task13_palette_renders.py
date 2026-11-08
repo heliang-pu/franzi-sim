@@ -16,9 +16,10 @@ import bpy
 import numpy as np
 from mathutils import Vector
 import prop_lib as props
+from prop_paths import locate
 
 QA = HERE / "_qa" / "task13"
-ASSETS = props.ROOT / "assets" / "props"
+ASSETS = props.PROPS
 DESTINATION = QA / "palette_renders"
 DESTINATION.mkdir(exist_ok=True)
 
@@ -81,7 +82,7 @@ def pair(relative, folder, part):
         light.location = target + Vector(offset) * span
         light.rotation_euler = (target - light.location).to_track_quat("-Z", "Y").to_euler()
     key = relative.replace("/", "__").removesuffix(".png")
-    for version, path in (("rgb", ASSETS / relative), ("palette", QA / "palette_candidates" / relative)):
+    for version, path in (("rgb", locate(relative)), ("palette", QA / "palette_candidates" / relative)):
         texture.image = bpy.data.images.load(str(path), check_existing=False)
         texture.image.colorspace_settings.name = "sRGB"
         scene.render.filepath = str(DESTINATION / f"{key}_{version}.png")
@@ -96,7 +97,7 @@ manifest = []
 for row in selected:
     relative = row["file"]
     if "albedo" in Path(relative).name:
-        folder, part = parts[(ASSETS / relative).resolve()]
+        folder, part = parts[locate(relative).resolve()]
         manifest.append(pair(relative, folder, part))
 (QA / "palette_render_manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
 print("PALETTE_RENDER_COMPLETE", len(manifest), flush=True)

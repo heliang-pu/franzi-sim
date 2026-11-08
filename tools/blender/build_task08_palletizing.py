@@ -17,7 +17,7 @@ from pathlib import Path
 sys.dont_write_bytecode = True
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-OUTPUT = HERE.parents[1] / "assets" / "props"
+OUTPUT = props.PROPS
 QA = HERE / "_qa" / "task08"
 CARTONS = {"pallet_carton_160x80x80": (80, 160, 80, .35, "SKU-A"),
            "pallet_carton_120x80x80": (80, 120, 80, .25, "SKU-B")}

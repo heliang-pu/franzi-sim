@@ -51,7 +51,7 @@ class ArmService:
             "SetFlan2tool", "GetCurCartesianPose", "GetCurCartesianPoseDual",
         ]  # fmt: skip
         self.handlers = {n: getattr(self, "_" + n) for n in names}
-        try:  # robot_kinematics needs Pinocchio, which not every server env has
+        try:  # robots.franzi.kinematics needs Pinocchio, which not every server env has
             self.kin, self.kin_missing = SdkKinematics(robot), None
         except ImportError as exc:
             self.kin, self.kin_missing = None, f"{type(exc).__name__}: {exc}"
@@ -340,12 +340,13 @@ class ArmService:
         )
         return ok()
 
-    # ----- kinematics: robot_kinematics in SDK conventions (sdk_kinematics.py) --
+    # ----- kinematics: robots.franzi.kinematics in SDK conventions (sdk_kinematics) --
     def _model(self):
         if self.kin is None:
             raise Unsupported(
-                "arm_sdk kinematics endpoints need robot_kinematics (Pinocchio), "
-                f"which this server's Python cannot import ({self.kin_missing})"
+                "arm_sdk kinematics endpoints need robots.franzi.kinematics "
+                "(Pinocchio), which this server's Python cannot import "
+                f"({self.kin_missing})"
             )
         return self.kin
 

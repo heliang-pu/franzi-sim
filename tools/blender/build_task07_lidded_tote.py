@@ -35,7 +35,7 @@ from build_task01_tote_transfer import (
 )
 
 IDS = ("lidded_tote", "station_plate", "drawer_cabinet")
-OUTPUT = props.ROOT / "assets" / "props"
+OUTPUT = props.PROPS
 QA = HERE / "_qa" / "task07"
 PP = {"specular": .25, "shininess": .30, "reflectance": 0.0}
 ALUMINIUM = {"specular": .70, "shininess": .70, "reflectance": .05}

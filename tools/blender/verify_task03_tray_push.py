@@ -17,8 +17,9 @@ from PIL import Image
 
 from validate_props import read_obj
 from verify_task01_tote_transfer import convex_contains, section_hits
+from prop_paths import PROPS
 
-ROOT = Path(__file__).resolve().parents[2] / "assets" / "props"
+ROOT = PROPS
 
 
 def main():

@@ -1,6 +1,9 @@
-"""Benchmark props built in Blender (assets/props/<id>/, docs/benchmark_props.md):
-add a prop's parts to a scene tree as mesh assets, textured materials, bodies,
-joints and collision geoms.
+"""Benchmark props built in Blender (docs/benchmark_props.md): add a prop's parts
+to a scene tree as mesh assets, textured materials, bodies, joints and collision
+geoms. A prop only one scene uses lives in that scene's folder,
+scenes/<scene>/assets/<id>/; the others in the shared library, assets/props/<id>/.
+Ids are unique across both, and a prop names a file of another prop (a shared
+texture atlas) as ../<id>/<file> wherever the two live.
 
 Every part is exported in the prop frame, so each part body sits at its
 parent's origin and prop.json's joint anchors and axes apply as they are. The
@@ -27,9 +30,9 @@ import numpy as np
 import trimesh
 from scipy.spatial.transform import Rotation
 
-from sim.build_task import ROOT, fmt
+from sim import ROOT, fmt
 
-PROPS = ROOT / "assets/props"
+LIBRARY = ROOT / "assets/props"
 # The existing scenes' contact parameters for parts and surfaces.
 SOLREF, SOLIMP = "0.004 1", "0.95 0.99 0.001"
 ARMATURE = 0.0005  # keeps light jointed parts (buttons, knobs) stable at 500 Hz
@@ -40,8 +43,27 @@ LIMIT_SOLREF, LIMIT_SOLIMP = SOLREF, SOLIMP
 
 
 @cache
+def folders():
+    """Every prop's folder, by id."""
+    found = {}
+    scenes = (ROOT / "scenes").glob("*/assets/*/prop.json")
+    for path in sorted([*LIBRARY.glob("*/prop.json"), *scenes]):
+        if path.parent.name in found:
+            raise RuntimeError(f"prop {path.parent.name} is in two places")
+        found[path.parent.name] = path.parent
+    return found
+
+
+def prop_file(prop_id, name):
+    """A file the prop names: in its own folder, or ../<id>/<file> in another's."""
+    if name.startswith("../"):
+        prop_id, name = name[3:].split("/", 1)
+    return folders()[prop_id] / name
+
+
+@cache
 def spec(prop_id):
-    return json.loads((PROPS / prop_id / "prop.json").read_text())
+    return json.loads(prop_file(prop_id, "prop.json").read_text())
 
 
 @cache
@@ -63,7 +85,6 @@ def _ensure(asset, tag, name, **attrs):
 
 
 def _material(asset, prop_id, part, texture):
-    folder = PROPS / prop_id
     look = part.get("mujoco_material") or {}
     attrs = {
         k: str(look[k]) for k in ("specular", "shininess", "reflectance") if k in look
@@ -76,7 +97,7 @@ def _material(asset, prop_id, part, texture):
             "texture",
             f"tex_{prop_id}_{texture[:-4]}",
             type="2d",
-            file=str(folder / texture),
+            file=str(prop_file(prop_id, texture)),
         )
         return _ensure(
             asset,
@@ -228,7 +249,6 @@ def _start_at(body, joint, value):
 
 
 def _fill(body, asset, prop_id, name, part, texture, mass, moving, start=None):
-    folder = PROPS / prop_id
     pname = part["name"]
     joint = part.get("joint")
     if joint:
@@ -269,7 +289,10 @@ def _fill(body, asset, prop_id, name, part, texture, mass, moving, start=None):
         ET.SubElement(body, "joint", **attrs)
     if part.get("visual"):
         mesh = _ensure(
-            asset, "mesh", f"vis_{prop_id}_{pname}", file=str(folder / part["visual"])
+            asset,
+            "mesh",
+            f"vis_{prop_id}_{pname}",
+            file=str(prop_file(prop_id, part["visual"])),
         )
         ET.SubElement(
             body,
@@ -284,7 +307,7 @@ def _fill(body, asset, prop_id, name, part, texture, mass, moving, start=None):
             mass="0",
         )
     pieces = part.get("collision") or []
-    volumes = [_mesh(str(folder / f)).convex_hull.volume for f in pieces]
+    volumes = [_mesh(str(prop_file(prop_id, f))).convex_hull.volume for f in pieces]
     density = mass / sum(volumes) if mass and sum(volumes) > 0 else 1000.0
     friction = f"{part.get('friction', 0.5)} 0.005 0.0001"
     contact = {
@@ -299,7 +322,10 @@ def _fill(body, asset, prop_id, name, part, texture, mass, moving, start=None):
         contact["priority"] = str(part["contact_priority"])
     for k, f in enumerate(pieces):
         mesh = _ensure(
-            asset, "mesh", f"col_{prop_id}_{pname}_{k:02d}", file=str(folder / f)
+            asset,
+            "mesh",
+            f"col_{prop_id}_{pname}_{k:02d}",
+            file=str(prop_file(prop_id, f)),
         )
         ET.SubElement(
             body,
@@ -327,7 +353,7 @@ def _fill(body, asset, prop_id, name, part, texture, mass, moving, start=None):
             )
     if moving and not pieces:
         # A moving part without colliders still needs mass: a box over its mesh.
-        lo, hi = _mesh(str(folder / part["visual"])).bounds
+        lo, hi = _mesh(str(prop_file(prop_id, part["visual"]))).bounds
         size = np.maximum(hi - lo, 1e-3)
         m = max(mass, 1e-3)
         inertia = (

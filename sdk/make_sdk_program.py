@@ -1,7 +1,7 @@
 """Write the data that sdk_acceptance.py sends, in SDK joint coordinates.
 
 Like taught poses on a real controller, the program is plain data: joint
-vectors (rad, controller MDH convention from config/robot/franzi_sdk.yaml) and
+vectors (rad, controller MDH convention from robots/franzi/config/franzi_sdk.yaml) and
 gripper positions (0 closed .. 1000 open). Built once from the MuJoCo scene:
 
 - poses: the expert's default posture (tabletop.start_home, where its
@@ -25,8 +25,7 @@ import mujoco
 import numpy as np
 
 from scenes.pick_place.run import PickPlaceScene
-from sim import tabletop
-from sim.build_task import ROOT, TABLE_Z
+from sim import ROOT, TABLE_Z, tabletop
 from simbridge.robot import load_robot
 
 

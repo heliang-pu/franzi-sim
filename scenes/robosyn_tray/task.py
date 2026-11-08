@@ -20,11 +20,10 @@ from pathlib import Path
 
 import numpy as np
 
+from robots.franzi.scene import build as build_base
+from sim import ROOT, TABLE_Z, fmt, robosyn
 from sim import props as pp
-from sim import robosyn
 from sim import tabletop as tt
-from sim.build_task import ROOT, TABLE_Z, fmt
-from sim.build_task import build as build_base
 
 DERIVED = Path(__file__).resolve().parent / "assets/derived"
 FOODS = ("apple", "tomato")
@@ -245,7 +244,7 @@ def add_tray(world, xy):
 
 
 def build(spec):
-    """Derived scene for spec: build_task's robot, table and lights plus the
+    """Derived scene for spec: the robot scene (robot, table and lights) plus the
     tray, the two ingredients and the marks of the tray's place on either
     side."""
     root, report = build_base()

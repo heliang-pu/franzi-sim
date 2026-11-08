@@ -18,11 +18,11 @@ import time
 import mujoco
 import numpy as np
 
-from robot_kinematics import URDF, Kinematics
-from sim.build_task import FINGERS
-from sim.camera_rig import POLICY_CAMERAS
+from robots.franzi.camera_rig import POLICY_CAMERAS
+from robots.franzi.gripper_linkage import contact_drop
+from robots.franzi.kinematics import URDF, Kinematics
+from robots.franzi.scene import FINGERS
 from sim.episode import PhysicsError, Scene
-from sim.gripper_linkage import contact_drop
 
 SIDES = ("left", "right")
 JAW_SPAN = 0.095  # jaw gap at closure 0; closure g moves each finger 0.0475 g

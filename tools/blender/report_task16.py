@@ -4,6 +4,7 @@ import numpy as np
 from pathlib import Path
 from PIL import Image
 from validate_props import read_obj, validate_prop
+from prop_paths import PROPS
 
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[1]
@@ -14,7 +15,7 @@ IDS=('parts_bin','relay','terminal_block','cable_gland','fuse_holder','order_tra
 def main() -> None:
     rows=[]; parts=[]; data_by_id={}
     for name in IDS:
-        folder=ROOT/'assets'/'props'/name
+        folder=PROPS / name
         assert (folder/'source.blend').is_file()
         result=validate_prop(folder)
         if result.errors: raise ValueError((name,result.errors))

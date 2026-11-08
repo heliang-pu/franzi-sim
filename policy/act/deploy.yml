@@ -1,0 +1,6 @@
+policy_name: act
+port: 18780
+checkpoint: null  # an act_train step folder (--set checkpoint=...)
+ensemble: null  # the temporal ensemble's coefficient (0.01), with horizon 1
+device: cuda:0
+horizon: 25  # actions applied per chunk (simulator side)

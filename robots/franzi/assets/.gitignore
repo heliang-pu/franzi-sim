@@ -1,0 +1,4 @@
+# Rebuildable caches: the painted CAD, the chest decal and the fittings
+# (appearance.py, fittings.py), and the cut link hulls (link_hulls.py).
+appearance/
+derived/

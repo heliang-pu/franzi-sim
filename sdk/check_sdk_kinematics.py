@@ -7,7 +7,7 @@ equivalents and cannot see the zero offsets of the first and last joint, so the
 archive joint ranges then select among the exact solutions. Nothing here reads
 a live controller: the result is evidence about archive files, not hardware.
 
-Writes config/robot/kinematic_crosscheck.json.
+Writes robots/franzi/config/kinematic_crosscheck.json.
 """
 
 import argparse
@@ -23,7 +23,7 @@ from scipy.optimize import least_squares
 from simbridge import ROOT
 from simbridge.robot import urdf_limits
 
-URDF = ROOT / "assets/franzi_source/wheel_robot_26.8.16_3.urdf"
+URDF = ROOT / "robots/franzi/assets/urdf/wheel_robot_26.8.16_3.urdf"
 IMAGE = ROOT / "sdk_review/controller_image_probe_v2/files/image"
 PERSISTENT = IMAGE / "inocfg/inbc_for_humanoid"
 APP_CONFIG = IMAGE / "inodata/config11"
@@ -46,7 +46,7 @@ EXACT_M = 1e-6
 RANGE_TOLERANCE_DEG = 15.0
 
 
-# ----- NumPy chain math (offline only; the runtime FK/IK is robot_kinematics) -----
+# ----- NumPy chain math (offline only; the runtime FK/IK is robots.franzi.kinematics)
 X_AXIS = np.array([1.0, 0, 0])
 Z_AXIS = np.array([0, 0, 1.0])
 
@@ -409,7 +409,7 @@ def fixture_check():
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--output", default=ROOT / "config/robot/kinematic_crosscheck.json"
+        "--output", default=ROOT / "robots/franzi/config/kinematic_crosscheck.json"
     )
     args = parser.parse_args()
     machine = PERSISTENT / "machine_params.json"

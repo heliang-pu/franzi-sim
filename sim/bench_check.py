@@ -35,11 +35,11 @@ import mujoco
 import numpy as np
 from PIL import Image, ImageDraw
 
-from robot_kinematics import Kinematics
-from sim.build_task import ARM_JOINTS
-from sim.camera_rig import POLICY_CAMERAS
+from robots.franzi.camera_rig import POLICY_CAMERAS
+from robots.franzi.gripper_linkage import set_closure
+from robots.franzi.kinematics import Kinematics
+from robots.franzi.scene import ARM_JOINTS
 from sim.episode import Scene, overlay_font
-from sim.gripper_linkage import set_closure
 from sim.tabletop import JAW_SPAN, READY, grasp_rotation, grip_open, rot_z
 
 SETTLE_S = 4.0

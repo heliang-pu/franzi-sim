@@ -16,7 +16,7 @@ QA = HERE / "_qa" / "task13"
 
 
 def render(prop_id, version):
-    folder = QA / "reference" / prop_id if version == "before" else props.ROOT / "assets" / "props" / prop_id
+    folder = QA / "reference" / prop_id if version == "before" else props.PROPS / prop_id
     data = json.loads((folder / "prop.json").read_text())
     props.reset_scene()
     bpy.ops.outliner.orphans_purge(do_recursive=True)

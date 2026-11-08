@@ -15,8 +15,9 @@ from pathlib import Path
 sys.dont_write_bytecode = True
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
+from prop_paths import PROPS
 ROOT = HERE.parents[1]
-OUTPUT = ROOT / "assets" / "props"
+OUTPUT = PROPS
 QA = HERE / "_qa" / "task11"
 IDS = ("workbench", "factory_floor", "safety_fence", "background_rack")
 

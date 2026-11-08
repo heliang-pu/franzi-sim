@@ -1,5 +1,5 @@
 """Robot configuration: SDK joint order, sign/offset mapping, limits, gripper,
-cameras, frames and safety thresholds. Loaded from config/robot/*.yaml.
+cameras, frames and safety thresholds. Loaded from robots/franzi/config/*.yaml.
 
 SDK joint values follow ``q_sdk = sign * q_sim + offset`` (rad). Every number
 here is either copied from a named source file or derived by
@@ -54,7 +54,7 @@ class UnitMap:
         return self.sign * np.asarray(values_sim, float)
 
     def check_model_ranges(self, ranges, engine):
-        """An engine's joint ranges (within 1 microradian: build_task writes 9
+        """An engine's joint ranges (within 1 microradian: the scene writes 9
         significant digits) must lie inside the URDF's and contain every
         target the SDK layer accepts (sdk_limits mapped to simulator joints)."""
         accepted = np.sort(
@@ -197,7 +197,7 @@ class RobotConfig:
         sdk = mapped.copy()
         if self._policy == "intersection" and controller is not None:
             # Same margin on the controller side: the derived MuJoCo scene clips
-            # its ranges to exactly this (build_task.align_joint_limits).
+            # its ranges to exactly this (robots.franzi.scene.align_joint_limits).
             sdk[:, 0] = np.maximum(mapped[:, 0], controller[:, 0] + self._margin)
             sdk[:, 1] = np.minimum(mapped[:, 1], controller[:, 1] - self._margin)
         elif self._policy != "simulation_model":
@@ -258,4 +258,6 @@ class RobotConfig:
 
 
 def load_robot(path=None, convention=None):
-    return RobotConfig(path or ROOT / "config/robot/franzi_sdk.yaml", convention)
+    return RobotConfig(
+        path or ROOT / "robots/franzi/config/franzi_sdk.yaml", convention
+    )

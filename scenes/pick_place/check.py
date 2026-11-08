@@ -9,8 +9,9 @@ from pathlib import Path
 import av
 import numpy as np
 
+from robots.franzi.scene import FINGERS
 from scenes.pick_place.task import GOALS
-from sim.build_task import FINGERS, TABLE_Z
+from sim import TABLE_Z
 
 
 def verify(folder):

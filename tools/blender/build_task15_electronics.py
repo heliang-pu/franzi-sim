@@ -20,7 +20,7 @@ sys.dont_write_bytecode = True
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 ROOT = HERE.parents[1]
-OUT = ROOT / "assets/props"
+OUT = props.PROPS
 QA = HERE / "_qa/task15"
 IDS = ("plc_module", "module_tray", "test_fixture", "ng_bin", "product_box",
        "accessory_box", "stack_light", "line_console")

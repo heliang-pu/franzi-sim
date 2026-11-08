@@ -2,31 +2,52 @@
 
 仿真场景每次运行时从未改动的源模型派生，改动都在内存里完成。本文说明源文件、派生时改了什么、为什么改，以及哪些地方仍与真机不同。
 
+## 目录
+
+这台机器人的东西都在 `robots/franzi/`（2026-11-07 按机器人整理，以后加机器人就在 `robots/` 下再建一个包）：
+
+| 路径 | 内容 |
+|---|---|
+| `assets/urdf/` | 源工程导出的 URDF、STL、关节名表和 CSV，原样不改 |
+| `model.py`、`frames.json` | URDF 转成 MuJoCo 模型树，新旧连杆坐标系的对照 |
+| `scene.py` | 派生的机器人场景 `build()`：碰撞体、夹爪连杆、外观、关节限位，加上桌子和灯光 |
+| `kinematics.py` | 共享正逆解（Pinocchio） |
+| `gripper_linkage.py`、`gripper_faces.json` | 夹爪连杆，夹爪网格每个面属于哪个运动件 |
+| `appearance.py`、`fittings.py` | 外观：分色、胸前印字、RealSense 外壳、补件 |
+| `link_hulls.py` | 连杆凸包（截到 255 个顶点） |
+| `camera_rig.py`、`camera_rig.json` | 四路策略相机 |
+| `wrist_mount.py`、`hardware/wrist_d405_mount/` | 腕部 D405 转接座：仿真用的几何和打印件设计 |
+| `config/` | 控制器限位、SDK 与 URDF 的关节映射、工具点（`franzi_sdk.yaml`），运动学核对结果，规划约束原件 `constraints/` |
+| `assets/appearance/`、`assets/derived/` | 外观和凸包的缓存，不入库 |
+| `tools/gripper_faces.py` | 生成 `gripper_faces.json` 的一次性工具 |
+
+`sim/` 的仿真主循环、桌面搬运和场景检查直接引用这个包，目前只为这一台机器人写；加第二台机器人时，要让它们把机器人（伺服、夹爪、相机、运动学）当参数传进来。RealSense 相机模型是共用资产，在 `assets/sensors/`。
+
 ## 来源
 
-- 当前 URDF 是 `wheel_robot_26.8.16_3.urdf`（SolidWorks 导出，2026-10-25 用户提供并确定替换），连同 41 个 STL、关节名表和 CSV 原样放在 `assets/franzi_source/`，不改。每次运行在 `summary.json` 里记录 URDF 的 SHA-256。
+- 当前 URDF 是 `wheel_robot_26.8.16_3.urdf`（SolidWorks 导出，2026-10-25 用户提供并确定替换），连同 41 个 STL、关节名表和 CSV 原样放在 `robots/franzi/assets/urdf/`，不改。每次运行在 `summary.json` 里记录 URDF 的 SHA-256。
 - 上一版是 GPU 工作站上 `robot_simulation` 工程的 `wheel_robot_4.0.urdf` 和由它生成的源 MuJoCo 模型 `franzi.xml`（真实 STL 外观，碰撞体是连杆包围盒），已从仓库移除，在 git 历史里。
 - 新旧 URDF 对比：躯干、腿、手臂、头和轮子的网格相同，根坐标对齐后每个连杆差不超过 0.013 mm。新版每个关节都绕 z 轴导出，五个手臂关节的正方向因此反了过来；肩和躯干之间多了肩座 `{side}_j0_Link`；夹爪成了独立连杆（`left_gripper_link`、`right_gripper_Link`），相对手腕转了 90°、外伸 12 mm，D405 装在壳体旁的一根钣金条上；夹指座相对夹指沿铰轴偏了 3.5 mm。
-- `config/robot_constraints/` 的 `joint_limits.yaml` 和 `wheel_robot_4.0.srdf` 是上一版源工程的 MoveIt 配置原件，SHA-256 和核对结果在同目录的 `SOURCE.json`：24 个关节限制、8 个规划组、37 对禁用碰撞。YAML 注释写明它是保守的规划限制，须对照真机控制器核验；SRDF 只定义规划分组、命名姿态和自碰撞排除，不定义碰撞形状；`moveit_root` 是 MoveIt 包装层加的虚拟根。这两个文件只作参考，没有用到 MuJoCo 控制器或碰撞设置里。
+- `robots/franzi/config/constraints/` 的 `joint_limits.yaml` 和 `wheel_robot_4.0.srdf` 是上一版源工程的 MoveIt 配置原件，SHA-256 和核对结果在同目录的 `SOURCE.json`：24 个关节限制、8 个规划组、37 对禁用碰撞。YAML 注释写明它是保守的规划限制，须对照真机控制器核验；SRDF 只定义规划分组、命名姿态和自碰撞排除，不定义碰撞形状；`moveit_root` 是 MoveIt 包装层加的虚拟根。这两个文件只作参考，没有用到 MuJoCo 控制器或碰撞设置里。
 - 关节限位、速度上限和 SDK 关节映射来自原厂控制器镜像的离线文件，见 [controller_image.md](controller_image.md) 和 [sdk_bridge.md](sdk_bridge.md)。
 
-## 派生场景与碰撞体（`sim/build_task.py`）
+## 派生场景与碰撞体（`robots/franzi/scene.py`）
 
-`sim/franzi_model.py` 照源工程 make_model.py 生成 `franzi.xml` 的做法，从 URDF 生成机器人的 MuJoCo 模型：每个连杆一个 body，带 URDF 的关节、惯量和网格，沿用 franzi.xml 的类、材质和伺服增益；固定的传感器连杆变成一个 site 和一个外观 geom，质量放进子 body（只有质量没有惯量的连杆按 3 cm 的球算惯量）。URDF 的根坐标系是躺着的（x 朝上），`ROOT_IN_BASE` 把它立起来：底盘原点离地 `BASE_HEIGHT`（87.3 mm），朝 +x，和 franzi.xml 的底盘一致。
+`robots/franzi/model.py` 照源工程 make_model.py 生成 `franzi.xml` 的做法，从 URDF 生成机器人的 MuJoCo 模型：每个连杆一个 body，带 URDF 的关节、惯量和网格，沿用 franzi.xml 的类、材质和伺服增益；固定的传感器连杆变成一个 site 和一个外观 geom，质量放进子 body（只有质量没有惯量的连杆按 3 cm 的球算惯量）。URDF 的根坐标系是躺着的（x 朝上），`ROOT_IN_BASE` 把它立起来：底盘原点离地 `BASE_HEIGHT`（87.3 mm），朝 +x，和 franzi.xml 的底盘一致。
 
-`sim/franzi_frames.json` 记录每个共享连杆的新坐标系到旧坐标系的变换，以及夹爪连杆到旧手腕坐标系的变换（经两根相同的手指求得）。外观配方、外观补件和夹爪连杆仍写在旧坐标系里：每个网格资源用 refpos/refquat 把顶点放回旧坐标系，夹爪上焊着的 `{side}_hand` body 就是旧手腕坐标系，手指（旧版的原点，URDF 滑块的名字、范围和正负号）和连杆在里面原样不变。迁移没有改变任何布局坐标：头部和躯干相机与原来相差不超过 0.15 mm、0.09°，抓取点仍是全开时两块夹指的中心。同一个姿态的关节值变了（五个反号的手臂关节，夹爪也更长），所以专家里存的关节姿态要重新求解。
+`robots/franzi/frames.json` 记录每个共享连杆的新坐标系到旧坐标系的变换，以及夹爪连杆到旧手腕坐标系的变换（经两根相同的手指求得）。外观配方、外观补件和夹爪连杆仍写在旧坐标系里：每个网格资源用 refpos/refquat 把顶点放回旧坐标系，夹爪上焊着的 `{side}_hand` body 就是旧手腕坐标系，手指（旧版的原点，URDF 滑块的名字、范围和正负号）和连杆在里面原样不变。迁移没有改变任何布局坐标：头部和躯干相机与原来相差不超过 0.15 mm、0.09°，抓取点仍是全开时两块夹指的中心。同一个姿态的关节值变了（五个反号的手臂关节，夹爪也更长），所以专家里存的关节姿态要重新求解。
 
-`build_task.build()` 在内存里修改这棵树后生成场景（各任务再加上自己的物体）：
+`robots.franzi.scene.build()` 在内存里修改这棵树后生成场景（各任务再加上自己的物体）：
 
 - 底盘固定（根 body 没有关节）。物理 500 Hz，椭圆摩擦锥。
 - 碰撞体（2026-10-25 起用网格碰撞体，用户要求加上碰撞检测，参照 RoboDojo；franzi.xml 每个连杆只有一个包围盒）：
   - 手腕法兰：每个 CAD 连通零件一个凸包，每侧 18 个。
-  - 夹爪：新 URDF 把机身、连杆、夹指座、销轴和螺钉导出成连在一起的一张面。`sim/gripper_faces.json`（`tools/gripper_faces.py` 生成，依据 git 历史里 wheel_robot_4.0 分开的 CAD 零件）记下每个面属于哪个运动件、是什么材质。机身的面做凸包，并一直切分到没有凸包占住两指之间的空间（`JAW_CLEAR`，每侧 9–10 个）；每个运动件的面在带动它的 body 里做凸包（每侧 44 个）。
+  - 夹爪：新 URDF 把机身、连杆、夹指座、销轴和螺钉导出成连在一起的一张面。`robots/franzi/gripper_faces.json`（`robots/franzi/tools/gripper_faces.py` 生成，依据 git 历史里 wheel_robot_4.0 分开的 CAD 零件）记下每个面属于哪个运动件、是什么材质。机身的面做凸包，并一直切分到没有凸包占住两指之间的空间（`JAW_CLEAR`，每侧 9–10 个）；每个运动件的面在带动它的 body 里做凸包（每侧 44 个）。
   - 分面的办法：新夹爪的机身、连杆和夹指座在旧手腕坐标系里比旧零件沿铰轴偏 3.5 mm，先拟合出这个偏移，再把每个面分给移过去以后表面离它最近、法向一致（60° 以内）、距离不超过 1 mm 的旧零件，其余的面留在机身上；各运动件的 p99 偏差 0.22–0.35 mm。最初按旧零件凸包外 3 mm 分面，连杆有一部分面留在了机身上，夹爪一动，腕部相机就看到碎片和破洞（用户 2026-10-25 发现）。
   - 手指：手指 STL 网格（MuJoCo 取其凸包），带夹持用的接触参数。实际的平面夹持面保留下来，螺孔等凹处是凸包近似。
   - 腕部 D405 转接座：三块凸包，加一个 42 × 42 × 23 mm 的 D405 外壳方盒，挂在夹爪连杆上（见「相机」）。
-  - 其余 24 个连杆（底盘、小腿、大腿、腰、躯干、头部两节、两个肩座、每只手臂的肩三节、肘、腕 yaw 和腕 pitch、三个转向节）：各自 STL 的凸包，截到最多 255 个顶点（`sim/link_hulls.py`）。PhysX 烘焙凸包最多 255 个顶点，所以 Isaac Sim 里得到的是同一个多面体。截后的凸包在完整凸包之内，最多差 2.05 mm（底盘），手臂各节不超过 0.5 mm。体积是 franzi.xml 包围盒的 24–87%。轮子用圆柱。
-  - 凸包要算约 2 s，所以缓存在 `assets/derived/robot_hulls.json`，每台机器各自生成、不同步，键是版本号、顶点上限和 STL 内容。有缓存时 `build()` 仍是 0.4 s。
+  - 其余 24 个连杆（底盘、小腿、大腿、腰、躯干、头部两节、两个肩座、每只手臂的肩三节、肘、腕 yaw 和腕 pitch、三个转向节）：各自 STL 的凸包，截到最多 255 个顶点（`robots/franzi/link_hulls.py`）。PhysX 烘焙凸包最多 255 个顶点，所以 Isaac Sim 里得到的是同一个多面体。截后的凸包在完整凸包之内，最多差 2.05 mm（底盘），手臂各节不超过 0.5 mm。体积是 franzi.xml 包围盒的 24–87%。轮子用圆柱。
+  - 凸包要算约 2 s，所以缓存在 `robots/franzi/assets/derived/robot_hulls.json`，每台机器各自生成、不同步，键是版本号、顶点上限和 STL 内容。有缓存时 `build()` 仍是 0.4 s。
   - 凸包会填平连杆的凹处：躯干 STL 是 1.4 L 的空壳，凸包有 25 L。所以这仍不是逐面的 CAD 碰撞模型。试过把躯干切成 8 层水平凸包，总体积 24 L，几乎没变，没有采用。
   - 所有连杆都有显式惯量，换碰撞体不改质量。
 - 自碰撞（2026-10-25，参照 RoboDojo 的 `enabled_self_collisions`）：碰撞靠 contype/conaffinity 位和两条 `<exclude>` 过滤（源模型一条也没有）：
@@ -36,7 +57,7 @@
   - 以前手臂能穿过躯干而不被发现。开了这项以后，RoboSyn 的厨房、抽屉、篮子三个场景的专家在中线附近、离身体很近的地方干活时，前臂或手腕会顶到胸口，见 [tasks.md](tasks.md)。
 - 加入 `{side}_grasp` 逆解点（全开时两块夹指的中心）、桌子和灯光。
 - `align_joint_limits()` 把关节范围收紧到控制器限位，见下文「关节限位」。
-- `python -m sim.build_task` 只生成场景：`outputs/robot_scene.xml` 和 `outputs/collision_setup.json`。
+- `python -m robots.franzi.scene` 只生成场景：`outputs/robot_scene.xml` 和 `outputs/collision_setup.json`。
 
 ### 可选的移动底盘（2026-10-25）
 
@@ -52,11 +73,11 @@
 - **记录**：全量记录多六组数组：`base_pose` 和 `base_goal`（相对出发点的 x、y、yaw，世界坐标），`base_velocity` 和 `base_command`（底盘自身坐标系下的前进、左移、转向速度，和 SDK 的速度指令一致），`wheel_steer` 和 `wheel_rate`（三个轮组实测的转向角和轮速）。
 - **固定底盘不受影响**：抓放、分拣装盘 seed 0、实验台 seed 0 的 trace、`scene.xml`、`trajectory.npz`、`contacts.json` 和改动前逐位一致。
 
-## 夹爪连杆（`sim/gripper_linkage.py`）
+## 夹爪连杆（`robots/franzi/gripper_linkage.py`）
 
 用户 2026-10-24 要求夹爪按 CAD 连杆运动。
 
-- 两版 URDF 都把夹爪的连杆和夹指座（连同销轴、红色螺钉）固定在全开位置，只有两块夹指沿 x 平移，所以一合拢，夹指就离开连杆、悬在空中。新夹爪是同一套硬件，连杆尺寸、夹指和下沉曲线都沿用 wheel_robot_4.0 的测量；URDF 的手指关节是 `{side}_finger01_joint`、`{side}_finger02_joint`，哪一根合拢时滑块为正写在 `config/robot/franzi_sdk.yaml` 的 `grippers.sim_joints`（`sim.episode.FINGER_JOINTS`）。
+- 两版 URDF 都把夹爪的连杆和夹指座（连同销轴、红色螺钉）固定在全开位置，只有两块夹指沿 x 平移，所以一合拢，夹指就离开连杆、悬在空中。新夹爪是同一套硬件，连杆尺寸、夹指和下沉曲线都沿用 wheel_robot_4.0 的测量；URDF 的手指关节是 `{side}_finger01_joint`、`{side}_finger02_joint`，哪一根合拢时滑块为正写在 `robots/franzi/config/franzi_sdk.yaml` 的 `grippers.sim_joints`（`sim.episode.FINGER_JOINTS`）。
 - CAD 里每侧的夹指座挂在一个平行四边形上：连杆 5 和弹簧支杆绕腕部铰点摆动，臂长 55 mm，夹指座保持平行，沿圆弧走。电机推中间的滑块，经连杆 14、8、12 带动夹指座。
 - 所以合拢时夹指沿手指方向下沉：夹 45 mm 物块（双臂抓放）14.5 mm，夹 40 mm 零件（分拣装盘）15.1 mm，最多 16.3 mm，全闭 15.7 mm。
 - 建模：
@@ -68,7 +89,7 @@
 - 局限：手指伺服是 kp 1500、±6 N，外力沿圆弧切向超过 6 N 就能推动夹指，比如指尖顶在桌面上；真机丝杠自锁，不会被推动。所以专家必须让指尖离开桌面。
 - 抓取点 `{side}_grasp` 仍是全开时两块夹指的中心；合拢后夹指中心在它下方 `contact_drop(宽度)` 处。两个专家据此调整了抓取高度，见 [tasks.md](tasks.md)。
 
-## 运动学（`robot_kinematics.py`）
+## 运动学（`robots/franzi/kinematics.py`）
 
 用户 2026-10-24 确定「真机跟仿真对齐」：逆解和正解只在主机侧用这一份共享运动学来算，仿真和真机都只接收关节指令（`MoveJ`、关节遥操作），不用控制器自己的逆解、`MoveL` 和笛卡尔遥操作。
 
@@ -82,7 +103,7 @@
 
 ## 关节限位、速度与伺服
 
-- 关节限位按控制器镜像对齐（用户 2026-10-24 要求）。`align_joint_limits()` 写入的数值来自 `robot_kinematics.controller_ranges()`，它读 `config/robot/franzi_sdk.yaml`：镜像 `sysctrl_params.json` 和头部、腰部配置里的限位，以及 SDK 与 URDF 的正负号映射。
+- 关节限位按控制器镜像对齐（用户 2026-10-24 要求）。`align_joint_limits()` 写入的数值来自 `robots.franzi.kinematics.controller_ranges()`，它读 `robots/franzi/config/franzi_sdk.yaml`：镜像 `sysctrl_params.json` 和头部、腰部配置里的限位，以及 SDK 与 URDF 的正负号映射。
   - 关节范围取 URDF 与控制器的交集；控制器更紧的一侧再留 SDK 的 0.001 rad 余量，执行器指令范围同步修改。
   - 两臂共收紧 10 个关节：肩俯仰下限 −149.9° → −140°，肘上限 150.1° → 148°，肩和腕偏航 ±170.17° → ±170°，腕俯仰 ±60.16° → ±60°。（wheel_robot_4.0 里肩俯仰和肘与 SDK 反号，所以以前写作上限、下限。）
   - 控制器比 URDF 宽的地方暂时保持 URDF：大腿下限 −10°（URDF 0°）、上限 147°（URDF 146.68°），小腿上限和左肩 roll 下限各差 0.2°（URDF 取了整）。要放宽，须先在真机上确认机械范围。wheel_robot_4.0 的肘上限 15°（URDF 7.45°）和腰俯仰下限 −75°（URDF −30°）在新 URDF 里已不存在。
@@ -95,31 +116,31 @@
 
 ## 相机
 
-四路策略相机在 `sim/camera_rig.py` 和 `sim/camera_rig.json`：头部 D435、躯干 D435、左腕 D405、右腕 D405，各挂在同名的 URDF 传感器坐标系上，随实际关节状态运动。`camera_rig.assert_mounts()` 在正解后校验安装关系。
+四路策略相机在 `robots/franzi/camera_rig.py` 和 `robots/franzi/camera_rig.json`：头部 D435、躯干 D435、左腕 D405、右腕 D405，各挂在同名的 URDF 传感器坐标系上，随实际关节状态运动。`camera_rig.assert_mounts()` 在正解后校验安装关系。
 
 - 光学坐标轴是传感器坐标系先绕光轴转相机的安装角，再绕 x 转 180°（传感器坐标系沿 +Z 看，MuJoCo 相机沿 −Z 看）。
 - D435 的安装角是 −90°。腕部 D405 的画面方向按夹爪 CAD 改正（用户 2026-10-24 确定）：左腕 0°、右腕 180°，画面水平方向沿夹爪开合方向，画面上方朝外侧。依据是 D405 背面固定用的两颗 M3 与双目基线平行，而 CAD 里这两颗螺钉沿开合方向排布；用户确认真机画面里两根手指在左右两边。
-- 腕部 D405 装在转接座上（用户 2026-10-25 要求看到整个夹爪，设计见 `hardware/wrist_d405_mount/`）。新夹爪的 D405 装在壳体旁、法兰附近的钣金条上，竖直朝下，壳体挡住夹指座，指尖贴在画面最下沿。转接座占用 D405 在钣金条顶面平台上的位置和那两颗螺钉，把相机沿手的方向往前移 38 mm，朝夹爪倾斜 20°：镜头在夹爪中面外 65.5 mm、抓取点后方 88 mm，和 2026-10-24 在旧夹爪上的倾斜相机块（按用户参考模型）一致，画面也一样。仿真里相机 = URDF 传感器坐标 × 转接座的变换；相机位姿、D405 外壳、转接座外观和碰撞体都由 `sim/wrist_mount.py` 从 `params.json` 算出，只能一起改。
+- 腕部 D405 装在转接座上（用户 2026-10-25 要求看到整个夹爪，设计见 `robots/franzi/hardware/wrist_d405_mount/`）。新夹爪的 D405 装在壳体旁、法兰附近的钣金条上，竖直朝下，壳体挡住夹指座，指尖贴在画面最下沿。转接座占用 D405 在钣金条顶面平台上的位置和那两颗螺钉，把相机沿手的方向往前移 38 mm，朝夹爪倾斜 20°：镜头在夹爪中面外 65.5 mm、抓取点后方 88 mm，和 2026-10-24 在旧夹爪上的倾斜相机块（按用户参考模型）一致，画面也一样。仿真里相机 = URDF 传感器坐标 × 转接座的变换；相机位姿、D405 外壳、转接座外观和碰撞体都由 `sim/wrist_mount.py` 从 `params.json` 算出，只能一起改。
 - 只能经关节改变视角，比如头部俯仰；不要重新瞄准相机，也不要把它从传感器坐标系上拆下来（腕部转接座是唯一的例外）。
 - 渲染近裁剪面 45 mm，相机看不到自己的外壳。头部 D435 在面罩后 16–20 mm，面罩也不在画面里。
 - 内参是未标定的模拟针孔：用户还没有提供真机的内参和畸变参数。这不是完整的 RealSense RGB-D 仿真，没有深度噪声，也没有模拟 RGB 与深度之间的基线。
 
-## 外观（`sim/appearance.py`、`sim/fittings.py`）
+## 外观（`robots/franzi/appearance.py`、`robots/franzi/fittings.py`）
 
 只改外观，不改物理：新加的 geom 都没有质量、不参与接触，源 URDF、惯量和碰撞体不变。参照是实验室真机（含夹爪和 RealSense 外壳）和工厂视频。
 
 - 上色：各连杆的视觉网格先拆成 CAD 连通部件，个别部件再按面区域拆分（大腿横梁、大臂网格护垫、肩部和肘部端盖），分组后用珍珠白、石墨灰、黑色、亮黑面罩等材质。头部是黑色面罩、白色饰带、深灰后壳和银白颈部支架。
 - 胸口按工厂机器人的印刷，自上而下是 INOVANCE、Powered by、FMC³、ROBOTICS，下面是躯干相机槽（用户 2026-10-24 确定，不用实验室那台只有 INOVANCE 的胸口）。
   - 整块是贴合外壳曲面的贴花；源模型的 FMC3 方形贴片已去掉。
-  - FMC³ 字形按工厂视频 30 帧对齐叠加后重画：F 是浮在上方的一条横杠加一个 Γ，M 的中间是 V 形，C 里有两个并排的圆点，上标 3 很小、立在大写字母的顶线上。`assets/franzi_source/assets/fmc3_logo.png` 是另一版标志，只取了它的 3。
+  - FMC³ 字形按工厂视频 30 帧对齐叠加后重画：F 是浮在上方的一条横杠加一个 Γ，M 的中间是 V 形，C 里有两个并排的圆点，上标 3 很小、立在大写字母的顶线上。`robots/franzi/assets/urdf/assets/fmc3_logo.png` 是另一版标志，只取了它的 3。
   - 尺寸和位置以 INOVANCE 的宽度为尺子，在正对胸口的工厂视频帧上量得。
 - 胸口相机槽：外壳开口沿躯干相机光轴看是 85.1 × 20.8 mm 的跑道形，原来能看到整台 D435 的前脸。真机是浅色凹槽里一条宽约 82 mm、高约 10.5 mm 的深色窗。现在在 D435 玻璃前 0.4–1.0 mm 处放一块与外壳同色的盖板，中间是 82 × 10.5 mm 的带色玻璃窄窗。盖板和窗在躯干相机的近裁剪面以内，不进画面。
 - 面罩不开窗：开窗版做过，按用户要求（2026-10-24）撤掉了。把整个面罩或胸口贴花从渲染中去掉，四路相机原始画面都是 0 像素变化。
 - 末端：夹爪机身、法兰、连杆和相机转接座为黑色，夹指座、销轴和夹指为银色铝件，夹指座上的螺钉为红色。新夹爪的面按面表上色，同一个零件和 wheel_robot_4.0 里的材质相同。肘部外侧黑色端盖带白色 INOVANCE 标志，用贴合曲面的贴花画出。
-- RealSense 外壳换成官方模型（`assets/appearance/cameras/`，来源和许可见各自的 `SOURCE.json`）：D435 用 MuJoCo Menagerie 的分色模型（源自 realsense-ros 的 `d435.dae`，Apache-2.0），左红外在传感器原点，玻璃在原点前 4.2 mm；D405 用 realsense-ros 的 `d405.stl`。头部 D435 的黑色支架保留。
-- `sim/fittings.py` 补 CAD 缺少的外观件：下背部黑色竖纹背板，上背部红色急停、接口和蓝色指示灯，大腿窗口深色背板，底盘前部和前角的绿色灯带。
+- RealSense 外壳换成官方模型（`assets/sensors/`，来源和许可见各自的 `SOURCE.json`）：D435 用 MuJoCo Menagerie 的分色模型（源自 realsense-ros 的 `d435.dae`，Apache-2.0），左红外在传感器原点，玻璃在原点前 4.2 mm；D405 用 realsense-ros 的 `d405.stl`。头部 D435 的黑色支架保留。
+- `robots/franzi/fittings.py` 补 CAD 缺少的外观件：下背部黑色竖纹背板，上背部红色急停、接口和蓝色指示灯，大腿窗口深色背板，底盘前部和前角的绿色灯带。
 - URDF 传感器坐标系的标记小球已隐藏，相机安装校验仍用这些坐标系。
-- 生成的网格缓存在 `assets/appearance/{painted,wordmark,fittings}/`，以源 STL 内容和参数为键，不入库，首次运行时生成。
+- 生成的网格缓存在 `robots/franzi/assets/appearance/{painted,wordmark,fittings}/`，以源 STL 内容和参数为键，不入库，首次运行时生成。
 - 渲染是确定的，但 MP4 之间不能逐像素比较：极小的渲染差异会被 H.264 放大到约 0.5% 的像素。比较画面要用原始渲染帧。
 
 ## 灯光与阴影

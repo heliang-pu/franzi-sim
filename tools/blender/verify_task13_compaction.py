@@ -12,7 +12,8 @@ sys.dont_write_bytecode = True
 
 import numpy as np
 from PIL import Image
-from compact_props import ASSETS, QA, deduplicate, inventory, round_obj, save_png
+from compact_props import QA, deduplicate, inventory, round_obj, save_png
+from prop_paths import PROPS, folders, locate
 from prop_schema import referenced_files, schema_errors
 from validate_props import read_obj, validate_prop
 
@@ -22,7 +23,7 @@ def regressions():
     with tempfile.TemporaryDirectory(prefix="regression_", dir=QA) as temporary:
         root = Path(temporary)
         folder = root / "_test_cube"
-        shutil.copytree(ASSETS / "_test_cube", folder)
+        shutil.copytree(PROPS / "_test_cube", folder)
         data = json.loads((folder / "prop.json").read_text())
         assert not validate_prop(folder).errors
         shared = root / "shared"
@@ -37,7 +38,7 @@ def regressions():
         assert schema_errors(changed)
         checks.append("multi-parent traversal rejected")
         (shared / "body_albedo.png").unlink()
-        (shared / "body_albedo.png").symlink_to(ASSETS / "_test_cube/body_albedo.png")
+        (shared / "body_albedo.png").symlink_to(PROPS / "_test_cube" / "body_albedo.png")
         changed["parts"][0]["texture"] = "../shared/body_albedo.png"
         (folder / "prop.json").write_text(json.dumps(changed))
         assert any("unsafe file" in error for error in validate_prop(folder).errors)
@@ -48,7 +49,7 @@ def regressions():
         changed = copy.deepcopy(data)
         changed["variants"] = [{"name": "same", "textures": {"body": "copy_albedo.png"}}]
         (folder / "prop.json").write_text(json.dumps(changed))
-        removed = deduplicate(root)
+        removed = deduplicate(root=root)
         assert len(removed) == 1 and not (folder / "copy_albedo.png").exists()
         assert not validate_prop(folder).errors
         checks.append("duplicate variant texture redirected before deletion")
@@ -68,9 +69,9 @@ def regressions():
                         "v 0.000001 0.000004 0\nvt 0.123456 0.234567\n"
                         "vt 0.5 0.2\nvt 0.1 0.7\nvn 0 0 1\nf 1/1/1 2/2/1 3/3/1\n")
         original = read_obj(tiny)
-        result = round_obj(tiny, root)
+        result = round_obj(tiny)
         first_bytes = tiny.read_bytes()
-        round_obj(tiny, root)
+        round_obj(tiny)
         assert tiny.read_bytes() == first_bytes
         final = read_obj(tiny)
         assert result["higher_precision_vertices"] == 3
@@ -82,12 +83,12 @@ def regressions():
         diagonal = root / "diagonal.obj"
         diagonal.write_text("v 0.000005 0.000005 0.000005\nv 0.1 0 0\nv 0 .1 0\nf 1 2 3\n")
         original = read_obj(diagonal)
-        result = round_obj(diagonal, root)
+        result = round_obj(diagonal)
         assert result["higher_precision_vertices"] == 1
         assert np.linalg.norm(original.vertices - read_obj(diagonal).vertices, axis=1).max() <= .000005
         checks.append("Euclidean movement bound enforced rather than per-axis bound")
         first_bytes = diagonal.read_bytes()
-        round_obj(diagonal, root)
+        round_obj(diagonal)
         assert diagonal.read_bytes() == first_bytes
         checks.append("compaction is byte-idempotent, including promoted precision")
     return checks
@@ -97,16 +98,17 @@ def audit():
     before = json.loads((QA / "inventory_before.json").read_text())
     changes = json.loads((QA / "rounding_audit.json").read_text())
     assert max(row["max_vertex_change_mm"] for row in changes) <= .005000001
-    assert not list(ASSETS.rglob("*.blend1"))
+    assert not list(PROPS.rglob("*.blend1"))
     assert not list((QA.parents[1]).rglob("*.blend1"))
     references = 0
     shared_refs = 0
-    for path in sorted(ASSETS.glob("*/prop.json")):
+    owners = {folder.resolve() for folder in folders().values()}
+    for path in sorted(PROPS.glob("*/prop.json")):
         data = json.loads(path.read_text())
         assert not schema_errors(data), path
         for reference in referenced_files(data):
-            target = (path.parent / reference).resolve()
-            assert target.is_file() and target.is_relative_to(ASSETS), (path, reference)
+            target = locate(reference, path.parent).resolve()
+            assert target.is_file() and target.parent in owners, (path, reference)
             references += 1
             shared_refs += reference.startswith("../")
         if any(row["higher_precision_vertices"] and row["file"].split("/")[0] == path.parent.name
@@ -115,9 +117,9 @@ def audit():
     unchanged_sources = 0
     for relative, info in before["files"].items():
         if Path(relative).name == "source.blend":
-            assert hashlib.sha256((ASSETS / relative).read_bytes()).hexdigest() == info["sha256"], relative
+            assert hashlib.sha256(locate(relative).read_bytes()).hexdigest() == info["sha256"], relative
             unchanged_sources += 1
-    for path in ASSETS.rglob("*.png"):
+    for path in PROPS.rglob("*.png"):
         with Image.open(path) as image:
             assert image.mode in ("RGB", "RGBA", "P"), path
             if path.name.startswith("preview"):

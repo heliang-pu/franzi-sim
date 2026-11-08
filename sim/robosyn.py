@@ -19,8 +19,8 @@ import xml.etree.ElementTree as ET
 import numpy as np
 import trimesh
 
+from sim import TABLE_Z, fmt
 from sim import props as pp
-from sim.build_task import TABLE_Z, fmt
 
 SOURCES = {
     "pot": "robosyn_assets/Pan/pot.ply",

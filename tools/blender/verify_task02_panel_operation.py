@@ -19,9 +19,10 @@ from trimesh.proximity import closest_point_naive
 
 from prop_schema import referenced_files
 from validate_props import read_obj, validate_prop
+from prop_paths import PROPS
 
 
-ROOT = Path(__file__).resolve().parents[2] / "assets" / "props"
+ROOT = PROPS
 TOOLS = Path(__file__).resolve().parent
 UV_CACHE = {}
 

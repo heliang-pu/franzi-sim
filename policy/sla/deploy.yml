@@ -1,0 +1,11 @@
+policy_name: sla
+port: 18780
+checkpoint: null  # an SLA checkpoint folder (--set checkpoint=...)
+assets: null  # <assets>/<asset id>: the normalization and prompts (sla.prepare)
+scheduler: null  # the long scenes' scheduler checkpoint (sla.scheduler)
+zero_noise: false  # start the flow at zero instead of the seeded noise
+memory_frames: 1  # MEM's frames (sla.mem); 1 is off
+memory_stride: 25  # control ticks between MEM's frames
+observe_every: null  # with MEM, ticks between the frames it is shown (memory_stride)
+subtask_every: 75  # control ticks between prompts (3 s)
+horizon: 25  # actions applied per chunk (simulator side)

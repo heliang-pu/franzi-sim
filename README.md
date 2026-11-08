@@ -68,6 +68,7 @@
 - **动作**：16 维，25 Hz：14 个手臂关节的目标角和两个夹爪的闭合度。底盘固定，腰腿和头部不动。
 - **物理**：MuJoCo 500 Hz；Isaac Sim 上是 PhysX 500 Hz，碰撞体、质量和关节相同，接触走同一套审计。机器人每个连杆用 STL 凸包碰撞，两臂之间、手臂和躯干之间也检测碰撞。任一接触穿透超过 1 mm，或关节越限超过 0.002 rad，这一集立即判失败。仿真本身崩溃的一集作废，换种子重来，不计入成功率；崩溃指状态不是有限值、接触缓冲溢出、物体被弹飞。
 - **成功**：每个任务有自己的判定，一般要求物体到位、静止、不碰机器人，并保持至少 15 个控制拍；写在各场景的 `run.py` 和 `check.py` 里。全程不能有碰撞：机器人只能用手碰要操作的东西，用底盘和轮子碰地面；搬运中的物体只能碰机器人。
+- **策略接口**：策略服务端和仿真器之间走 websocket，用 [XPolicyLab](https://github.com/XPolicyLab/XPolicyLab)（RoboDojo、RoboTwin 评测用的那一层）的协议和适配器约定：每个方法一个 `policy/<方法>/`，同一个评测客户端能跑 MuJoCo 和 Isaac Sim，见 [docs/policy.md](docs/policy.md)。
 - **接口**：上层程序经原厂 SDK 驱动仿真服务端，调用方式和真机相同。原厂 SDK 验收在 MuJoCo 两种主循环下全部通过：通信 28/28，控制语义 39/39，运动学接口 24/24，物理表现 10/10，故障处理 5/5。
 
 还没有的：
@@ -98,11 +99,12 @@
 | ACT，第 60 000 步 | 15/20 | 15/20 | 17/20 |
 | ACT，第 80 000 步 | 14/20 | 18/20 | 19/20 |
 | ACT，第 40 000 步后换手下降时带修正的演示，再训 20 000 步 | 14/20 | 19/20 | 18/20 |
+| 同上，再训到 40 000 步 | 8/20 | 16/20 | – |
 
 查到的原因（详见 [docs/fineart.md](docs/fineart.md)）：
 
 - **隐藏随机量**：专家有些选择按种子抽，画面和状态里都看不出来。其中两个场景的成功判定还依赖它们，任何策略都有上限（`tote_carry` 约 40%，`cnc_tending` 约 22%），见 [docs/benchmark.md](docs/benchmark.md#隐藏随机量2026-11-04)。
-- **对不准，也不修正**：演示每次都对得很准，没有偏了再修正的画面，模型下降时基本不纠偏。简化版合爪时沿垫片方向偏超过约 14 mm 就很容易抓不稳。`precision_insertion` 的轴承到轴上方时离轴线中位 5 mm，配合余量只有约 1 mm。
+- **对不准，也不修正**：演示每次都对得很准，没有偏了再修正的画面，模型下降时基本不纠偏。换成带修正的演示后它确实会修正，但手的平均偏差越训越大，成功率没有超过只靠多训。简化版合爪时沿垫片方向偏超过约 14 mm 就很容易抓不稳。`precision_insertion` 的轴承到轴上方时离轴线中位 5 mm，配合余量只有约 1 mm。
 - **接缝**：执行完一段换下一段时指令会跳变（最大 84 mrad），能把抓着的零件甩掉。简化版第 80 000 步，25 步有 5 集抬起时滑掉，时间集成没有接缝，只掉了 1 集。
 - **FineART**：在 `tray_push` 上规划几乎不跟随托盘的位置（跟随比例 0.06，ACT 1.09）。它每个场景看过的数据比 ACT 少至少 10 倍，是不是这个原因，要单场景训练才能确认。
 
@@ -163,18 +165,19 @@ python -m pytest tests -q
 
 | 路径 | 内容 |
 |---|---|
-| `scenes/` | 每个场景一个包：`task.py` 布局和物体，`run.py` 专家和命令行，`check.py` 验收 |
-| `sim/` | 各场景共用：机器人场景 `build_task.py`，仿真主循环和逐步审计 `episode.py`，相机 `camera_rig.py`，外观、夹爪连杆和腕部相机块；道具和工位 `props.py`、`robosyn.py`、`prop_assets.py`、`workcell.py`，桌面搬运 `tabletop.py`；验收 `scene_check.py`、`bench_check.py` |
-| `robot_kinematics.py` | 共享正逆解（Pinocchio），专家、SDK 服务端和主机侧笛卡尔控制都用它 |
+| `robots/` | 每台机器人一个包，目前只有 `robots/franzi/`：源模型 `assets/urdf/`（原样，不改），派生的机器人场景 `scene.py`，共享正逆解 `kinematics.py`（专家、SDK 服务端和主机侧笛卡尔控制都用它），相机 `camera_rig.py`，外观、夹爪连杆和腕部相机座，控制器配置 `config/`，腕部 D405 转接座的设计 `hardware/` |
+| `scenes/` | 每个场景一个包：`task.py` 布局和物体，`run.py` 专家和命令行，`check.py` 验收，`assets/` 只有这个场景用的道具 |
+| `sim/` | 各场景共用：仿真主循环和逐步审计 `episode.py`，桌面搬运 `tabletop.py`，道具和工位 `prop_assets.py`、`props.py`、`robosyn.py`、`workcell.py`，验收 `bench_check.py`、`scene_check.py` |
 | `simbridge/` | 原厂 SDK 的仿真服务端 |
 | `sdk/` | 原厂 SDK 的连接、SDK 验收、主机侧笛卡尔控制和离线运动学核对 |
 | `data/` | 示教数据的录制、专家运行的转换和 LeRobot 导出 |
 | `isaac/` | Isaac Sim 5.1 移植：场景导出、专家闭环、数据采集和策略评测 |
-| `fineart/` | FineART-VLA 和 ACT 的训练、策略服务和检查（单独的环境） |
-| `config/` | 机器人与 SDK 的映射、连接和后端配置、规划约束原件、SDK 验收程序 |
-| `assets/` | 源模型 `franzi_source/`（原样，不改），外观网格，RealSense 相机模型，工业道具 `props/` |
+| `policy/` | 各策略方法，一个方法一个子包：`model.py` 由策略服务端提供，`deploy.py` 是仿真端的闭环，`deploy.yml` 是配置；现有回放、ACT、FineART-VLA 和 SLA |
+| `eval_client/` | 仿真端：一回合闭环和整套评测，MuJoCo 和 Isaac Sim 都能跑 |
+| `fineart/` | FineART-VLA 和 ACT 的训练和检查（单独的环境），之后搬进 `policy/` |
+| `config/` | 原厂 SDK 的连接和后端配置、SDK 验收程序 |
+| `assets/` | 多个场景共用的资产：道具库 `props/`（几个场景共用的道具，以及还没有场景用的道具），RealSense 相机模型 `sensors/` |
 | `tools/blender/` | 工业道具的 Blender 构建脚本 |
-| `hardware/wrist_d405_mount/` | 腕部 D405 转接座的设计 |
 | `tests/` | 不依赖物理引擎的 pytest |
 | `docs/` | 详细文档和 README 的图 |
 
@@ -186,10 +189,11 @@ python -m pytest tests -q
 - [原厂 SDK 仿真服务端](docs/sdk_bridge.md)：分层、控制语义、坐标映射、运动学接口和验收
 - [VLA 数据](docs/vla_data.md)：经原厂 SDK 录制、转换专家运行、导出 LeRobot 数据集
 - [Isaac Sim 移植](docs/isaac.md)：映射规则、检查结果、和 MuJoCo 的差别、数据采集
+- [策略接口](docs/policy.md)：`policy/` 和 `eval_client/`，交换的数据、一回合的流程、命令和依赖
 - [FineART-VLA 和 ACT](docs/fineart.md)：数据、训练、闭环评测、结果和原因排查
 - [控制器镜像离线检查](docs/controller_image.md)
 - [历次版本](docs/history.md)：每一版改了什么、当时的结果和结论
 
 ## 版权
 
-本仓库没有开源许可证，保留所有权利：欢迎查看，未经许可不得使用、修改或转载。第三方素材：RealSense 相机模型（来源和许可见 `assets/appearance/cameras/*/SOURCE.json`）；RoboSynChallenge 的道具（来源见 [docs/tasks.md](docs/tasks.md)，原始文件不在仓库里）。
+本仓库没有开源许可证，保留所有权利：欢迎查看，未经许可不得使用、修改或转载。第三方素材：RealSense 相机模型（来源和许可见 `assets/sensors/*/SOURCE.json`）；RoboSynChallenge 的道具（来源见 [docs/tasks.md](docs/tasks.md)，原始文件不在仓库里）。

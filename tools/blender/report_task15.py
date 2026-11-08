@@ -2,9 +2,10 @@
 import json
 from pathlib import Path
 from PIL import Image
+from prop_paths import PROPS
 
 ROOT=Path(__file__).resolve().parents[2]
-OUT=ROOT/'assets/props'
+OUT=PROPS
 QA=ROOT/'tools/blender/_qa/task15'
 IDS=('plc_module','module_tray','test_fixture','ng_bin','product_box','accessory_box','stack_light','line_console')
 
@@ -121,7 +122,7 @@ def main():
               ''
               'Blender 5.2.3 was used with `-t 6`. Validators and artwork used the supplied `PROP_PYTHON`; the physics smoke test reused '
               'the existing project MuJoCo package read-only. Because Pinocchio is unavailable in the tools environment, '
-              'the isolated loader test supplies ROOT and the unchanged fmt function extracted from sim/build_task.py; '
+              'the isolated loader test supplies ROOT and the unchanged fmt function extracted from robots/franzi/scene.py; '
               'the prop_assets loader itself runs unchanged. No shared source files or existing console/device outputs were modified.']
     (ROOT/'tools/blender/task15_report.md').write_text('\n'.join(lines)+'\n')
 

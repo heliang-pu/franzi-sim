@@ -77,6 +77,11 @@ def load(model, tokenizer, device, training, checkpointing=True, freeze_vision=F
     return policy, pre, post
 
 
+def vision_parameters(policy):
+    tower = policy.model.paligemma_with_expert.paligemma.model.vision_tower
+    return list(tower.parameters())
+
+
 def parameter_groups(policy, vision_scale):
     """The policy's optimizer groups, with the vision tower in its own group at
     vision_scale times the learning rate when that isn't 1."""
@@ -85,12 +90,12 @@ def parameter_groups(policy, vision_scale):
         return groups
     assert len(groups) == 1, "per-group learning rates are set in the config too"
     backend = {k: v for k, v in groups[0].items() if k != "params"}
-    tower = policy.model.paligemma_with_expert.paligemma.model.vision_tower
-    vision = {id(p) for p in tower.parameters()}
+    tower = vision_parameters(policy)
+    vision = {id(p) for p in tower}
     rest = [p for p in policy.parameters() if id(p) not in vision]
     return [
         {"params": rest, **backend},
-        {"params": list(tower.parameters()), "lr_scale": vision_scale, **backend},
+        {"params": tower, "lr_scale": vision_scale, **backend},
     ]
 
 
@@ -221,6 +226,12 @@ def main():
         type=float,
         default=1.0,
         help="the vision tower's learning rate over --lr",
+    )
+    parser.add_argument(
+        "--vision-limit",
+        type=float,
+        default=0.0,
+        help="the vision tower sits out a step whose gradient norm in it exceeds this",
     )
     parser.add_argument(
         "--max-skips",
@@ -366,6 +377,8 @@ def main():
 
     started = time.monotonic()
     skipped = 0
+    tower = vision_parameters(policy)
+    sat_out = 0
     for step in range(start + 1, args.steps + 1):
         local = step - args.schedule_from
         if local <= args.warmup:
@@ -380,6 +393,11 @@ def main():
         metrics = {}
         for micro in range(args.accumulate):
             batch = pre(to_device(draw(), device))
+            # With no action sample FineART takes its text-only path, which fails on
+            # the bfloat16 attention ("invalid dtype for bias"). 30% of the samples are
+            # text-only, so that is 0.3 ** batch: about one step in 3800 at 8 x 4.
+            while not batch["predict_actions"].any():
+                batch = pre(to_device(draw(), device))
             if step == start + 1 and micro == 0:
                 log(
                     {
@@ -408,6 +426,9 @@ def main():
                     metrics[k] = v
         grads = [p.grad for p in policy.parameters() if p.grad is not None]
         grad = torch.nn.utils.get_total_norm(grads)
+        vision_grad = torch.nn.utils.get_total_norm(
+            [p.grad for p in tower if p.grad is not None]
+        )
         finite = bool(torch.isfinite(grad))
         if not finite or grad > args.spike:
             # Which parameters carry it, before clipping.
@@ -425,18 +446,31 @@ def main():
                     "event": "grad_spike",
                     "step": step,
                     "grad_norm": float(grad),
+                    "vision_grad_norm": float(vision_grad),
                     "nonfinite_params": bad[:8],
                     "top": norms[:8],
                     **{k: v for k, v in metrics.items() if isinstance(v, float)},
                 }
             )
+        applied = grad
+        # franzi_v7's tower spiked to 1e5 from its step 10700 on, more and more often,
+        # and the global clip below then scaled every other gradient of that step away.
+        # NaN fails the comparison, so a non-finite tower sits out too.
+        if args.vision_limit > 0 and not vision_grad <= args.vision_limit:
+            sat_out += 1
+            for p in tower:
+                p.grad = None
+            applied = torch.nn.utils.get_total_norm(
+                [p.grad for p in policy.parameters() if p.grad is not None]
+            )
+            finite = bool(torch.isfinite(applied))
         if not finite:
             skipped += 1
             if skipped > args.max_skips:
                 raise RuntimeError(f"{skipped} steps skipped on non-finite gradients")
             optimizer.zero_grad(set_to_none=True)
             continue
-        torch.nn.utils.clip_grads_with_norm_(policy.parameters(), 1.0, grad)
+        torch.nn.utils.clip_grads_with_norm_(policy.parameters(), 1.0, applied)
         optimizer.step()
         if step <= start + 3 or step % 10 == 0:
             log(
@@ -446,6 +480,8 @@ def main():
                     "epoch": step * args.accumulate / len(loader),
                     **metrics,
                     "grad_norm": float(grad),
+                    "vision_grad_norm": float(vision_grad),
+                    "vision_sat_out": sat_out,
                     "skipped_steps": skipped,
                     "lr": args.lr * factor,
                     "elapsed_s": time.monotonic() - started,

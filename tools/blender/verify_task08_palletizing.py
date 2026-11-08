@@ -16,6 +16,7 @@ from pathlib import Path
 sys.dont_write_bytecode = True
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
+from prop_paths import PROPS
 ROOT = HERE.parents[1]
 QA = HERE / "_qa" / "task08"
 IDS = ("mini_pallet", "scissor_lift_table", "pallet_carton_160x80x80",
@@ -70,7 +71,7 @@ def external_checks():
     results = []
     checks = {}
     for prop_id in IDS:
-        folder = ROOT / "assets" / "props" / prop_id
+        folder = PROPS / prop_id
         data = json.loads((folder / "prop.json").read_text())
         require(data["task"] == "palletizing", "task classification")
         expected = {"mini_pallet": 6, "scissor_lift_table": 2, "pattern_sign": 1}.get(prop_id, 1)
@@ -146,7 +147,7 @@ def mujoco_checks():
     output = QA / "mujoco"
     output.mkdir(parents=True, exist_ok=True)
     for prop_id in IDS:
-        folder = ROOT / "assets" / "props" / prop_id
+        folder = PROPS / prop_id
         data = json.loads((folder / "prop.json").read_text())
         choices = [("default", {})] + [(v["name"], v) for v in data["variants"][1:]]
         for label, variant in choices:
@@ -204,7 +205,7 @@ def make_contact_sheet():
     draw = ImageDraw.Draw(sheet)
     for index, (prop_id, preview, label) in enumerate(items):
         x, y = index % 4 * 480, index // 4 * 520
-        with Image.open(ROOT / "assets" / "props" / prop_id / preview) as image:
+        with Image.open(PROPS / prop_id / preview) as image:
             sheet.paste(image.convert("RGB").resize((480, 480), Image.Resampling.LANCZOS), (x, y))
         draw.text((x + 16, y + 491), label, font=font, fill="#223143")
     sheet.save(HERE / "task08_previews.png")
@@ -232,7 +233,7 @@ def source_checks():
 
     report = {}
     for prop_id in IDS:
-        folder = ROOT / "assets" / "props" / prop_id
+        folder = PROPS / prop_id
         data = json.loads((folder / "prop.json").read_text())
         bpy.ops.wm.open_mainfile(filepath=str(folder / "source.blend"))
         objects = {p["name"]: bpy.data.objects[p["source_visual_object"]] for p in data["parts"]}

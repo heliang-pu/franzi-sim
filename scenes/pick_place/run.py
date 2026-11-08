@@ -18,11 +18,12 @@ from pathlib import Path
 import mujoco
 import numpy as np
 
-from robot_kinematics import URDF
+from robots.franzi.camera_rig import POLICY_CAMERAS
+from robots.franzi.kinematics import URDF
+from robots.franzi.scene import FINGERS
 from scenes.pick_place.task import GOALS, PAD_DROP, SOURCES, build
+from sim import TABLE_Z
 from sim import tabletop as tt
-from sim.build_task import FINGERS, TABLE_Z
-from sim.camera_rig import POLICY_CAMERAS
 from sim.episode import PhysicsError, Scene
 
 # Closure on the 45 mm parts: the jaws 42.9 mm apart, a 2 mm squeeze.

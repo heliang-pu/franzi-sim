@@ -7,6 +7,8 @@ from pathlib import Path
 import sys
 
 import bpy
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from prop_paths import PROPS
 
 sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[2]
@@ -16,7 +18,7 @@ QA = ROOT / 'tools/blender/_qa/task19'
 def main() -> None:
     result = {}
     for name in ('parcel_cube_80', 'parcel_cube_75', 'parcel_cube_85', 'infeed_table'):
-        folder = ROOT / 'assets/props' / name
+        folder = PROPS / name
         bpy.ops.wm.open_mainfile(filepath=str(folder / 'source.blend'))
         manifest = json.loads(bpy.context.scene['task17_manifest'])
         assert manifest == json.loads((folder / 'prop.json').read_text())

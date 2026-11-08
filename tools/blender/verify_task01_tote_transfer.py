@@ -13,8 +13,9 @@ sys.dont_write_bytecode = True
 import numpy as np
 
 from validate_props import read_obj
+from prop_paths import PROPS
 
-ROOT = Path(__file__).resolve().parents[2] / "assets" / "props"
+ROOT = PROPS
 
 
 def section_hits(mesh, origin_mm, axis):

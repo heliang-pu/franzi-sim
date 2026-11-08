@@ -9,7 +9,7 @@ backend: isaacsim
 # user's decision, never set it silently. Start through run_isaacsim_4090.sh
 # (run_isaacsim_pro6000.sh on the pro6000); ffmpeg must be on PATH there.
 python: ${ISAAC_PYTHON}
-robot: config/robot/franzi_sdk.yaml
+robot: robots/franzi/config/franzi_sdk.yaml
 connection: config/connections/sim_isaacsim.yaml
 runtime:
   loop: framework            # framework: the bridge calls step(); simulator: Isaac's world.step() + PRE_PHYSICS_STEP callback drive the hooks

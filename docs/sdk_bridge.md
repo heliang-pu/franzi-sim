@@ -26,15 +26,15 @@ arm.MoveJ([[...14 个关节角 rad...]], side=15)                     # 原厂 A
 simbridge/protocol.py   rest_rpc 20 字节帧头 + MessagePack + 路由；路由名从原厂客户端源码静态提取；不导入任何引擎
 simbridge/services.py   每个 SDK 方法的请求校验和返回格式；未提供的方法 → 明确的 UNSUPPORTED 协议错误
 simbridge/control.py    统一控制语义（SDK 关节坐标）：模式、队列、限位、使能门控、软急停、故障锁存
-simbridge/robot.py      读 config/robot/franzi_sdk.yaml：SDK↔仿真关节映射、限位、夹爪、相机、坐标系、安全阈值
-simbridge/sdk_kinematics.py SDK 运动学接口：调用共享运动学 robot_kinematics，只换算 SDK 的关节值、坐标系和位姿格式
+simbridge/robot.py      读 robots/franzi/config/franzi_sdk.yaml：SDK↔仿真关节映射、限位、夹爪、相机、坐标系、安全阈值
+simbridge/sdk_kinematics.py SDK 运动学接口：调用共享运动学 robots.franzi.kinematics，只换算 SDK 的关节值、坐标系和位姿格式
 simbridge/runtime.py    拥有仿真器的线程（进程主线程）：命令队列、每步一致快照、渲染请求只在该线程执行
 simbridge/backends/     适配器，按名称懒加载：mujoco_backend.py、isaacsim_backend.py（草稿）
-sdk/check_sdk_kinematics.py 离线验证工具：控制器 MDH 与 URDF 的运动学对照 → config/robot/kinematic_crosscheck.json
+sdk/check_sdk_kinematics.py 离线验证工具：控制器 MDH 与 URDF 的运动学对照 → robots/franzi/config/kinematic_crosscheck.json
 sdk/make_sdk_program.py     生成验收用的 SDK 坐标关节程序 → config/sdk_acceptance/program.json
 sdk/sdk_acceptance.py       只用原厂 SDK 的验收程序（所有后端同一份）
 sdk/verify_backends.py      启动各后端服务、运行验收、按类别打分 → outputs/<run>/report.json
-sdk/sdk_cartesian.py        主机侧笛卡尔目标：用 robot_kinematics 求解，以 SDK 关节值发 MoveJ 或关节遥操作（仿真、真机同一套）
+sdk/sdk_cartesian.py        主机侧笛卡尔目标：用 robots.franzi.kinematics 求解，以 SDK 关节值发 MoveJ 或关节遥操作（仿真、真机同一套）
 tests/test_simbridge.py 不依赖引擎的单元/集成测试
 ```
 
@@ -67,26 +67,26 @@ tests/test_simbridge.py 不依赖引擎的单元/集成测试
 
 ## 机器人配置与坐标映射
 
-`config/robot/franzi_sdk.yaml` 与引擎代码分开，保存：SDK 关节顺序和仿真关节名、正方向与零位偏移、限位（仿真模型范围 ∩ 镜像控制器范围）、速度和加速度（保守的规划 YAML）、夹爪映射、相机名称与安装关系（内参见 `sim/camera_rig.json`，未标定）、基座/法兰/TCP 定义、安全阈值。SDK 关节值统一为 `q_sdk = sign × q_urdf + offset`（rad）；同一组数在两种约定里不是同一个姿态。`--joint-convention urdf_passthrough` 可切回旧版「URDF 原值」行为，仅用于调试。
+`robots/franzi/config/franzi_sdk.yaml` 与引擎代码分开，保存：SDK 关节顺序和仿真关节名、正方向与零位偏移、限位（仿真模型范围 ∩ 镜像控制器范围）、速度和加速度（保守的规划 YAML）、夹爪映射、相机名称与安装关系（内参见 `robots/franzi/camera_rig.json`，未标定）、基座/法兰/TCP 定义、安全阈值。SDK 关节值统一为 `q_sdk = sign × q_urdf + offset`（rad）；同一组数在两种约定里不是同一个姿态。`--joint-convention urdf_passthrough` 可切回旧版「URDF 原值」行为，仅用于调试。
 
-肘关节方向等映射问题的结论（`sdk/check_sdk_kinematics.py`，结果在 `config/robot/kinematic_crosscheck.json`）：
+肘关节方向等映射问题的结论（`sdk/check_sdk_kinematics.py`，结果在 `robots/franzi/config/kinematic_crosscheck.json`）：
 
 - 镜像持久化参数 `machine_params.json` 的 `bio_para` 与 `config11/mdh.json` 的 MDH 表完全相同。按 Craig 改进 DH（`θ = q + theta_offset`）解释，它与源 URDF 的手臂链运动学一致：对 `wheel_robot_26.8.16_3`，500 组随机关节角上位置误差 ≤ 3.3e-6 m、姿态误差 ≤ 1.4e-5 rad（新 URDF 导出时把 π/2 一类的角度取整成 1.5708、3.14，所以差到微米级；上一版 `wheel_robot_4.0` 是 1e-14 级）。同一张表按标准 DH 解释，最好也有 0.075 m 误差（反证了约定）。
 - 对 128 种正负号组合拟合偏置和基座/法兰变换，得到 12 个运动学上完全等价的解（腕部等对称性所致），只靠正解无法唯一确定；再用镜像关节范围筛选，只剩一个：**左右臂 sign 全为 +1，偏置为 0**（拟合值不超过 3.8e-6 rad），手臂各坐标系与 MDH 坐标系重合。肘关节：URDF −14.9°～150.1° 与镜像的 −15°～148° 一致，屈肘为正。上一版 `wheel_robot_4.0` 的 URDF 每个关节绕不同的轴，sign 是 [-1, +1, -1, -1, -1, -1, +1]。
 - 第 1、7 关节的零位偏置会被基座/法兰坐标吸收，正解无法辨识；0 是唯一与范围一致的值，标为「范围推断」。腰部：正解精确，4 个等价解中按范围选 [1,1,1,1]；新 URDF 的腰俯仰范围（−72°～29.8°）与镜像（−72°～30°）一致，上一版的范围冲突（URDF ±30°）已不存在。头部：镜像里没有 MDH，未标定，按 URDF 原值透传。
 - 镜像中 `mdh_repeat_exact*.json` 的关节/笛卡尔样本自相矛盾（起止关节角几乎相同，笛卡尔位置却差几十厘米），不能作为正解真值，未使用。
-- 限位：SDK 层按「仿真模型范围 ∩ 镜像控制器范围」（控制器一侧留 0.001 rad 余量）拒收越界目标（`-3`）。`build_task.align_joint_limits` 把派生 MuJoCo 场景的关节范围裁到同一交集；MuJoCo 适配器加载时检查模型范围在 URDF 范围以内、且包含 SDK 接受的全部目标。
+- 限位：SDK 层按「仿真模型范围 ∩ 镜像控制器范围」（控制器一侧留 0.001 rad 余量）拒收越界目标（`-3`）。`robots.franzi.scene.align_joint_limits` 把派生 MuJoCo 场景的关节范围裁到同一交集；MuJoCo 适配器加载时检查模型范围在 URDF 范围以内、且包含 SDK 接受的全部目标。
 
 **以上全部来自离线镜像文件与 URDF 的对照，不是在线控制器回读，也没有用真机姿态验证。不能宣称仿真与真机运动已经一致**：零位标定、编码器方向、真机生效参数、法兰到 TCP（flan2tool）、真实伺服与轨迹算法都未验证。用户反馈此前实测过 URDF 与真机一致；这是用户的经验，本仓库没有对应的测量记录。
 
 ## 运动学接口
 
-按用户决定（2026-10-24，「真机跟仿真对齐」），逆解和正解只用主机侧的共享运动学 `robot_kinematics.py`（Pinocchio），仿真和真机都只接收关节命令。simbridge 的运动学接口直接调用它，`simbridge/sdk_kinematics.py` 只做 SDK 约定的换算：
+按用户决定（2026-10-24，「真机跟仿真对齐」），逆解和正解只用主机侧的共享运动学 `robots/franzi/kinematics.py`（Pinocchio），仿真和真机都只接收关节命令。simbridge 的运动学接口直接调用它，`simbridge/sdk_kinematics.py` 只做 SDK 约定的换算：
 
 | 接口 | 仿真实现 |
 |---|---|
-| `Fk` / `FkTool` | `robot_kinematics.fk`，换算成手臂 MDH 基座 A0 → 法兰 A7；工具 = 法兰 × flan2tool |
-| `IK`（输入基座→工具） | `robot_kinematics.ik`（专家用的同一个求解器），初值取当前测量关节角；无解返回 `-6`（原厂定义为「笛卡尔目标不可达」） |
+| `Fk` / `FkTool` | `robots.franzi.kinematics.fk`，换算成手臂 MDH 基座 A0 → 法兰 A7；工具 = 法兰 × flan2tool |
+| `IK`（输入基座→工具） | `robots.franzi.kinematics.ik`（专家用的同一个求解器），初值取当前测量关节角；无解返回 `-6`（原厂定义为「笛卡尔目标不可达」） |
 | `FKb` / `FKbTool` / `IKb` / `IKbTool` | 同上，基座系 B = URDF `base_link`，即仿真机器人的真实位姿；`torso_joints` 为空时读当前腰部关节（同手册） |
 | `GetFlan2tool` / `SetFlan2tool` | 启动时为单位阵（镜像里没有工具坐标系，推断）；设置只在本次会话内有效 |
 | `GetCurCartesianPose(Dual)` | 当前测量关节角的 `FkTool`，在 A0 系（推断） |
@@ -108,12 +108,12 @@ tests/test_simbridge.py 不依赖引擎的单元/集成测试
 - 手册把腰末端当作 torso_Link，实际低 0.0157 m。
 - 手册把 A0 放在 URDF 肩关节原点，而 MDH 的 A0 在肩部三轴交点，再向外 0.0725 m。
 
-所以真机上的 `FKb`/`IKb` 很可能与仿真不同；按上面的决定，真机的笛卡尔目标应在主机侧用 `robot_kinematics` 求解（见下一节）。另外，镜像的 SDK 服务端内嵌了一份 `wheel_robot_4.0.urdf`，36 个关节与本仓库上一版的源 URDF 完全相同，用于它的质心求解器。
+所以真机上的 `FKb`/`IKb` 很可能与仿真不同；按上面的决定，真机的笛卡尔目标应在主机侧用 `robots.franzi.kinematics` 求解（见下一节）。另外，镜像的 SDK 服务端内嵌了一份 `wheel_robot_4.0.urdf`，36 个关节与本仓库上一版的源 URDF 完全相同，用于它的质心求解器。
 
 验证（`tests/test_simbridge.py` 和验收打分）：
 
 - 经共享运动学算出的 `Fk` 与镜像 MDH 表在同一 SDK 关节值下一致到 2e-5（新 URDF 的取整角度；上一版 1e-12），说明坐标系、映射和单位都对得上。
-- `FKb` 与 `robot_kinematics` 的法兰位姿一致到 1e-12。
+- `FKb` 与 `robots.franzi.kinematics` 的法兰位姿一致到 1e-12。
 - IK/IKb 往返在 1e-5 m 以内；欧拉角与 SciPy 互转误差 2e-13。
 - 验收打分时用 trace 中的 SDK 关节角和腰角经共享运动学算出抓取点，再与 MuJoCo 自己的抓取点比较（见下面的验收结果）。
 
@@ -136,7 +136,7 @@ cart.line({"left": p + [0.04, 0, 0.05], "right": ...}, speed=0.05)  # 直线，�
 - 姿态默认保持当前姿态，也可以用 `rotations={"left": R}` 指定。逆解用默认的 2° 规划余量。
 - 每次求解都读入实测的手臂和腰部关节（`GetJointState`）。
 - `move` 两臂都给时发一条双臂 `MoveJ`，轮询 `GetMotionStatus` 等到位；运动以故障（-1）或停转（-3）结束、或逆解无解时抛 `CartesianError`；逆解无解时什么都不发送。
-- `line` 用 `robot_kinematics.line` 每 `speed / rate` 取一个逆解路点，两臂重采样成相同点数，经 `TeleJoint(Dual)` 按绝对时刻表推送，结束后 `StopTeleJoint(Dual)`。若某个关节会超过 SDK 当前速度上限的 0.9 倍（`GetJointVelLimit`，已含速度比例，真机也一样），自动放慢并返回放慢倍数。
+- `line` 用 `robots.franzi.kinematics.line` 每 `speed / rate` 取一个逆解路点，两臂重采样成相同点数，经 `TeleJoint(Dual)` 按绝对时刻表推送，结束后 `StopTeleJoint(Dual)`。若某个关节会超过 SDK 当前速度上限的 0.9 倍（`GetJointVelLimit`，已含速度比例，真机也一样），自动放慢并返回放慢倍数。
 - 它不放进 `sdk/stock_sdk.py`：服务端的通信层导入那个模块，而有些服务端环境没有 Pinocchio。
 
 验证：
@@ -173,7 +173,7 @@ python -m pytest tests -q
 ```
 
 - `sdk/sdk_acceptance.py` 拒绝非回环地址：其中的动作只在仿真中检查过，不能直接对真机运行。
-- 验收程序 `config/sdk_acceptance/program.json` 由 `sdk/make_sdk_program.py` 从双臂抓放的参考运行生成（现在是 `outputs/expert_wrist_block/`）；任务布局或专家改了，两者都要重新生成。生成器会把超过 SDK 规划限速（`config/robot_constraints/joint_limits.yaml`，每个手臂关节 1 rad/s、2 rad/s²）0.9 倍的阶段整体放慢，并记录倍数。
+- 验收程序 `config/sdk_acceptance/program.json` 由 `sdk/make_sdk_program.py` 从双臂抓放的参考运行生成（现在是 `outputs/pp_seeds_rec/`，wheel_robot_4.0 上是 `outputs/expert_wrist_block/`）；任务布局或专家改了，两者都要重新生成。生成器会把超过 SDK 规划限速（`robots/franzi/config/constraints/joint_limits.yaml`，每个手臂关节 1 rad/s、2 rad/s²）0.9 倍的阶段整体放慢，并记录倍数。
 
 ## 验收结果
 
@@ -239,7 +239,7 @@ python -m pytest tests -q
   - Isaac Sim 6.x 去掉了 `URDFParseAndImportFile`。World、Articulation 和 Camera 还在，但已标为弃用。
   - pro6000 上有一份工程副本和一套 Isaac Sim 5.1，EULA 已由用户接受；用 `ISAAC_PYTHON=<Isaac Sim 的 python> sdk/run_isaacsim_pro6000.sh <新目录>` 启动。
   - 2026-10-24 用这个脚本做了冒烟测试。适配器从启动 Isaac、导入 URDF、搭场景、设物理、装相机，到初始化关节视图都过了，最后停在 `_configure_drives` 的限位核对上：`left_shoulder_pitch_joint: PhysX limits [-3.489, 2.4425] differ from the URDF`。
-    - 原因是派生 URDF 里写的已是与控制器取交集后的范围，而核对拿的是 `config/robot/franzi_sdk.yaml` 的原始 URDF 范围，并且要求两者相等。
+    - 原因是派生 URDF 里写的已是与控制器取交集后的范围，而核对拿的是 `robots/franzi/config/franzi_sdk.yaml` 的原始 URDF 范围，并且要求两者相等。
     - 10 个手臂关节都有这种差别，例如肩俯仰上限 2.44246 对 2.617、肘俯仰下限 −2.58209 对 −2.62。
     - 应改用 MuJoCo 适配器的规则：不宽于 URDF，也不窄于 SDK 接受的范围。
 - Isaac Lab：可复用同一份派生 URDF、驱动参数、碰撞分组和相机约定，但它的向量化 GPU 主循环需要另写薄适配层，而且 GPU 管线对凸包有 64 顶点上限（74 个碰撞凸包超出），会破坏与 MuJoCo 的碰撞一致性。

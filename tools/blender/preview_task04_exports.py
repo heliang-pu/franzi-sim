@@ -19,7 +19,7 @@ IDS = ("belt_conveyor", "sort_bin", "parcel_box_s", "parcel_box_m", "parcel_pouc
 
 
 def render_prop(prop_id, variant_name):
-    folder = props.ROOT / "assets" / "props" / prop_id
+    folder = props.PROPS / prop_id
     data = json.loads((folder / "prop.json").read_text())
     variant = next((variant for variant in data["variants"] if variant["name"] == variant_name), {})
     props.reset_scene()

@@ -1,0 +1,7 @@
+policy_name: fineart
+port: 18780
+checkpoint: null  # a fineart.train step folder (--set checkpoint=...)
+tokenizer: null  # the PaliGemma tokenizer folder (--set tokenizer=...)
+subtask_every: 75  # control ticks between subtask generations (3 s)
+device: cuda:0
+horizon: 25  # actions applied per chunk (simulator side)

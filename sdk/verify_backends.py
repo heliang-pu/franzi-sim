@@ -28,10 +28,10 @@ from pathlib import Path
 import numpy as np
 import yaml
 
-from robot_kinematics import Kinematics
+from robots.franzi.kinematics import Kinematics
 from scenes.pick_place.task import GOALS
 from sdk.stock_sdk import SDK
-from sim.build_task import TABLE_Z
+from sim import TABLE_Z
 from simbridge import ROOT
 from simbridge.robot import load_robot
 
@@ -98,7 +98,7 @@ def score_mapping(trace, robot):
 
 
 def score_kinematics(trace, robot):
-    """The shared kinematics (robot_kinematics, which the SDK's Fk/IK endpoints
+    """The shared kinematics (robots.franzi.kinematics, which the SDK's Fk/IK endpoints
     use) at the measured SDK joints and waist, against the engine's own
     {side}_grasp positions."""
     kin = Kinematics()
@@ -430,7 +430,7 @@ def main():
             "sha256": sha256(PROGRAM),
         },
         "program_data_sha256": sha256(ROOT / "config/sdk_acceptance/program.json"),
-        "robot_config_sha256": sha256(ROOT / "config/robot/franzi_sdk.yaml"),
+        "robot_config_sha256": sha256(ROOT / "robots/franzi/config/franzi_sdk.yaml"),
         "vendor_sdk": {"before": before, "after": after},
         "backends": {**earlier_reports(out, requested), **reports},
         "cross_backend": cross_backend({**earlier_reports(out, requested), **reports}),

@@ -266,7 +266,7 @@ def test_expert_conversion_matches_what_the_sdk_reports():
     """The converter's URDF -> SDK mapping equals simbridge's for the same
     simulated joints, so converted expert data and SDK recordings agree."""
     from data.convert_expert_run import to_sdk
-    from robot_kinematics import Kinematics
+    from robots.franzi.kinematics import Kinematics
 
     rng = np.random.default_rng(0)
     values = np.c_[rng.uniform(-1.5, 1.5, (50, 14)), rng.uniform(0, 1, (50, 2))]
@@ -285,7 +285,7 @@ def test_full_conversion_maps_the_waist_and_head_like_the_sdk():
     """The full robot's waist and head go through simbridge's unit maps, its
     rates and efforts through their signs, the grippers' through -1000 and 1."""
     from data.convert_expert_run import full_to_sdk, rates_to_sdk, to_sdk
-    from robot_kinematics import Kinematics
+    from robots.franzi.kinematics import Kinematics
 
     rng = np.random.default_rng(1)
     values = np.c_[

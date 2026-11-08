@@ -90,7 +90,7 @@ def main():
     args = parser.parse_args(sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else [])
     report = {}
     for prop_id in IDS:
-        folder = props.ROOT / "assets" / "props" / prop_id
+        folder = props.PROPS / prop_id
         source = HERE / "_qa" / "task07" / f"{prop_id}_geometry.blend" if args.geometry_only else folder / "source.blend"
         bpy.ops.wm.open_mainfile(filepath=str(source))
         manifest = json.loads(bpy.context.scene["task07_manifest"])

@@ -20,11 +20,11 @@ from pathlib import Path
 import mujoco
 import numpy as np
 
-from robot_kinematics import URDF
+from robots.franzi.camera_rig import POLICY_CAMERAS
+from robots.franzi.kinematics import URDF
+from robots.franzi.scene import FINGERS
 from scenes.kitting import task as kt
 from sim import tabletop as tt
-from sim.build_task import FINGERS
-from sim.camera_rig import POLICY_CAMERAS
 from sim.episode import PhysicsError, Scene
 
 

@@ -28,6 +28,7 @@ import bmesh
 import bpy
 import numpy as np
 from mathutils import Vector
+from prop_paths import PROPS, prop_dir
 from prop_schema import FICTIONAL_BRANDS, check_schema
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -49,8 +50,7 @@ def finalize_assets():
     if _DELIVERED_PROPS:
         subprocess.run(
             [str(VALIDATOR_PYTHON), "-B", str(Path(__file__).with_name("compact_props.py")),
-             "--apply", "--root", str(ROOT / "assets" / "props"),
-             "--props", *sorted(_DELIVERED_PROPS)],
+             "--apply", "--props", *sorted(_DELIVERED_PROPS)],
             check=True,
         )
 
@@ -754,7 +754,7 @@ def write_prop_json(data, path):
         raise ValueError("prop id must match its folder name")
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2, allow_nan=False) + "\n", encoding="utf-8")
-    if path.parent.resolve().parent == ROOT / "assets" / "props":
+    if path.parent.resolve() == prop_dir(path.parent.name).resolve():
         _DELIVERED_PROPS.add(path.parent.name)
 
 
@@ -779,7 +779,7 @@ def bbox_mm(objects):
 
 def render_preview(objects, out_png):
     target = Path(out_png).resolve()
-    if target.parent.parent == ROOT / "assets" / "props":
+    if target.parent == prop_dir(target.parent.name).resolve():
         _DELIVERED_PROPS.add(target.parent.name)
     objects = list(objects)
     if not objects:

@@ -1,7 +1,7 @@
 # Same MuJoCo scene, but the adapter owns the stepping loop (simulator-owned mode).
 backend: mujoco
 # No python key: the server runs under the interpreter of verify_backends.
-robot: config/robot/franzi_sdk.yaml
+robot: robots/franzi/config/franzi_sdk.yaml
 connection: config/connections/sim_mujoco.yaml
 runtime:
   loop: simulator            # MuJoCo adapter owns the loop and calls the bridge hooks

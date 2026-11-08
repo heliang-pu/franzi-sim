@@ -1,6 +1,6 @@
 """Host-side Cartesian goals for the stock SDK ("real follows sim").
 
-Goals are solved on this host with the shared kinematics (robot_kinematics:
+Goals are solved on this host with the shared kinematics (robots.franzi.kinematics:
 Pinocchio on the source URDF, the expert's IK) and sent as joint commands in
 SDK coordinates: MoveJ for a point-to-point move, the joint teleop queue for a
 straight line. A simulator and the real controller therefore receive the same
@@ -16,8 +16,8 @@ numbers; neither the controller's IK nor MoveL or Cartesian teleop is used.
     cart.line({"left": p + [0.04, 0, 0.05]})       # straight line, teleop queue
 
 Targets are grasp points ({side}_grasp, frames.tcp in
-config/robot/franzi_sdk.yaml) in the simulation's world frame: the base frame
-sits robot_kinematics.BASE_HEIGHT above the floor (``CartesianArm.kin.base``)
+robots/franzi/config/franzi_sdk.yaml) in the simulation's world frame: the base frame
+sits robots.franzi.kinematics.BASE_HEIGHT above the floor (``CartesianArm.kin.base``)
 with world-aligned axes. The
 grasp frame keeps its current rotation unless ``rotations`` gives a 3x3 per
 side. The measured waist joints enter every solve. With raise_on_error=True the
@@ -29,7 +29,7 @@ import time
 import numpy as np
 import yaml
 
-from robot_kinematics import ROBOT_CONFIG, Kinematics
+from robots.franzi.kinematics import ROBOT_CONFIG, Kinematics
 
 SIDES = {"left": 0, "right": 10}
 WAIST, DUAL = 20, 15
@@ -66,7 +66,7 @@ class CartesianArm:
         return self.kin.from_sdk(side, q)
 
     def body(self):
-        """Measured leg and waist joints as robot_kinematics body values."""
+        """Measured leg and waist joints as robots.franzi.kinematics body values."""
         status, q = self.arm.GetJointState(WAIST)
         if status != 0 or len(q) != 4:
             raise CartesianError(f"GetJointState({WAIST}) failed", status)
@@ -108,7 +108,7 @@ class CartesianArm:
 
     def line(self, targets, rotations=None, speed=0.05, rate=25.0, wait=True):
         """Straight lines of the grasp points, streamed through the joint teleop
-        queue at ``rate`` Hz: robot_kinematics.line waypoints ``speed / rate``
+        queue at ``rate`` Hz: robots.franzi.kinematics.line waypoints ``speed / rate``
         apart, each side resampled to the same count, and slowed down if a joint
         would exceed 0.9 of the SDK's current velocity limit (GetJointVelLimit,
         which includes the velocity ratio). Returns the SDK joint paths and the

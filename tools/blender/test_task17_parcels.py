@@ -8,11 +8,12 @@ sys.dont_write_bytecode = True
 import numpy as np
 from PIL import Image
 from validate_props import read_obj, validate_prop
+from prop_paths import PROPS
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 QA = HERE / '_qa/task17'
-ASSETS = ROOT / 'assets/props'
+ASSETS = PROPS
 PARCELS = {'parcel_cube_80': [80,70,60], 'parcel_cube_75': [75,75,75], 'parcel_cube_85': [85,65,55]}
 NORMALS = {'top': [0,0,1], 'px': [1,0,0], 'nx': [-1,0,0], 'py': [0,1,0], 'ny': [0,-1,0]}
 

@@ -19,8 +19,9 @@ import mujoco
 import numpy as np
 
 from validate_props import read_obj
+from prop_paths import PROPS
 
-ROOT = HERE.parents[1] / "assets" / "props"
+ROOT = PROPS
 IDS = ("lidded_tote", "station_plate", "drawer_cabinet")
 
 

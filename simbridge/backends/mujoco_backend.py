@@ -11,8 +11,8 @@ import time
 import mujoco
 import numpy as np
 
+from robots.franzi.scene import ARM_JOINTS, FINGER_JOINTS
 from scenes.pick_place.run import PickPlaceScene
-from sim.build_task import ARM_JOINTS, FINGER_JOINTS
 from simbridge.backends.base import (
     EFFORT_SIMULATED,
     BackendState,

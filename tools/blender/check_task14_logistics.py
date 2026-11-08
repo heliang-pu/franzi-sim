@@ -12,9 +12,10 @@ from pathlib import Path
 sys.dont_write_bytecode = True
 import numpy as np
 from validate_props import read_obj, validate_prop
+from prop_paths import PROPS
 
 ROOT = Path(__file__).resolve().parents[2]
-ASSETS = ROOT / 'assets/props'
+ASSETS = PROPS
 QA = ROOT / 'tools/blender/_qa/task14'
 IDS = ('tote_cart', 'line_feed_conveyor', 'takeaway_conveyor', 'induction_conveyor',
        'flow_lane', 'recheck_shelf', 'station_sign', 'small_tote')

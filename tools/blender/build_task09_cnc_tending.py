@@ -20,7 +20,7 @@ from pathlib import Path
 sys.dont_write_bytecode = True
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-OUTPUT = HERE.parents[1] / "assets" / "props"
+OUTPUT = props.PROPS
 QA = HERE / "_qa" / "task09"
 IDS = ("cnc_front", "part_tray_6", "round_blank", "machined_part")
 

@@ -18,5 +18,5 @@
 
 ## 用到了哪里
 
-- 关节限位、手臂速度和加速度上限、默认 30% 速度比例：`config/robot/franzi_sdk.yaml`，经 `robot_kinematics.controller_ranges()` 和 `controller_rates()` 用于仿真场景和专家（见 [robot_model.md](robot_model.md#关节限位速度与伺服)）。
-- MDH 表、正负号与零位、腰部范围冲突、未使用的笛卡尔样本：见 [sdk_bridge.md](sdk_bridge.md#机器人配置与坐标映射) 和 `config/robot/kinematic_crosscheck.json`。`findings.json` 里「映射未核验」的结论因此收窄为：运动学结构已与离线 MDH 对上，零位标定和在线生效参数仍未核验。
+- 关节限位、手臂速度和加速度上限、默认 30% 速度比例：`robots/franzi/config/franzi_sdk.yaml`，经 `robots.franzi.kinematics.controller_ranges()` 和 `controller_rates()` 用于仿真场景和专家（见 [robot_model.md](robot_model.md#关节限位速度与伺服)）。
+- MDH 表、正负号与零位、腰部范围冲突、未使用的笛卡尔样本：见 [sdk_bridge.md](sdk_bridge.md#机器人配置与坐标映射) 和 `robots/franzi/config/kinematic_crosscheck.json`。`findings.json` 里「映射未核验」的结论因此收窄为：运动学结构已与离线 MDH 对上，零位标定和在线生效参数仍未核验。

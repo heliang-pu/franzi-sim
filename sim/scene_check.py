@@ -17,8 +17,8 @@ import mujoco
 import numpy as np
 from PIL import Image, ImageDraw
 
+from robots.franzi.camera_rig import POLICY_CAMERAS
 from sim import tabletop as tt
-from sim.camera_rig import POLICY_CAMERAS
 from sim.episode import overlay_font
 
 VIEW_CAMERAS = ("head_d435", "body_d435")

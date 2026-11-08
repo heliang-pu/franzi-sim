@@ -13,9 +13,10 @@ sys.dont_write_bytecode = True
 import numpy as np
 from PIL import Image
 from validate_props import read_obj, validate_prop
+from prop_paths import PROPS
 
 ROOT = Path(__file__).resolve().parents[2]
-FOLDER = ROOT / "assets" / "props" / "handle_tote"
+FOLDER = PROPS / "handle_tote"
 QA = ROOT / "tools" / "blender" / "_qa" / "task18"
 
 

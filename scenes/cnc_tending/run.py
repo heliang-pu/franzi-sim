@@ -31,10 +31,10 @@ from pathlib import Path
 
 import numpy as np
 
+from robots.franzi.gripper_linkage import contact_drop
 from scenes.cnc_tending import task as kt
 from sim import tabletop as tt
 from sim.episode import minimum_jerk
-from sim.gripper_linkage import contact_drop
 
 BLANKS = tuple(f"blank{k}" for k in range(len(kt.NEAR_ROW)))
 

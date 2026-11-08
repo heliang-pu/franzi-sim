@@ -6,9 +6,9 @@ middle, all where the head and body cameras see them.
 
 import xml.etree.ElementTree as ET
 
-from sim.build_task import PART_RGBA, ROOT, TABLE_Z
-from sim.build_task import build as build_base
-from sim.gripper_linkage import contact_drop
+from robots.franzi.gripper_linkage import contact_drop
+from robots.franzi.scene import build as build_base
+from sim import PART_RGBA, ROOT, TABLE_Z
 
 # Far enough out for the head and body cameras to see the parts and pads.
 SOURCES = {"left": [0.38, 0.34], "right": [0.38, -0.34]}
@@ -19,8 +19,8 @@ PAD_DROP = contact_drop(0.045)
 
 
 def build():
-    """Derived scene tree and report: build_task's robot, table and lights plus
-    the two parts and their target pads."""
+    """Derived scene tree and report: the robot scene (robot, table and lights)
+    plus the two parts and their target pads."""
     root, report = build_base()
     # The model name this scene has had from the start.
     root.set("model", "franzi_dual_arm_kitting")

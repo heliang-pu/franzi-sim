@@ -17,6 +17,7 @@ import mujoco
 import numpy as np
 
 from validate_props import read_obj
+from prop_paths import PROPS
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -179,7 +180,7 @@ def imported_visual_bbox(model, state, parts, subtract_z=0):
 
 
 def verify(prop_id):
-    folder = ROOT / "assets" / "props" / prop_id
+    folder = PROPS / prop_id
     data = json.loads((folder / "prop.json").read_text())
     uv_checks = {}
     for part in data["parts"]:

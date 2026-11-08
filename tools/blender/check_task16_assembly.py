@@ -9,9 +9,10 @@ import numpy as np
 from scipy.spatial import ConvexHull
 from PIL import Image
 from validate_props import read_obj
+from prop_paths import PROPS
 
 ROOT=Path(__file__).resolve().parents[2]
-ASSETS=ROOT/'assets'/'props'
+ASSETS=PROPS
 IDS=('parts_bin','relay','terminal_block','cable_gland','fuse_holder','order_tray',
      'order_card_stand','rotor_shaft_fixture','bearing_tray','foam_kit_tray')
 

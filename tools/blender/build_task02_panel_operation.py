@@ -27,7 +27,7 @@ from mathutils import Matrix, Vector
 import prop_lib as props
 
 
-OUTPUT = props.ROOT / "assets" / "props"
+OUTPUT = props.PROPS
 C = 2 / math.sqrt(5)
 S = 1 / math.sqrt(5)
 SLOPE_LENGTH = math.sqrt(200**2 + 100**2)

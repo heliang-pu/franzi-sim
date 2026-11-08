@@ -11,7 +11,7 @@ The expert commands MuJoCo in URDF radians and gripper closure fractions. The
 episode uses the SDK convention of vla_episode.py, so a policy trained on it
 commands the robot through the stock SDK unchanged:
 
-- joints: robot_kinematics.Kinematics().to_sdk, q_sdk = sign * q_urdf + offset;
+- joints: robots.franzi.kinematics.Kinematics().to_sdk, q_sdk = sign * q_urdf + offset;
 - grippers: 1000 * (1 - closure), rounded and clipped to 0..1000 as simbridge's
   GripperReadPosition reports it (simbridge.robot.GripperMap), for the measured
   closure (state) and the commanded one (action) alike;
@@ -55,7 +55,7 @@ from data.vla_episode import (
     EpisodeWriter,
     video_info,
 )
-from robot_kinematics import ROBOT_CONFIG, Kinematics
+from robots.franzi.kinematics import ROBOT_CONFIG, Kinematics
 from simbridge.robot import GripperMap, load_robot
 
 
@@ -211,7 +211,7 @@ def convert(run, output, task=None, allow_failed=False, kin=None):
             "videos": {c: p.name for c, p in videos.items()},
         },
         "conversion": {
-            "joints": "robot_kinematics.Kinematics().to_sdk",
+            "joints": "robots.franzi.kinematics.Kinematics().to_sdk",
             "gripper": "simbridge.robot.GripperMap.position_from_closure",
             "setpoint": "action of the previous tick",
             "full": "waist and head: simbridge.robot.load_robot() unit maps; rates "

@@ -14,7 +14,7 @@ import prop_lib as props
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--output", type=Path, default=props.ROOT / "assets/props/_test_cube")
+    parser.add_argument("--output", type=Path, default=props.PROPS / "_test_cube")
     args = parser.parse_args(sys.argv[sys.argv.index("--") + 1 :] if "--" in sys.argv else [])
     folder = args.output.resolve()
     allowed = (props.ROOT / "assets/props").resolve()

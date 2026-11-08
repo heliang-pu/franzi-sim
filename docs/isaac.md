@@ -114,7 +114,7 @@ ISAAC_PYTHON=<Isaac Sim 的 python> isaac/run.sh isaac.episode tote_transfer --o
 
 场景的 `run()` 要接受 `engine` 参数，10 个工业场景都支持。
 
-为此 Isaac Sim 的 Python 里装了 MuJoCo 3.13.0、PyAV 15.1.0 和 Pinocchio 2.7.0（只新增，Isaac 原有的包没动）。Pinocchio 用 2.7.0，是因为 3.x 的 wheel 要求 numpy 2，而 Isaac Sim 5.1 用的是 numpy 1.26。和项目环境的 pin 3.4.0 相比，逆解结果差 7.5e-14 rad 以内，`tote_transfer` 的种子采样完全一样。Kit 里的 pin 2.7 不能按下标读 `model.parents`（报 "No Python class registered for C++ class std::vector<unsigned long>"），帧的父关节也叫 `parent` 不叫 `parentJoint`，所以换新模型时加的根坐标变换一开始让每个 Isaac 回合都起不来；现在 `robot_kinematics.root_joints()` 从 URDF 的树里找挂在根上的关节，Kit 里两只手的正运动学和 pin 3.4 完全相同（2026-10-25）。
+为此 Isaac Sim 的 Python 里装了 MuJoCo 3.13.0、PyAV 15.1.0 和 Pinocchio 2.7.0（只新增，Isaac 原有的包没动）。Pinocchio 用 2.7.0，是因为 3.x 的 wheel 要求 numpy 2，而 Isaac Sim 5.1 用的是 numpy 1.26。和项目环境的 pin 3.4.0 相比，逆解结果差 7.5e-14 rad 以内，`tote_transfer` 的种子采样完全一样。Kit 里的 pin 2.7 不能按下标读 `model.parents`（报 "No Python class registered for C++ class std::vector<unsigned long>"），帧的父关节也叫 `parent` 不叫 `parentJoint`，所以换新模型时加的根坐标变换一开始让每个 Isaac 回合都起不来；现在 `robots.franzi.kinematics.root_joints()` 从 URDF 的树里找挂在根上的关节，Kit 里两只手的正运动学和 pin 3.4 完全相同（2026-10-25）。
 
 `tote_transfer` 种子 0（搬塑料壳），两边都成功：
 
@@ -172,7 +172,7 @@ ISAAC_PYTHON=<Isaac Sim 的 python> python -m isaac.collect tote_transfer --seed
 
 - 共 99 集、193 058 帧，数据集约 7.0 GB（连同运行目录和原始数据共 19 GB）。每个场景的帧对齐检查都通过，99 集的 `data.subtask_check` 都通过。
 - `cnc_tending` 种子 8 失败：成品放到交接台上松手后，PCM 接触流形让它倾倒，边缘陷进台面 1.10 mm，超过 1 mm 审计线（见「和 MuJoCo 的差别」）。这一集没有导出。
-- 这批是在共享代码修 `robot_kinematics.ik()` 的初值和 `tabletop.TIP` 之前采的；修了以后同一个种子重跑，回合可能和数据集里的不一样，但这批仍是有效的示范。
+- 这批是在共享代码修 `robots.franzi.kinematics.ik()` 的初值和 `tabletop.TIP` 之前采的；修了以后同一个种子重跑，回合可能和数据集里的不一样，但这批仍是有效的示范。
 - 总览相机只用来做展示视频：`tote_transfer` 里它被工作台上的洞洞板挡住了料箱，`cnc_tending` 里被机床挡住大半。
 
 以下是旧模型的批次：

@@ -45,13 +45,13 @@ from types import SimpleNamespace
 import numpy as np
 import pinocchio as pin
 
-from robot_kinematics import controller_rates
+from robots.franzi.gripper_linkage import contact_drop
+from robots.franzi.kinematics import controller_rates
+from robots.franzi.scene import ARM_JOINTS
+from robots.franzi.scene import build as robot_scene
 from sim import prop_assets as pa
 from sim import tabletop as tt
-from sim.build_task import ARM_JOINTS
-from sim.build_task import build as robot_scene
 from sim.episode import RATE_HEADROOM, Scene
-from sim.gripper_linkage import contact_drop
 from sim.workcell import block, industrial_cell, stand
 
 NAME = "parcel_sorting"

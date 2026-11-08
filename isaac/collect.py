@@ -39,7 +39,7 @@ from pathlib import Path
 
 from data import convert_expert_run, export_lerobot
 from data.frame_lag import frame_offset
-from sim.build_task import ROOT
+from sim import ROOT
 
 # Extra renders per frame in the reference run, and how many times the next
 # best offset's distance must exceed offset 0's (seeds 0 and 9 of tote

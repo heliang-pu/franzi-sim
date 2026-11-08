@@ -38,7 +38,7 @@
 
 ## 数据约定
 
-- 状态 16 维：`GetJointState(15)` 的 14 个手臂关节，SDK（控制器 MDH）约定的 rad，左 j1–j7、右 j1–j7（`q_sdk = sign × q_urdf + offset`，见 `config/robot/franzi_sdk.yaml`）；再加左、右夹爪的 `GripperReadPosition`（0 全闭，1000 全开）。服务端不接受 side 15 时，自动改为左右各读一次，并记在 `episode.json` 的 `reads`。
+- 状态 16 维：`GetJointState(15)` 的 14 个手臂关节，SDK（控制器 MDH）约定的 rad，左 j1–j7、右 j1–j7（`q_sdk = sign × q_urdf + offset`，见 `robots/franzi/config/franzi_sdk.yaml`）；再加左、右夹爪的 `GripperReadPosition`（0 全闭，1000 全开）。服务端不接受 side 15 时，自动改为左右各读一次，并记在 `episode.json` 的 `reads`。
 - 动作 16 维，单位相同：
   - 每臂取最近一次被接受的关节目标：`PushJointTeleopQueue(Dual)` 的点，或 `MoveJ`/`Home` 的最后一个路点。每侧夹爪取最近一次 `GripperSetPosition/Open/Close`。
   - 保持到下一条命令；第一条命令之前等于第一拍的测量值。被拒绝的命令只记录，不改动作。
@@ -63,7 +63,7 @@
   - LeRobot 的视频特征按 8 位 RGB 解码，所以深度不做成特征。导出时把每条 episode 的 `extras/` 拷到数据集的 `extras/episode_<序号>/`，并在 `meta/inovance_extras.json` 里列出。
   - 第 1 版的 episode 照样能读能导出，只是没有全量数据。
 - 专家运行的转换：
-  - 关节用 `robot_kinematics.Kinematics().to_sdk`；夹爪用 simbridge 的 `GripperMap.position_from_closure`，与仿真 SDK 报出的值逐位相同（测试会检查）。
+  - 关节用 `robots.franzi.kinematics.Kinematics().to_sdk`；夹爪用 simbridge 的 `GripperMap.position_from_closure`，与仿真 SDK 报出的值逐位相同（测试会检查）。
   - `command.setpoint` 取上一拍的专家动作。专家没有墙钟，UTC 列填 −1；图像与状态在同一物理步渲染，seq 记为 k+1。视频原样拷贝。
   - 指令的优先级：`--task` 参数，其次是运行自带的 `instruction`，最后是上面的默认句。
   - 一次给多条运行时，`--output` 是一个新目录，每条运行转成其中一个同名 episode；失败的运行跳过（加 `--allow-failed` 才转）。

@@ -18,6 +18,7 @@ sys.dont_write_bytecode = True
 import numpy as np
 import trimesh
 from PIL import Image
+from prop_paths import PROPS, locate, prop_dir
 from prop_schema import TRIANGLE_BUDGETS, budget_class, referenced_files, schema_errors
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -141,10 +142,13 @@ def validate_prop(folder):
             if not ref.lower().endswith(".blend") or (folder / ref).exists()
         }
         for reference in sorted(required):
-            target = (folder / reference).resolve()
-            # Task 13 shares sibling PNG atlases. Meshes/sources still belong
-            # to their own prop, and even symlinks cannot escape the props root.
-            allowed = folder.parent if Path(reference).suffix.lower() == ".png" else folder
+            named = locate(reference, folder)
+            target = named.resolve()
+            # Task 13 shares PNG atlases between props (../<id>/<file>). Meshes
+            # and sources still belong to their own prop, and even symlinks
+            # cannot leave the folder the reference names.
+            png = Path(reference).suffix.lower() == ".png"
+            allowed = named.parent.resolve() if png else folder
             if not target.is_relative_to(allowed) or not target.is_file():
                 result.errors.append(f"missing/unsafe file: {reference}")
         if result.errors:
@@ -251,7 +255,7 @@ def validate_prop(folder):
                     texture_sizes[texture] = part["texture_px"]
         for reference, size in texture_sizes.items():
             try:
-                check_png(folder / reference, size)
+                check_png(locate(reference, folder), size)
                 result.textures.add(size)
             except Exception as exc:  # noqa: BLE001 - image decoders have several exception classes.
                 result.errors.append(f"{reference}: {exc}")
@@ -281,15 +285,22 @@ def main(argv=None):
     parser.add_argument(
         "--root",
         type=Path,
-        default=ROOT / "assets" / "props",
-        help="Prop directory, also useful for isolated validator tests",
+        help="A folder of props to check instead (isolated validator tests); by "
+        "default every prop, in assets/props/ and the scenes' assets/",
     )
     args = parser.parse_args(argv)
-    folders = (
-        [args.root / prop_id for prop_id in args.props]
-        if args.props
-        else sorted(p.parent for p in args.root.glob("*/prop.json"))
-    )
+    if args.root:
+        folders = (
+            [args.root / prop_id for prop_id in args.props]
+            if args.props
+            else sorted(p.parent for p in args.root.glob("*/prop.json"))
+        )
+    else:
+        folders = (
+            [prop_dir(prop_id) for prop_id in args.props]
+            if args.props
+            else sorted(p.parent for p in PROPS.glob("*/prop.json"))
+        )
     if not folders:
         print("No prop.json files found.")
         return 1

@@ -15,10 +15,10 @@ import xml.etree.ElementTree as ET
 
 import numpy as np
 
-from robot_kinematics import Kinematics
-from sim.build_task import PART_RGBA, ROOT, TABLE_Z, fmt
-from sim.build_task import build as build_base
-from sim.gripper_linkage import contact_drop
+from robots.franzi.gripper_linkage import contact_drop
+from robots.franzi.kinematics import Kinematics
+from robots.franzi.scene import build as build_base
+from sim import PART_RGBA, ROOT, TABLE_Z, fmt
 
 SIDES = ("left", "right")
 # Two rows of three slots per side (y on the left; the right mirrors). At the
@@ -307,8 +307,8 @@ def sample_episode(seed, kin=None, attempts=100):
 
 
 def build(spec):
-    """Derived scene for spec: build_task's robot, table and lights plus the kit
-    trays with their coloured cells, the supply mats and the parts at their
+    """Derived scene for spec: the robot scene (robot, table and lights) plus the
+    kit trays with their coloured cells, the supply mats and the parts at their
     sampled poses."""
     root, report = build_base()
     root.set("model", "franzi_dual_arm_sort_and_kit")

@@ -23,7 +23,7 @@ IDS = ("hex_blank", "flanged_bushing", "l_bracket", "spur_gear", "foam_kit_tray"
 def main():
     report = {}
     for prop_id in IDS:
-        folder = props.ROOT / "assets" / "props" / prop_id
+        folder = props.PROPS / prop_id
         data = json.loads((folder / "prop.json").read_text())
         bpy.ops.wm.open_mainfile(filepath=str(folder / "source.blend"))
         scene, checks = bpy.context.scene, {}

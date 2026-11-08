@@ -13,9 +13,10 @@ sys.path.insert(0, str(ROOT))
 
 import mujoco
 from sim.prop_assets import add
+from prop_paths import PROPS
 
 records = []
-for path in sorted((ROOT / "assets" / "props").glob("*/prop.json")):
+for path in sorted(PROPS.glob("*/prop.json")):
     data = json.loads(path.read_text())
     for variant in [None] + [variant["name"] for variant in data["variants"]]:
         root = ET.Element("mujoco", model="task13_loader_check")

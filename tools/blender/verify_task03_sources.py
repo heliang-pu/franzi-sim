@@ -47,7 +47,7 @@ def main():
     args = parser.parse_args(sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else [])
     results = {}
     for prop_id in ("esd_tray", "tray_rail_set"):
-        folder = props.ROOT / "assets" / "props" / prop_id
+        folder = props.PROPS / prop_id
         data = json.loads((folder / "prop.json").read_text())
         bpy.ops.wm.open_mainfile(filepath=str(folder / "source.blend"))
         scene = bpy.context.scene

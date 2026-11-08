@@ -22,7 +22,7 @@ from pathlib import Path
 import numpy as np
 import trimesh
 
-from sim.build_task import ROOT, fmt
+from sim import ROOT, fmt
 
 RAW = ROOT / "assets/robosyn"
 SECTORS = 24

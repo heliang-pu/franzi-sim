@@ -21,10 +21,11 @@ import trimesh
 from PIL import Image
 from prop_schema import TRIANGLE_BUDGETS, schema_errors
 from validate_props import read_obj, validate_prop
+from prop_paths import PROPS
 
 HERE = Path(__file__).resolve().parent
 QA = HERE / "_qa"
-CUBE = HERE.parents[1] / "assets/props/_test_cube"
+CUBE = PROPS / "_test_cube"
 
 
 def cross(a, b):

@@ -16,7 +16,7 @@ sys.dont_write_bytecode = True
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 QA = HERE / "_qa" / "task10"
-OUTPUT = HERE.parents[1] / "assets" / "props"
+OUTPUT = props.PROPS
 # bearing_shaft_fixture since 2026-10-25: the robot's fingertips reach 17 mm past
 # its pads, so they cannot follow a 6204 into a housing bore; the scene slides the
 # bearing onto this shaft instead, the bearing's collision a ring with its bore open.

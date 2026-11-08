@@ -18,9 +18,10 @@ sys.dont_write_bytecode = True
 import numpy as np
 
 from validate_props import read_obj
+from prop_paths import PROPS
 
 HERE = Path(__file__).resolve().parent
-ROOT = HERE.parents[1] / "assets" / "props"
+ROOT = PROPS
 QA = HERE / "_qa" / "task09"
 IDS = ("cnc_front", "part_tray_6", "round_blank", "machined_part")
 

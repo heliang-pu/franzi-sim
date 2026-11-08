@@ -23,9 +23,10 @@ import trimesh
 
 from prop_schema import referenced_files
 from validate_props import print_table, read_obj, validate_prop
+from prop_paths import PROPS
 
 HERE = Path(__file__).resolve().parent
-ROOT = HERE.parents[1] / "assets" / "props"
+ROOT = PROPS
 QA = HERE / "_qa" / "task10"
 IDS = ("bearing_housing_c010", "bearing_housing_c020", "bearing_housing_c030",
        "bearing_6204", "bearing_shaft_fixture", "dowel_pin", "pin_fixture", "din_rail_kit")

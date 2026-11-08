@@ -29,7 +29,7 @@ IDS = ("hex_blank", "flanged_bushing", "l_bracket", "spur_gear", "foam_kit_tray"
 # the L bracket's pocket allowed about 2 degrees of yaw, too tight for a
 # camera-guided robot hand.
 CLEAR = 4.0
-OUTPUT = props.ROOT / "assets" / "props"
+OUTPUT = props.PROPS
 QA = HERE / "_qa" / "task06"
 PREFLIGHT = []
 GEOMETRY_ONLY = False
@@ -468,7 +468,7 @@ def render_tray_light_variant(body, folder):
         placements = (("hex_blank", .065, -.235), ("l_bracket", -.065, -.245),
                       ("flanged_bushing", .065, .235), ("spur_gear", -.065, .245))
         for prop_id, x, y in placements:
-            part_folder = props.ROOT / "assets" / "props" / prop_id
+            part_folder = props.PROPS / prop_id
             part = json.loads((part_folder / "prop.json").read_text())["parts"][0]
             before = set(bpy.data.objects)
             bpy.ops.wm.obj_import(filepath=str(part_folder / part["visual"]), forward_axis="Y", up_axis="Z")

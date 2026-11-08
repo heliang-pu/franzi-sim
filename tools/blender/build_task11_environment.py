@@ -20,7 +20,7 @@ sys.dont_write_bytecode = True
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 ROOT = HERE.parents[1]
-OUTPUT = ROOT / "assets" / "props"
+OUTPUT = props.PROPS
 QA = HERE / "_qa" / "task11"
 IDS = ("workbench", "factory_floor", "safety_fence", "background_rack")
 # The workbench's finished working surface, mm. 900 since 2026-10-25 (was 800):

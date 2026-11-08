@@ -19,7 +19,7 @@ on either drives the robot through the stock SDK unchanged:
 
 - state[k], measured at tick k: 14 arm joints in SDK (controller MDH) radians,
   left j1..j7 then right j1..j7, as GetJointState reports them
-  (q_sdk = sign * q_urdf + offset, config/robot/franzi_sdk.yaml), then the left
+  (q_sdk = sign * q_urdf + offset, robots/franzi/config/franzi_sdk.yaml), then the left
   and right gripper positions as GripperReadPosition reports them (0 closed,
   1000 open).
 - action[k], decided after observing tick k: per arm the last accepted joint
@@ -33,7 +33,7 @@ on either drives the robot through the stock SDK unchanged:
 Schema 2 (2026-10-25, user request: collect everything) adds the full robot
 when the source has it (expert runs; SDK recordings so far do not): FULL_NAMES
 (the 16 above, then the waist's calf, thigh, waist pitch and waist yaw, and the
-head's yaw and pitch, in SDK units of config/robot/franzi_sdk.yaml) as
+head's yaw and pitch, in SDK units of robots/franzi/config/franzi_sdk.yaml) as
 state_full, action_full, velocity_full and effort_full; each hand's grasp-site
 pose and each camera's pose in the world (eef_pose, camera_pose). VIEWS name the
 training subsets: arms16 (the 16 above), waist17 (plus waist yaw), full22.
@@ -53,13 +53,13 @@ import numpy as np
 
 SCHEMA = "inovance-franzi-vla-episode/2"
 READABLE = ("inovance-franzi-vla-episode/1", SCHEMA)
-ROBOT = "inovance_franzi_dual_arm"  # config/robot/franzi_sdk.yaml name
+ROBOT = "inovance_franzi_dual_arm"  # robots/franzi/config/franzi_sdk.yaml name
 FPS = 25
 WIDTH, HEIGHT = 640, 480
 CAMERAS = ("head", "waist", "wrist_left", "wrist_right")
 JOINT_NAMES = [f"{side}_j{i}" for side in ("left", "right") for i in range(1, 8)]
 STATE_NAMES = JOINT_NAMES + ["left_gripper", "right_gripper"]
-# The waist and head units' joints, in config/robot/franzi_sdk.yaml order.
+# The waist and head units' joints, in robots/franzi/config/franzi_sdk.yaml order.
 BODY_NAMES = [
     "calf_pitch",
     "thigh_pitch",
@@ -301,7 +301,7 @@ class EpisodeWriter:
             "extras": sorted(self.extras),
             "conventions": {
                 "joints": "SDK controller MDH radians, q_sdk = sign * q_urdf + offset "
-                "(config/robot/franzi_sdk.yaml); left j1..j7, right j1..j7",
+                "(robots/franzi/config/franzi_sdk.yaml); left j1..j7, right j1..j7",
                 "gripper": "GripperReadPosition / GripperSetPosition units: "
                 "0 closed .. 1000 open",
                 "action": "last accepted command per arm and gripper side, held "

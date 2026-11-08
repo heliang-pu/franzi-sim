@@ -29,8 +29,8 @@ import mujoco
 import numpy as np
 
 from isaac import export, runtime, stage
-from sim.build_task import ARM_JOINTS, FINGER_JOINTS
-from sim.camera_rig import POLICY_CAMERAS
+from robots.franzi.camera_rig import POLICY_CAMERAS
+from robots.franzi.scene import ARM_JOINTS, FINGER_JOINTS
 from sim.episode import Video
 
 # PhysX reports pairs up to the 4 mm contact offset apart; MuJoCo's contacts

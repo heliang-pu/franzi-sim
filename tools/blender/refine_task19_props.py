@@ -13,8 +13,9 @@ import sys
 sys.dont_write_bytecode = True
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
+from prop_paths import PROPS
 ROOT = HERE.parents[1]
-ASSETS = ROOT / 'assets/props'
+ASSETS = PROPS
 IDS = ('line_feed_conveyor', 'takeaway_conveyor', 'flow_lane',
        'tote_cart', 'parcel_cube_80', 'parcel_cube_75', 'parcel_cube_85', 'infeed_table')
 LANE_NOTE = ('Lane friction must win over the goods: MuJoCo geom priority 1; '

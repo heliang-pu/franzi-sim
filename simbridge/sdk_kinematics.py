@@ -1,6 +1,6 @@
 """The SDK's kinematics endpoints, answered by the shared host-side kinematics.
 
-Fk/FkTool/IK and FKb/FKbTool/IKb/IKbTool come from robot_kinematics.Kinematics
+Fk/FkTool/IK and FKb/FKbTool/IKb/IKbTool come from robots.franzi.kinematics.Kinematics
 (Pinocchio on the source URDF, and the expert's IK), so the project has one FK
 and IK ("real follows sim": on the real robot these calls would run the
 controller's own kinematics, which the host does not use). This module only
@@ -9,9 +9,9 @@ Python client and C++ headers:
 
 - joints: SDK values, q_sdk = sign * q_urdf + offset (the active convention);
 - frames: Fk gives the flange (MDH frame A7) in the arm's MDH base frame A0, and
-  FKb gives it in base frame B (world-aligned at the base, robot_kinematics). A0
+  FKb gives it in base frame B (world-aligned at the base, robots.franzi.kinematics). A0
   in the parent link of the arm's first joint and A7 in wrist_roll_Link come
-  from check_sdk_kinematics.py (config/robot/kinematic_crosscheck.json; with
+  from check_sdk_kinematics.py (robots/franzi/config/kinematic_crosscheck.json; with
   wheel_robot_26.8.16_3 both are those links' own frames, to 1e-6); the tool is
   the flange times flan2tool, the identity at start-up;
 - transforms: 4x4, column-major 16-vectors, translations in m, at the float32
@@ -20,7 +20,7 @@ Python client and C++ headers:
   (SciPy from_euler("zyx", [rz, ry, rx])), read back with ry in [-pi/2, pi/2].
 
 What is inferred rather than read from a controller is listed under
-``kinematics`` in config/robot/franzi_sdk.yaml.
+``kinematics`` in robots/franzi/config/franzi_sdk.yaml.
 """
 
 import json
@@ -95,12 +95,12 @@ def pose_from_matrix(T):
 
 
 class SdkKinematics:
-    """SDK frames and joint values around robot_kinematics.Kinematics, plus the
+    """SDK frames and joint values around robots.franzi.kinematics.Kinematics, plus the
     session's flange -> tool transforms. Raises ImportError where Pinocchio is
     missing (the services then report the endpoints as unsupported)."""
 
     def __init__(self, robot):
-        from robot_kinematics import URDF, Kinematics
+        from robots.franzi.kinematics import URDF, Kinematics
 
         self.robot = robot
         self.cfg = robot.raw["kinematics"]
@@ -143,7 +143,7 @@ class SdkKinematics:
 
     def _body(self, torso_sdk):
         if torso_sdk is None:
-            return None  # upright, as robot_kinematics assumes
+            return None  # upright, as robots.franzi.kinematics assumes
         return dict(zip(self.waist.sim_joints, self.waist.to_sim(torso_sdk)))
 
     def _world(self, side, q_sdk, body):
@@ -183,7 +183,7 @@ class SdkKinematics:
 
     def ik(self, side, target, seed_sdk, tool=True):
         """SDK joints putting the tool (or flange) at target, a 4x4 in A0;
-        robot_kinematics.ik seeded with seed_sdk."""
+        robots.franzi.kinematics.ik seeded with seed_sdk."""
         _, base = self._world(side, seed_sdk, None)
         flange = base @ self.a0_in_parent[side] @ self._flange(side, target, tool)
         wrist = flange @ inverse(self.flange_in_wrist[side])
@@ -204,7 +204,7 @@ class SdkKinematics:
 
     def describe(self):
         return {
-            "model": "robot_kinematics.Kinematics (shared host kinematics)",
+            "model": "robots.franzi.kinematics.Kinematics (shared host kinematics)",
             "flan2tool": {s: to_wire(T) for s, T in self.flan2tool.items()},
             "inferred": list(self.cfg["inferred"]),
         }

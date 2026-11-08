@@ -46,9 +46,11 @@ from simbridge.services import ArmService, SensorService
 from simbridge.status import Rejected, Unsupported
 
 ROBOT = load_robot()
-CROSSCHECK = json.loads((ROOT / "config/robot/kinematic_crosscheck.json").read_text())
-# The SDK kinematics endpoints answer from robot_kinematics, which needs Pinocchio
-# (the inovance-fineart env); elsewhere those tests are skipped.
+CROSSCHECK = json.loads(
+    (ROOT / "robots/franzi/config/kinematic_crosscheck.json").read_text()
+)
+# The SDK kinematics endpoints answer from robots.franzi.kinematics, which needs
+# Pinocchio (the inovance-fineart env); elsewhere those tests are skipped.
 PINOCCHIO = importlib.util.find_spec("pinocchio") is not None
 KIN = SdkKinematics(ROBOT) if PINOCCHIO else None
 needs_pinocchio = pytest.mark.skipif(not PINOCCHIO, reason="needs Pinocchio")
@@ -131,7 +133,7 @@ def test_pose_from_vector_roundtrip():
     assert np.allclose(R @ R.T, np.eye(3)) and np.allclose(p, [1, 2, 3])
 
 
-# ----- the SDK's kinematics endpoints (robot_kinematics in SDK conventions) ------
+# ----- the SDK's kinematics endpoints (robots.franzi.kinematics, SDK conventions) --
 def test_wire_format_is_column_major_float32():
     T = homogeneous(
         matrix_from_pose([0.1, -0.2, 0.3, 0.4, -0.5, 0.6])[:3, :3], [1, 2, 3]

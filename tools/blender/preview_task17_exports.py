@@ -18,7 +18,7 @@ def main() -> None:
     args = parser.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else [])
     qa = HERE / '_qa/task17'
     for prop_id in args.props:
-        folder = props.ROOT / 'assets/props' / prop_id
+        folder = props.PROPS / prop_id
         data = json.loads((folder/'prop.json').read_text())
         variants = data['variants'] or [{'name': 'default','textures': {}}]
         if prop_id.startswith('pallet_carton'):

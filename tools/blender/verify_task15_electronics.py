@@ -10,9 +10,10 @@ sys.dont_write_bytecode = True
 import numpy as np
 from scipy.spatial import ConvexHull
 from validate_props import read_obj, validate_prop
+from prop_paths import PROPS
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / 'assets/props'
+OUT = PROPS
 QA = ROOT / 'tools/blender/_qa/task15'
 IDS = ('plc_module','module_tray','test_fixture','ng_bin','product_box','accessory_box','stack_light','line_console')
 
